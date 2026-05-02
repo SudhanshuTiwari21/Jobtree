@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --jobtree: #3d3d7b;
+}
+
+html {
+  font-size: 18px;
+}
+
+body {
+  @apply min-h-screen bg-slate-50 text-slate-900 antialiased;
+}
+
+/* Larger tap targets for low-literacy / mobile-first users */
+.safe-bottom {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
