@@ -11,6 +11,7 @@ import interviewReminderCron from './jobs/interviewReminderCron.js';
 
 const app = express();
 
+
 // Trust proxy (important for rate limiting behind reverse proxy)
 app.set('trust proxy', 1);
 
