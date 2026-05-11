@@ -1,3 +1,4 @@
+import http from 'http';
 import express from 'express';
 import compression from 'compression';
 import morgan from 'morgan';
@@ -8,8 +9,12 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import routes from './routes/index.js';
 import db from './database/connection.js';
 import interviewReminderCron from './jobs/interviewReminderCron.js';
+import { attachChatSocketServer } from './websocket/chatSocket.js';
 
 const app = express();
+
+/** Set after listen — used for graceful shutdown */
+let httpServerRef = null;
 
 
 // Trust proxy (important for rate limiting behind reverse proxy)
@@ -61,6 +66,7 @@ app.get('/', (req, res) => {
         getProfile: 'GET /api/salon/me',
         updateProfile: 'PATCH /api/salon/profile',
         mediaPresign: 'POST /api/salon/media/presign',
+        mediaUpload: 'POST /api/salon/media/upload',
         saveMedia: 'POST /api/salon/media',
         deleteMedia: 'DELETE /api/salon/media/:id',
         completion: 'GET /api/salon/completion',
@@ -97,10 +103,15 @@ const startServer = async () => {
     }
 
     const PORT = config.port;
-    
-    app.listen(PORT, () => {
+
+    const httpServer = http.createServer(app);
+    httpServerRef = httpServer;
+    attachChatSocketServer(httpServer);
+
+    httpServer.listen(PORT, () => {
       logger.info(`🚀 Server running on port ${PORT} in ${config.env} mode`);
       logger.info(`📡 API available at http://localhost:${PORT}/api`);
+      logger.info(`💬 WebSocket chat at ws://localhost:${PORT}/ws/chat`);
       logger.info(`❤️  Health check: http://localhost:${PORT}/api/health`);
       interviewReminderCron.start();
       console.log(`
@@ -141,6 +152,11 @@ const gracefulShutdown = async (signal) => {
   logger.info(`${signal} signal received: closing HTTP server`);
   try {
     interviewReminderCron.stop();
+    if (httpServerRef) {
+      await new Promise((resolve, reject) => {
+        httpServerRef.close((err) => (err ? reject(err) : resolve()));
+      });
+    }
     await db.closePool();
     logger.info('Database connections closed');
   } catch (error) {

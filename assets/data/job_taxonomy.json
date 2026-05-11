@@ -1,0 +1,4739 @@
+{
+  "version": 2,
+  "sections": [
+    {
+      "id": "general",
+      "labelEn": "General job type",
+      "labelHi": "जनरल जॉब टाइप",
+      "categories": [
+        {
+          "id": "unisex_hairstylist",
+          "labelEn": "Unisex Hairstylist",
+          "labelHi": "यूनिसेक्स हेयरस्टाइलिस्ट",
+          "subcategories": [
+            {
+              "id": "2_layers_cut",
+              "labelEn": "2 Layers Cut",
+              "labelHi": "लेयर्स कट करना"
+            },
+            {
+              "id": "3_steps_cut",
+              "labelEn": "3 Steps Cut",
+              "labelHi": "स्टेप्स कट करना"
+            },
+            {
+              "id": "bob_cut",
+              "labelEn": "Bob Cut",
+              "labelHi": "बॉब कट करना"
+            },
+            {
+              "id": "ucut",
+              "labelEn": "U-cut",
+              "labelHi": "यू- कट करना"
+            },
+            {
+              "id": "vcut",
+              "labelEn": "V-cut",
+              "labelHi": "वी- कट करना"
+            },
+            {
+              "id": "feather_cut",
+              "labelEn": "Feather Cut",
+              "labelHi": "फ़ेदर कट करना"
+            },
+            {
+              "id": "razor_cut",
+              "labelEn": "Razor Cut",
+              "labelHi": "रेज़र कट करना"
+            },
+            {
+              "id": "fringes_bangs",
+              "labelEn": "Fringes / Bangs",
+              "labelHi": "फ्रिंजेज़ / बैंग्स"
+            },
+            {
+              "id": "gents_fade_cut",
+              "labelEn": "Gents Fade Cut",
+              "labelHi": "जेंट्स फेड कट करना"
+            },
+            {
+              "id": "gents_taper_cut",
+              "labelEn": "Gents Taper Cut",
+              "labelHi": "टेपर कट करना"
+            },
+            {
+              "id": "undercuts",
+              "labelEn": "Undercuts",
+              "labelHi": "अंडरकट्स करना"
+            },
+            {
+              "id": "beard_trimming_shaping",
+              "labelEn": "Beard Trimming & Shaping",
+              "labelHi": "दाढ़ी ट्रिमिंग और शेपिंग करना"
+            },
+            {
+              "id": "blowdrying",
+              "labelEn": "Blow-Drying",
+              "labelHi": "ब्लो-ड्राईिंग करना"
+            },
+            {
+              "id": "straightening_curling",
+              "labelEn": "Straightening & Curling",
+              "labelHi": "स्ट्रेटनिंग और कर्लिंग करना"
+            },
+            {
+              "id": "mens_hair_styling",
+              "labelEn": "Men's Hair Styling",
+              "labelHi": "पुरुषों की हेयर स्टाइलिंग करना"
+            },
+            {
+              "id": "global_colour_root_touchup",
+              "labelEn": "Global Colour & Root Touch-up",
+              "labelHi": "ग्लोबल कलर और रूट टच-अप करना"
+            },
+            {
+              "id": "highlights_lowlights",
+              "labelEn": "Highlights & Lowlights",
+              "labelHi": "हाइलाइट्स और लो-लाइट्स करना"
+            },
+            {
+              "id": "balayage",
+              "labelEn": "Balayage",
+              "labelHi": "बैलेयाज का नॉलेज"
+            },
+            {
+              "id": "ombre",
+              "labelEn": "Ombre",
+              "labelHi": "ओम्ब्रे का नॉलेज"
+            },
+            {
+              "id": "fashion_colours",
+              "labelEn": "Fashion Colours",
+              "labelHi": "फैशन कलर्स का नॉलेज"
+            },
+            {
+              "id": "toning_colour_correction",
+              "labelEn": "Toning & Colour Correction",
+              "labelHi": "टोनिंग और कलर करेक्शन करना"
+            },
+            {
+              "id": "smoothing_straightening",
+              "labelEn": "Smoothing & Straightening",
+              "labelHi": "स्मूदनिंग और स्ट्रेटनिंग करना"
+            },
+            {
+              "id": "keratin_protein_botox",
+              "labelEn": "Keratin / Protein / Botox",
+              "labelHi": "केराटिन / प्रोटीन / बोटॉक्स ट्रीटमेंट करना"
+            },
+            {
+              "id": "hair_extensions",
+              "labelEn": "Hair Extensions",
+              "labelHi": "हेयर एक्सटेंशंस का नॉलेज"
+            },
+            {
+              "id": "perming",
+              "labelEn": "Perming",
+              "labelHi": "पर्मिंग / कर्लिंग"
+            },
+            {
+              "id": "hair_spa",
+              "labelEn": "Hair spa",
+              "labelHi": "हेयर स्पा करना"
+            },
+            {
+              "id": "waxing",
+              "labelEn": "Waxing",
+              "labelHi": "वैक्सिंग करना"
+            },
+            {
+              "id": "moustache_styling_perming",
+              "labelEn": "Moustache Styling / Perming",
+              "labelHi": "मूंछों की स्टाइलिंग / परमिंग करना"
+            },
+            {
+              "id": "hair_wig_patch_work",
+              "labelEn": "Hair Wig / Patch Work",
+              "labelHi": "हेयर विग / पैच वर्क का नॉलेज"
+            },
+            {
+              "id": "dandruff_hairfall_treatments",
+              "labelEn": "Dandruff & Hairfall Treatments",
+              "labelHi": "डैंड्रफ और हेयरफॉल ट्रीटमेंट करना"
+            },
+            {
+              "id": "manicure",
+              "labelEn": "Manicure",
+              "labelHi": "मैनीक्योर का नॉलेज"
+            },
+            {
+              "id": "pedicure",
+              "labelEn": "Pedicure",
+              "labelHi": "पेडीक्योर का नॉलेज"
+            },
+            {
+              "id": "client_consultation",
+              "labelEn": "Client Consultation",
+              "labelHi": "क्लाइंट कंसल्टेशन करना"
+            },
+            {
+              "id": "product_knowledge",
+              "labelEn": "Product knowledge",
+              "labelHi": "प्रोडक्ट नॉलेज"
+            },
+            {
+              "id": "salon_management",
+              "labelEn": "Salon Management",
+              "labelHi": "सैलून मैनेज करना"
+            },
+            {
+              "id": "professionalism",
+              "labelEn": "Professionalism",
+              "labelHi": "काम के प्रति जिम्मेदारी"
+            }
+          ]
+        },
+        {
+          "id": "ladies_hairstylist",
+          "labelEn": "Ladies Hairstylist",
+          "labelHi": "लेडीज़ हेयरस्टाइलिस्ट",
+          "subcategories": [
+            {
+              "id": "straight_cut",
+              "labelEn": "Straight Cut",
+              "labelHi": "स्ट्रेट कट करना"
+            },
+            {
+              "id": "ucut",
+              "labelEn": "U-cut",
+              "labelHi": "यू- कट करना"
+            },
+            {
+              "id": "vcut",
+              "labelEn": "V-cut",
+              "labelHi": "वी- कट करना"
+            },
+            {
+              "id": "layer_cut",
+              "labelEn": "Layer cut",
+              "labelHi": "लेयर कट करना"
+            },
+            {
+              "id": "step_cut",
+              "labelEn": "Step Cut",
+              "labelHi": "स्टेप कट करना"
+            },
+            {
+              "id": "feather_cut",
+              "labelEn": "Feather Cut",
+              "labelHi": "फ़ेदर कट करना"
+            },
+            {
+              "id": "razor_cut",
+              "labelEn": "Razor Cut",
+              "labelHi": "रेज़र कट करना"
+            },
+            {
+              "id": "fringes_bangs",
+              "labelEn": "Fringes/Bangs",
+              "labelHi": "फ्रिंजेज़ / बैंग्स"
+            },
+            {
+              "id": "bob_lob_cuts",
+              "labelEn": "Bob/Lob Cuts",
+              "labelHi": "बॉब / लॉब कट्स करना"
+            },
+            {
+              "id": "blowdry",
+              "labelEn": "Blow-Dry",
+              "labelHi": "ब्लो-ड्राई करना"
+            },
+            {
+              "id": "curls_waves",
+              "labelEn": "Curls/Waves",
+              "labelHi": "कर्ल्स / वेव्स"
+            },
+            {
+              "id": "global_colour",
+              "labelEn": "Global Colour",
+              "labelHi": "ग्लोबल कलर करना"
+            },
+            {
+              "id": "highlights_lowlights",
+              "labelEn": "Highlights & Lowlights",
+              "labelHi": "हाइलाइट्स और लो-लाइट्स का नॉलेज"
+            },
+            {
+              "id": "balayage",
+              "labelEn": "Balayage",
+              "labelHi": "बैलेयाज का नॉलेज"
+            },
+            {
+              "id": "ombre",
+              "labelEn": "Ombre",
+              "labelHi": "ओम्ब्रे का नॉलेज"
+            },
+            {
+              "id": "fashion_colours",
+              "labelEn": "Fashion Colours",
+              "labelHi": "फैशन कलर्स करना"
+            },
+            {
+              "id": "colour_correction",
+              "labelEn": "Colour Correction",
+              "labelHi": "कलर करेक्शन करना"
+            },
+            {
+              "id": "smoothing_rebonding",
+              "labelEn": "Smoothing/Rebonding",
+              "labelHi": "स्मूदनिंग / रीबॉन्डिंग करना"
+            },
+            {
+              "id": "keratin_botox_treatments",
+              "labelEn": "Keratin/Botox Treatments",
+              "labelHi": "केराटिन / बोटॉक्स ट्रीटमेंट्स करना"
+            },
+            {
+              "id": "hair_extensions",
+              "labelEn": "Hair Extensions",
+              "labelHi": "हेयर एक्सटेंशंस का नॉलेज"
+            },
+            {
+              "id": "protein_treatment",
+              "labelEn": "Protein Treatment",
+              "labelHi": "प्रोटीन ट्रीटमेंट करना"
+            },
+            {
+              "id": "hair_spa",
+              "labelEn": "Hair Spa",
+              "labelHi": "हेयर स्पा करना"
+            },
+            {
+              "id": "waxing",
+              "labelEn": "Waxing",
+              "labelHi": "वैक्सिंग करना"
+            },
+            {
+              "id": "hair_wig",
+              "labelEn": "Hair Wig",
+              "labelHi": "हेयर विग का नॉलेज"
+            },
+            {
+              "id": "dandruff_hairfall_treatment",
+              "labelEn": "Dandruff & Hairfall Treatment",
+              "labelHi": "डैंड्रफ और हेयरफॉल ट्रीटमेंट करना"
+            },
+            {
+              "id": "manicure",
+              "labelEn": "Manicure",
+              "labelHi": "मैनीक्योर का नॉलेज"
+            },
+            {
+              "id": "pedicure",
+              "labelEn": "Pedicure",
+              "labelHi": "पेडीक्योर का नॉलेज"
+            },
+            {
+              "id": "product_knowledge",
+              "labelEn": "Product Knowledge",
+              "labelHi": "प्रोडक्ट नॉलेज"
+            },
+            {
+              "id": "client_consultation",
+              "labelEn": "Client Consultation",
+              "labelHi": "क्लाइंट कंसल्टेशन करना"
+            },
+            {
+              "id": "salon_management",
+              "labelEn": "Salon Management",
+              "labelHi": "सैलून मैनेज करना"
+            },
+            {
+              "id": "professionalism",
+              "labelEn": "Professionalism",
+              "labelHi": "काम के प्रति जिम्मेदारी"
+            }
+          ]
+        },
+        {
+          "id": "gents_hairstylist",
+          "labelEn": "Gents Hairstylist",
+          "labelHi": "जेंट्स हेयरस्टाइलिस्ट",
+          "subcategories": [
+            {
+              "id": "crew_cut",
+              "labelEn": "Crew cut",
+              "labelHi": "क्रू कट करना"
+            },
+            {
+              "id": "buzz_cut",
+              "labelEn": "Buzz Cut",
+              "labelHi": "बज कट करना"
+            },
+            {
+              "id": "mullet_cut",
+              "labelEn": "Mullet Cut",
+              "labelHi": "मुलेट कट करना"
+            },
+            {
+              "id": "fade",
+              "labelEn": "Fade",
+              "labelHi": "फ़ेड कट करना"
+            },
+            {
+              "id": "taper",
+              "labelEn": "Taper",
+              "labelHi": "टेपर कट करना"
+            },
+            {
+              "id": "skin_fade",
+              "labelEn": "Skin fade",
+              "labelHi": "स्किन फ़ेड कट करना"
+            },
+            {
+              "id": "undercut",
+              "labelEn": "Undercut",
+              "labelHi": "अंडरकट करना"
+            },
+            {
+              "id": "pompadour",
+              "labelEn": "Pompadour",
+              "labelHi": "पॉम्पाडोर कट करना"
+            },
+            {
+              "id": "beard_setting",
+              "labelEn": "Beard Setting",
+              "labelHi": "बीयर्ड सेटिंग करना"
+            },
+            {
+              "id": "moustache_styling_perming",
+              "labelEn": "Moustache Styling/Perming",
+              "labelHi": "मूंछ स्टाइलिंग / पर्मिंग करना"
+            },
+            {
+              "id": "wax_gel_hair_spray_styling",
+              "labelEn": "Wax/Gel/Hair Spray Styling",
+              "labelHi": "पुरुषों की वैक्स / जेल / हेयर स्प्रे स्टाइलिंग"
+            },
+            {
+              "id": "global_hair_colour",
+              "labelEn": "Global Hair Colour",
+              "labelHi": "ग्लोबल हेयर कलर करना"
+            },
+            {
+              "id": "highlights_streaks",
+              "labelEn": "Highlights / Streaks",
+              "labelHi": "हाइलाइट्स / स्ट्रिक्स करना"
+            },
+            {
+              "id": "fashion_colours",
+              "labelEn": "Fashion Colours",
+              "labelHi": "फ़ैशन कलर्स करना"
+            },
+            {
+              "id": "smoothing_rebonding",
+              "labelEn": "Smoothing/Rebonding",
+              "labelHi": "स्मूदिंग / रीबॉन्डिंग करना"
+            },
+            {
+              "id": "perming_curling",
+              "labelEn": "Perming/Curling",
+              "labelHi": "पर्मिंग / कर्लिंग करना"
+            },
+            {
+              "id": "keratin",
+              "labelEn": "Keratin",
+              "labelHi": "केरेटिन करना"
+            },
+            {
+              "id": "protein_botox_treatment",
+              "labelEn": "Protein/Botox Treatment",
+              "labelHi": "प्रोटीन / बोटॉक्स ट्रीटमेंट करना"
+            },
+            {
+              "id": "hair_spa",
+              "labelEn": "Hair Spa",
+              "labelHi": "हेयर स्पा करना"
+            },
+            {
+              "id": "manicure",
+              "labelEn": "Manicure",
+              "labelHi": "मैनीक्योर का नॉलेज"
+            },
+            {
+              "id": "pedicure",
+              "labelEn": "Pedicure",
+              "labelHi": "पेडीक्योर का नॉलेज"
+            },
+            {
+              "id": "waxing",
+              "labelEn": "Waxing",
+              "labelHi": "वैक्सिंग करना"
+            },
+            {
+              "id": "hair_wig_patch_work",
+              "labelEn": "Hair Wig / Patch Work",
+              "labelHi": "हेयर विग / पैच वर्क का नॉलेज"
+            },
+            {
+              "id": "client_consultation",
+              "labelEn": "Client Consultation",
+              "labelHi": "क्लाइंट कंसल्टेशन करना"
+            },
+            {
+              "id": "salon_management",
+              "labelEn": "Salon Management",
+              "labelHi": "सैलून मैनेज करना"
+            },
+            {
+              "id": "professionalism",
+              "labelEn": "Professionalism",
+              "labelHi": "काम के प्रति जिम्मेदारी"
+            }
+          ]
+        },
+        {
+          "id": "hair_colourist",
+          "labelEn": "Hair Colourist",
+          "labelHi": "हेयर कलरिस्ट",
+          "subcategories": [
+            {
+              "id": "global_hair_colour",
+              "labelEn": "Global Hair Colour",
+              "labelHi": "ग्लोबल हेयर कलर करना"
+            },
+            {
+              "id": "grey_coverage",
+              "labelEn": "Grey Coverage",
+              "labelHi": "ग्रे कवरेज करना"
+            },
+            {
+              "id": "fashion_colour_application",
+              "labelEn": "Fashion Colour Application",
+              "labelHi": "फैशन कलर अप्लिकेशन करना"
+            },
+            {
+              "id": "foil_highlights",
+              "labelEn": "Foil Highlights",
+              "labelHi": "हाइलाइट्स करना"
+            },
+            {
+              "id": "lowlights",
+              "labelEn": "Lowlights",
+              "labelHi": "लो-लाइट्स करना"
+            },
+            {
+              "id": "streaks",
+              "labelEn": "Streaks",
+              "labelHi": "स्ट्रिक्स करना"
+            },
+            {
+              "id": "baby_lights",
+              "labelEn": "Baby Lights",
+              "labelHi": "बेबी लाइट्स करना"
+            },
+            {
+              "id": "balayage",
+              "labelEn": "Balayage",
+              "labelHi": "बैलेयाज का नॉलेज"
+            },
+            {
+              "id": "ombre_sombre",
+              "labelEn": "Ombre / Sombre",
+              "labelHi": "ओम्ब्रे / सोम्ब्रे का नॉलेज"
+            },
+            {
+              "id": "reverse_balayage",
+              "labelEn": "Reverse Balayage",
+              "labelHi": "रिवर्स बैलेयाज का नॉलेज"
+            },
+            {
+              "id": "bleaching_prelightening",
+              "labelEn": "Bleaching / Pre-Lightening",
+              "labelHi": "ब्लिचिंग / प्री-लाइटनिंग करना"
+            },
+            {
+              "id": "correct_lift_levels",
+              "labelEn": "Correct lift levels",
+              "labelHi": "सही लिफ्ट लेवल्स प्राप्त करना"
+            },
+            {
+              "id": "neutralizing_brassiness",
+              "labelEn": "Neutralizing brassiness",
+              "labelHi": "ब्रासिनेस को न्यूट्रलाइज करना"
+            },
+            {
+              "id": "fixing_uneven_colour",
+              "labelEn": "Fixing uneven colour",
+              "labelHi": "अनियमित कलर ठीक करना"
+            },
+            {
+              "id": "removing_unwanted_tones",
+              "labelEn": "Removing unwanted tones",
+              "labelHi": "अनवांटेड टोन हटाना"
+            },
+            {
+              "id": "darktolight_lighttodark",
+              "labelEn": "Dark-to-light & light-to-dark",
+              "labelHi": "डार्क-टू-लाइट और लाइट-टू-डार्क करना"
+            },
+            {
+              "id": "permanent_semipermanent_colours",
+              "labelEn": "Permanent / Semi-permanent colours",
+              "labelHi": "पर्मानेंट और सेमी-पर्मानेंट कलर्स"
+            },
+            {
+              "id": "client_consultation",
+              "labelEn": "Client consultation",
+              "labelHi": "क्लाइंट कंसल्टेशन करना"
+            },
+            {
+              "id": "shade_recommendation",
+              "labelEn": "Shade recommendation",
+              "labelHi": "प्रोडक्ट नॉलेज"
+            },
+            {
+              "id": "skin_tone_matching",
+              "labelEn": "Skin tone matching",
+              "labelHi": "प्रोडक्ट नॉलेज"
+            },
+            {
+              "id": "professionalism",
+              "labelEn": "Professionalism",
+              "labelHi": "काम के प्रति जिम्मेदारी"
+            },
+            {
+              "id": "salon_management",
+              "labelEn": "Salon management",
+              "labelHi": "सैलून मैनेज करना"
+            }
+          ]
+        },
+        {
+          "id": "beautician",
+          "labelEn": "Beautician",
+          "labelHi": "ब्यूटीशियन",
+          "subcategories": [
+            {
+              "id": "cleanup",
+              "labelEn": "Cleanup",
+              "labelHi": "क्लीनअप करना"
+            },
+            {
+              "id": "basic_facial",
+              "labelEn": "Basic Facial",
+              "labelHi": "बेसिक फेशियल करना"
+            },
+            {
+              "id": "advance_facial",
+              "labelEn": "Advance Facial",
+              "labelHi": "एडवांस फेशियल करना"
+            },
+            {
+              "id": "skin_analysis",
+              "labelEn": "Skin analysis",
+              "labelHi": "स्किन टाइप पहचान करना"
+            },
+            {
+              "id": "waxing",
+              "labelEn": "Waxing",
+              "labelHi": "वैक्सिंग करना"
+            },
+            {
+              "id": "rica_liposhape_waxing",
+              "labelEn": "Rica/Liposhape Waxing",
+              "labelHi": "रिका / लिपोशेप वैक्सिंग करना"
+            },
+            {
+              "id": "threading",
+              "labelEn": "Threading",
+              "labelHi": "थ्रेडिंग करना"
+            },
+            {
+              "id": "manicure",
+              "labelEn": "Manicure",
+              "labelHi": "मैनीक्योर करना"
+            },
+            {
+              "id": "pedicure",
+              "labelEn": "Pedicure",
+              "labelHi": "पेडीक्योर करना"
+            },
+            {
+              "id": "nail_filing_polishing",
+              "labelEn": "Nail Filing & Polishing",
+              "labelHi": "नेल फाइलिंग और पोलिशिंग करना"
+            },
+            {
+              "id": "antiacne_whitening_antiageing_treatments",
+              "labelEn": "Anti-Acne, Whitening & Anti-Ageing Treatments",
+              "labelHi": "एंटी-एक्ने, व्हाइटनिंग और एंटी-एजिंग ट्रीटमेंट्स करना"
+            },
+            {
+              "id": "body_polishing",
+              "labelEn": "Body Polishing",
+              "labelHi": "बॉडी पोलिशिंग करना"
+            },
+            {
+              "id": "makeup_basic",
+              "labelEn": "Makeup (Basic)",
+              "labelHi": "मेकअप (बेसिक) करना"
+            },
+            {
+              "id": "makeup_advance",
+              "labelEn": "Makeup (Advance)",
+              "labelHi": "मेकअप (एडवांस) करना"
+            },
+            {
+              "id": "daily_party_makeup",
+              "labelEn": "Daily/Party Makeup",
+              "labelHi": "डेली / पार्टी मेकअप करना"
+            },
+            {
+              "id": "3d_makeup",
+              "labelEn": "3D Makeup",
+              "labelHi": "3D मेकअप करना"
+            },
+            {
+              "id": "airbrush",
+              "labelEn": "Airbrush",
+              "labelHi": "एयरब्रश मेकअप करना"
+            },
+            {
+              "id": "saree_draping",
+              "labelEn": "Saree Draping",
+              "labelHi": "साड़ी ड्रेपिंग करना"
+            },
+            {
+              "id": "hairdos",
+              "labelEn": "Hairdos",
+              "labelHi": "हेयरडोज़ करना"
+            },
+            {
+              "id": "hair_extensions",
+              "labelEn": "Hair Extensions",
+              "labelHi": "हेयर एक्सटेंशंस का नॉलेज"
+            },
+            {
+              "id": "product_knowledge",
+              "labelEn": "Product Knowledge",
+              "labelHi": "प्रोडक्ट नॉलेज"
+            },
+            {
+              "id": "skin_consultation",
+              "labelEn": "Skin Consultation",
+              "labelHi": "Skin Consultation"
+            },
+            {
+              "id": "hygiene_safety",
+              "labelEn": "Hygiene & Safety",
+              "labelHi": "हाइजीन और सेफ्टी का नॉलेज"
+            },
+            {
+              "id": "professionalism",
+              "labelEn": "Professionalism",
+              "labelHi": "काम के प्रति जिम्मेदारी"
+            }
+          ]
+        },
+        {
+          "id": "makeup_artist",
+          "labelEn": "Make Up Artist",
+          "labelHi": "मेकअप आर्टिस्ट",
+          "subcategories": [
+            {
+              "id": "basic_makeup",
+              "labelEn": "Basic Makeup",
+              "labelHi": "Basic Makeup"
+            },
+            {
+              "id": "advance_makeup",
+              "labelEn": "Advance Makeup",
+              "labelHi": "Advance Makeup"
+            },
+            {
+              "id": "party_makeup",
+              "labelEn": "Party Makeup",
+              "labelHi": "Party Makeup"
+            },
+            {
+              "id": "bridal_makeup",
+              "labelEn": "Bridal Makeup",
+              "labelHi": "Bridal Makeup"
+            },
+            {
+              "id": "hd_makeup",
+              "labelEn": "HD Makeup",
+              "labelHi": "HD Makeup"
+            },
+            {
+              "id": "waterproof_makeup",
+              "labelEn": "Waterproof Makeup",
+              "labelHi": "Waterproof Makeup"
+            },
+            {
+              "id": "longlasting_makeup",
+              "labelEn": "Long-Lasting Makeup",
+              "labelHi": "Long-Lasting Makeup"
+            },
+            {
+              "id": "airbrush",
+              "labelEn": "Airbrush",
+              "labelHi": "Airbrush"
+            },
+            {
+              "id": "3d_makeup",
+              "labelEn": "3D Makeup",
+              "labelHi": "3D Makeup"
+            },
+            {
+              "id": "celebrity_fashion_makeup",
+              "labelEn": "Celebrity & Fashion Makeup",
+              "labelHi": "Celebrity & Fashion Makeup"
+            },
+            {
+              "id": "natural_glam_matte_dewy_looks",
+              "labelEn": "Natural, Glam, Matte, Dewy Looks",
+              "labelHi": "Natural, Glam, Matte, Dewy Looks"
+            },
+            {
+              "id": "skin_prepping_priming",
+              "labelEn": "Skin Prepping & Priming",
+              "labelHi": "Skin Prepping & Priming"
+            },
+            {
+              "id": "colour_correction",
+              "labelEn": "Colour Correction",
+              "labelHi": "Colour Correction"
+            },
+            {
+              "id": "eye_shadow_blending",
+              "labelEn": "Eye Shadow Blending",
+              "labelHi": "Eye Shadow Blending"
+            },
+            {
+              "id": "eyeliner_styles",
+              "labelEn": "Eyeliner Styles",
+              "labelHi": "Eyeliner Styles"
+            },
+            {
+              "id": "eyelash_application",
+              "labelEn": "Eyelash Application",
+              "labelHi": "Eyelash Application"
+            },
+            {
+              "id": "threading",
+              "labelEn": "Threading",
+              "labelHi": "Threading"
+            },
+            {
+              "id": "contour",
+              "labelEn": "Contour",
+              "labelHi": "Contour"
+            },
+            {
+              "id": "blush",
+              "labelEn": "Blush",
+              "labelHi": "Blush"
+            },
+            {
+              "id": "highlight",
+              "labelEn": "Highlight",
+              "labelHi": "Highlight"
+            },
+            {
+              "id": "product_knowledge",
+              "labelEn": "Product Knowledge",
+              "labelHi": "Product Knowledge"
+            },
+            {
+              "id": "hygiene_safety",
+              "labelEn": "Hygiene & Safety",
+              "labelHi": "Hygiene & Safety"
+            },
+            {
+              "id": "salon_management",
+              "labelEn": "Salon Management",
+              "labelHi": "Salon Management"
+            },
+            {
+              "id": "professionalism",
+              "labelEn": "Professionalism",
+              "labelHi": "Professionalism"
+            }
+          ]
+        },
+        {
+          "id": "bridal_makeup_artist",
+          "labelEn": "Bridal Makeup Artist",
+          "labelHi": "ब्राइडल मेकअप आर्टिस्ट",
+          "subcategories": [
+            {
+              "id": "hd_makeup",
+              "labelEn": "HD Makeup",
+              "labelHi": "HD Makeup"
+            },
+            {
+              "id": "waterproof_longlasting_bridal_makeup",
+              "labelEn": "Waterproof & long-lasting bridal makeup",
+              "labelHi": "Waterproof & long-lasting bridal makeup"
+            },
+            {
+              "id": "traditional_modern_regional_bridal_looks",
+              "labelEn": "Traditional/Modern/Regional bridal looks",
+              "labelHi": "Traditional/Modern/Regional bridal looks"
+            },
+            {
+              "id": "airbrush_bridal_makeup",
+              "labelEn": "Airbrush bridal makeup",
+              "labelHi": "Airbrush bridal makeup"
+            },
+            {
+              "id": "colour_correction",
+              "labelEn": "Colour correction",
+              "labelHi": "Colour correction"
+            },
+            {
+              "id": "bridal_eye_makeup",
+              "labelEn": "Bridal eye makeup",
+              "labelHi": "Bridal eye makeup"
+            },
+            {
+              "id": "eyelash_application",
+              "labelEn": "Eyelash application",
+              "labelHi": "Eyelash application"
+            },
+            {
+              "id": "perfect_eyebrow_shaping",
+              "labelEn": "Perfect eyebrow shaping",
+              "labelHi": "Perfect eyebrow shaping"
+            },
+            {
+              "id": "bridal_contour_highlight_blush",
+              "labelEn": "Bridal contour/highlight/blush",
+              "labelHi": "Bridal contour/highlight/blush"
+            },
+            {
+              "id": "product_knowledge",
+              "labelEn": "Product knowledge",
+              "labelHi": "Product knowledge"
+            },
+            {
+              "id": "lip_contouring",
+              "labelEn": "Lip contouring",
+              "labelHi": "Lip contouring"
+            },
+            {
+              "id": "basic_hair_styling_touchups",
+              "labelEn": "Basic hair styling touch-ups",
+              "labelHi": "Basic hair styling touch-ups"
+            },
+            {
+              "id": "saree_draping",
+              "labelEn": "Saree draping",
+              "labelHi": "Saree draping"
+            },
+            {
+              "id": "hair_extensions",
+              "labelEn": "Hair extensions",
+              "labelHi": "Hair extensions"
+            },
+            {
+              "id": "hygiene_safety",
+              "labelEn": "Hygiene & safety",
+              "labelHi": "Hygiene & safety"
+            },
+            {
+              "id": "professionalism",
+              "labelEn": "Professionalism",
+              "labelHi": "Professionalism"
+            }
+          ]
+        },
+        {
+          "id": "nail_artist",
+          "labelEn": "Nail Artist",
+          "labelHi": "नेल आर्टिस्ट",
+          "subcategories": [
+            {
+              "id": "nail_cleaning_shaping_filing",
+              "labelEn": "Nail cleaning, shaping & filing",
+              "labelHi": "Nail cleaning, shaping & filing"
+            },
+            {
+              "id": "nail_buffing",
+              "labelEn": "Nail buffing",
+              "labelHi": "Nail buffing"
+            },
+            {
+              "id": "freehand_nail_art",
+              "labelEn": "Freehand nail art",
+              "labelHi": "Freehand nail art"
+            },
+            {
+              "id": "glitter_stones_chrome_foil_stickers",
+              "labelEn": "Glitter, stones, chrome, foil, stickers",
+              "labelHi": "Glitter, stones, chrome, foil, stickers"
+            },
+            {
+              "id": "ombre_gradient_effects",
+              "labelEn": "Ombre & gradient effects",
+              "labelHi": "Ombre & gradient effects"
+            },
+            {
+              "id": "3d_nail_art",
+              "labelEn": "3D nail art",
+              "labelHi": "3D nail art"
+            },
+            {
+              "id": "acrylic_extensions",
+              "labelEn": "Acrylic extensions",
+              "labelHi": "Acrylic extensions"
+            },
+            {
+              "id": "gel_extensions",
+              "labelEn": "Gel extensions",
+              "labelHi": "Gel extensions"
+            },
+            {
+              "id": "polygel_extensions",
+              "labelEn": "Polygel extensions",
+              "labelHi": "Polygel extensions"
+            },
+            {
+              "id": "french_extensions",
+              "labelEn": "French extensions",
+              "labelHi": "French extensions"
+            },
+            {
+              "id": "refill_repair_removal",
+              "labelEn": "Refill, repair & removal",
+              "labelHi": "Refill, repair & removal"
+            },
+            {
+              "id": "gel_polish_uv_led",
+              "labelEn": "Gel polish UV/LED",
+              "labelHi": "Gel polish UV/LED"
+            },
+            {
+              "id": "classic_matte_chrome_french_polish",
+              "labelEn": "Classic/matte/chrome/French polish",
+              "labelHi": "Classic/matte/chrome/French polish"
+            },
+            {
+              "id": "nail_shapes_coffin_almond_stiletto_square_ballerina",
+              "labelEn": "Nail shapes (coffin, almond, stiletto, square, ballerina)",
+              "labelHi": "Nail shapes (coffin, almond, stiletto, square, ballerina)"
+            },
+            {
+              "id": "top_base_coats_gels_acrylics_knowledge",
+              "labelEn": "Top/base coats, gels, acrylics knowledge",
+              "labelHi": "Top/base coats, gels, acrylics knowledge"
+            },
+            {
+              "id": "professionalism",
+              "labelEn": "Professionalism",
+              "labelHi": "Professionalism"
+            }
+          ]
+        },
+        {
+          "id": "mehandi_artist",
+          "labelEn": "Mehandi Artist",
+          "labelHi": "मेहंदी आर्टिस्ट",
+          "subcategories": [
+            {
+              "id": "traditional_designs",
+              "labelEn": "Traditional designs",
+              "labelHi": "Traditional designs"
+            },
+            {
+              "id": "arabic_designs",
+              "labelEn": "Arabic designs",
+              "labelHi": "Arabic designs"
+            },
+            {
+              "id": "indian_designs",
+              "labelEn": "Indian designs",
+              "labelHi": "Indian designs"
+            },
+            {
+              "id": "rajasthani_designs",
+              "labelEn": "Rajasthani designs",
+              "labelHi": "Rajasthani designs"
+            },
+            {
+              "id": "contemporary_designs",
+              "labelEn": "Contemporary designs",
+              "labelHi": "Contemporary designs"
+            },
+            {
+              "id": "intricate_patterns_customized_design",
+              "labelEn": "Intricate patterns & customized design",
+              "labelHi": "Intricate patterns & customized design"
+            },
+            {
+              "id": "glitter_stone_coloured_mehandi",
+              "labelEn": "Glitter, stone & coloured mehandi",
+              "labelHi": "Glitter, stone & coloured mehandi"
+            },
+            {
+              "id": "bridal_mehandi_specialization",
+              "labelEn": "Bridal mehandi specialization",
+              "labelHi": "Bridal mehandi specialization"
+            }
+          ]
+        },
+        {
+          "id": "tattoo_artist",
+          "labelEn": "Tattoo Artist",
+          "labelHi": "टैटू आर्टिस्ट",
+          "subcategories": [
+            {
+              "id": "lining",
+              "labelEn": "Lining",
+              "labelHi": "Lining"
+            },
+            {
+              "id": "shading",
+              "labelEn": "Shading",
+              "labelHi": "Shading"
+            },
+            {
+              "id": "coloring",
+              "labelEn": "Coloring",
+              "labelHi": "Coloring"
+            },
+            {
+              "id": "traditional_style",
+              "labelEn": "Traditional style",
+              "labelHi": "Traditional style"
+            },
+            {
+              "id": "realism_style",
+              "labelEn": "Realism style",
+              "labelHi": "Realism style"
+            },
+            {
+              "id": "geometric_style",
+              "labelEn": "Geometric style",
+              "labelHi": "Geometric style"
+            },
+            {
+              "id": "tribal_style",
+              "labelEn": "Tribal style",
+              "labelHi": "Tribal style"
+            },
+            {
+              "id": "minimalistic_style",
+              "labelEn": "Minimalistic style",
+              "labelHi": "Minimalistic style"
+            },
+            {
+              "id": "freehand_drawing",
+              "labelEn": "Freehand drawing",
+              "labelHi": "Freehand drawing"
+            },
+            {
+              "id": "custom_tattoo_designs",
+              "labelEn": "Custom tattoo designs",
+              "labelHi": "Custom tattoo designs"
+            },
+            {
+              "id": "colour_theory_ink_mixing",
+              "labelEn": "Colour theory & ink mixing",
+              "labelHi": "Colour theory & ink mixing"
+            },
+            {
+              "id": "hygiene_safety",
+              "labelEn": "Hygiene & safety",
+              "labelHi": "Hygiene & safety"
+            },
+            {
+              "id": "latest_tattoo_trends",
+              "labelEn": "Latest tattoo trends",
+              "labelHi": "Latest tattoo trends"
+            }
+          ]
+        },
+        {
+          "id": "hair_ritual_expert",
+          "labelEn": "Hair Ritual Expert",
+          "labelHi": "हेयर रिचुअल एक्सपर्ट",
+          "subcategories": [
+            {
+              "id": "scalp_condition_identification",
+              "labelEn": "Scalp condition identification",
+              "labelHi": "Scalp condition identification"
+            },
+            {
+              "id": "hair_types",
+              "labelEn": "Hair types",
+              "labelHi": "Hair types"
+            },
+            {
+              "id": "deep_conditioning_rituals",
+              "labelEn": "Deep conditioning rituals",
+              "labelHi": "Deep conditioning rituals"
+            },
+            {
+              "id": "keratin_botox_smoothing_rituals",
+              "labelEn": "Keratin, botox & smoothing rituals",
+              "labelHi": "Keratin, botox & smoothing rituals"
+            },
+            {
+              "id": "hair_spa",
+              "labelEn": "Hair spa",
+              "labelHi": "Hair spa"
+            },
+            {
+              "id": "hot_oil_aromatherapy_scalp_rituals",
+              "labelEn": "Hot oil & aromatherapy scalp rituals",
+              "labelHi": "Hot oil & aromatherapy scalp rituals"
+            },
+            {
+              "id": "pressure_points",
+              "labelEn": "Pressure points",
+              "labelHi": "Pressure points"
+            },
+            {
+              "id": "product_knowledge",
+              "labelEn": "Product knowledge",
+              "labelHi": "Product knowledge"
+            },
+            {
+              "id": "professional_brands",
+              "labelEn": "Professional brands",
+              "labelHi": "Professional brands"
+            },
+            {
+              "id": "hygiene_safety",
+              "labelEn": "Hygiene & safety",
+              "labelHi": "Hygiene & safety"
+            },
+            {
+              "id": "client_consultation",
+              "labelEn": "Client consultation",
+              "labelHi": "Client consultation"
+            },
+            {
+              "id": "home_care_recommendations",
+              "labelEn": "Home care recommendations",
+              "labelHi": "Home care recommendations"
+            },
+            {
+              "id": "professionalism",
+              "labelEn": "Professionalism",
+              "labelHi": "Professionalism"
+            }
+          ]
+        },
+        {
+          "id": "sfx_artist",
+          "labelEn": "SFX Artist",
+          "labelHi": "SFX आर्टिस्ट",
+          "subcategories": [
+            {
+              "id": "prosthetic_application",
+              "labelEn": "Prosthetic application",
+              "labelHi": "Prosthetic application"
+            },
+            {
+              "id": "fake_wounds_scars_burns_bruises",
+              "labelEn": "Fake wounds, scars, burns & bruises",
+              "labelHi": "Fake wounds, scars, burns & bruises"
+            },
+            {
+              "id": "3d_makeup_sculpting",
+              "labelEn": "3D makeup & sculpting",
+              "labelHi": "3D makeup & sculpting"
+            },
+            {
+              "id": "airbrushing",
+              "labelEn": "Airbrushing",
+              "labelHi": "Airbrushing"
+            },
+            {
+              "id": "blood_effects_texture",
+              "labelEn": "Blood effects & texture",
+              "labelHi": "Blood effects & texture"
+            },
+            {
+              "id": "colour_mixing",
+              "labelEn": "Colour mixing",
+              "labelHi": "Colour mixing"
+            },
+            {
+              "id": "lighting_camera_impact",
+              "labelEn": "Lighting & camera impact",
+              "labelHi": "Lighting & camera impact"
+            },
+            {
+              "id": "hygiene_safety",
+              "labelEn": "Hygiene & safety",
+              "labelHi": "Hygiene & safety"
+            }
+          ]
+        },
+        {
+          "id": "celebrity_hairstylist",
+          "labelEn": "Celebrity Hairstylist",
+          "labelHi": "सेलेब्रिटी हेयरस्टाइलिस्ट",
+          "subcategories": [
+            {
+              "id": "advanced_haircutting",
+              "labelEn": "Advanced haircutting",
+              "labelHi": "Advanced haircutting"
+            },
+            {
+              "id": "advanced_styling",
+              "labelEn": "Advanced styling",
+              "labelHi": "Advanced styling"
+            },
+            {
+              "id": "highlights",
+              "labelEn": "Highlights",
+              "labelHi": "Highlights"
+            },
+            {
+              "id": "balayage",
+              "labelEn": "Balayage",
+              "labelHi": "Balayage"
+            },
+            {
+              "id": "colour_correction",
+              "labelEn": "Colour correction",
+              "labelHi": "Colour correction"
+            },
+            {
+              "id": "hair_extensions",
+              "labelEn": "Hair extensions",
+              "labelHi": "Hair extensions"
+            },
+            {
+              "id": "wigs",
+              "labelEn": "Wigs",
+              "labelHi": "Wigs"
+            },
+            {
+              "id": "latest_hair_trends",
+              "labelEn": "Latest hair trends",
+              "labelHi": "Latest hair trends"
+            },
+            {
+              "id": "redcarpet_styles",
+              "labelEn": "Red-carpet styles",
+              "labelHi": "Red-carpet styles"
+            },
+            {
+              "id": "blowdrying",
+              "labelEn": "Blow-drying",
+              "labelHi": "Blow-drying"
+            },
+            {
+              "id": "curling",
+              "labelEn": "Curling",
+              "labelHi": "Curling"
+            },
+            {
+              "id": "straightening",
+              "labelEn": "Straightening",
+              "labelHi": "Straightening"
+            },
+            {
+              "id": "updos",
+              "labelEn": "Updos",
+              "labelHi": "Updos"
+            },
+            {
+              "id": "trendsetting_hairstyles",
+              "labelEn": "Trend-setting hairstyles",
+              "labelHi": "Trend-setting hairstyles"
+            },
+            {
+              "id": "premium_products",
+              "labelEn": "Premium products",
+              "labelHi": "Premium products"
+            },
+            {
+              "id": "collaboration_with_mua_stylists_photographers",
+              "labelEn": "Collaboration with MUA/stylists/photographers",
+              "labelHi": "Collaboration with MUA/stylists/photographers"
+            }
+          ]
+        },
+        {
+          "id": "aromatherapy_specialist",
+          "labelEn": "Aromatherapy Specialist",
+          "labelHi": "अरोमाथेरेपी स्पेशलिस्ट",
+          "subcategories": [
+            {
+              "id": "essential_oil_knowledge",
+              "labelEn": "Essential oil knowledge",
+              "labelHi": "Essential oil knowledge"
+            },
+            {
+              "id": "safe_blending",
+              "labelEn": "Safe blending",
+              "labelHi": "Safe blending"
+            },
+            {
+              "id": "body_systems_basics",
+              "labelEn": "Body systems basics",
+              "labelHi": "Body systems basics"
+            },
+            {
+              "id": "client_assessment",
+              "labelEn": "Client assessment",
+              "labelHi": "Client assessment"
+            },
+            {
+              "id": "personalized_plans",
+              "labelEn": "Personalized plans",
+              "labelHi": "Personalized plans"
+            },
+            {
+              "id": "custom_blends_diffuser_recipes",
+              "labelEn": "Custom blends & diffuser recipes",
+              "labelHi": "Custom blends & diffuser recipes"
+            },
+            {
+              "id": "dilution_safety",
+              "labelEn": "Dilution & safety",
+              "labelHi": "Dilution & safety"
+            },
+            {
+              "id": "massage_inhalation_compress_bath_diffuser_use",
+              "labelEn": "Massage/inhalation/compress/bath/diffuser use",
+              "labelHi": "Massage/inhalation/compress/bath/diffuser use"
+            },
+            {
+              "id": "contraindications",
+              "labelEn": "Contraindications",
+              "labelHi": "Contraindications"
+            },
+            {
+              "id": "calming_environment",
+              "labelEn": "Calming environment",
+              "labelHi": "Calming environment"
+            },
+            {
+              "id": "holistic_wellness",
+              "labelEn": "Holistic wellness",
+              "labelHi": "Holistic wellness"
+            },
+            {
+              "id": "documentation",
+              "labelEn": "Documentation",
+              "labelHi": "Documentation"
+            }
+          ]
+        },
+        {
+          "id": "wellness_consultant",
+          "labelEn": "Wellness Consultant",
+          "labelHi": "वेलनेस कंसल्टेंट",
+          "subcategories": [
+            {
+              "id": "holistic_health_knowledge",
+              "labelEn": "Holistic health knowledge",
+              "labelHi": "Holistic health knowledge"
+            },
+            {
+              "id": "lifestyle_evaluation",
+              "labelEn": "Lifestyle evaluation",
+              "labelHi": "Lifestyle evaluation"
+            },
+            {
+              "id": "customized_wellness_programs",
+              "labelEn": "Customized wellness programs",
+              "labelHi": "Customized wellness programs"
+            },
+            {
+              "id": "goal_setting_tracking",
+              "labelEn": "Goal setting & tracking",
+              "labelHi": "Goal setting & tracking"
+            },
+            {
+              "id": "stress_lifestyle_management",
+              "labelEn": "Stress & lifestyle management",
+              "labelHi": "Stress & lifestyle management"
+            },
+            {
+              "id": "basic_nutrition",
+              "labelEn": "Basic nutrition",
+              "labelHi": "Basic nutrition"
+            },
+            {
+              "id": "supportive_behaviour",
+              "labelEn": "Supportive behaviour",
+              "labelHi": "Supportive behaviour"
+            },
+            {
+              "id": "client_records",
+              "labelEn": "Client records",
+              "labelHi": "Client records"
+            },
+            {
+              "id": "educate_on_healthy_living",
+              "labelEn": "Educate on healthy living",
+              "labelHi": "Educate on healthy living"
+            },
+            {
+              "id": "spa_salon_wellness_services",
+              "labelEn": "Spa/salon wellness services",
+              "labelHi": "Spa/salon wellness services"
+            },
+            {
+              "id": "recommend_products_services",
+              "labelEn": "Recommend products/services",
+              "labelHi": "Recommend products/services"
+            }
+          ]
+        },
+        {
+          "id": "dermat_clinic_assistant",
+          "labelEn": "Dermat Clinic Assistant",
+          "labelHi": "डर्माट क्लिनिक असिस्टेंट",
+          "subcategories": [
+            {
+              "id": "assisting_dermatologist",
+              "labelEn": "Assisting dermatologist",
+              "labelHi": "Assisting dermatologist"
+            },
+            {
+              "id": "preparing_rooms_tools",
+              "labelEn": "Preparing rooms & tools",
+              "labelHi": "Preparing rooms & tools"
+            },
+            {
+              "id": "minor_procedure_assistance",
+              "labelEn": "Minor procedure assistance",
+              "labelHi": "Minor procedure assistance"
+            },
+            {
+              "id": "sterilization_hygiene",
+              "labelEn": "Sterilization & hygiene",
+              "labelHi": "Sterilization & hygiene"
+            },
+            {
+              "id": "managing_appointments",
+              "labelEn": "Managing appointments",
+              "labelHi": "Managing appointments"
+            },
+            {
+              "id": "patient_history",
+              "labelEn": "Patient history",
+              "labelHi": "Patient history"
+            },
+            {
+              "id": "laser_microderm_peels_led_basics",
+              "labelEn": "Laser/microderm/peels/LED basics",
+              "labelHi": "Laser/microderm/peels/LED basics"
+            },
+            {
+              "id": "woods_lamp",
+              "labelEn": "Wood's lamp",
+              "labelHi": "Wood's lamp"
+            },
+            {
+              "id": "numbing_skin_prep",
+              "labelEn": "Numbing & skin prep",
+              "labelHi": "Numbing & skin prep"
+            },
+            {
+              "id": "records_files",
+              "labelEn": "Records & files",
+              "labelHi": "Records & files"
+            },
+            {
+              "id": "billing_clinic_software",
+              "labelEn": "Billing & clinic software",
+              "labelHi": "Billing & clinic software"
+            },
+            {
+              "id": "common_skin_conditions",
+              "labelEn": "Common skin conditions",
+              "labelHi": "Common skin conditions"
+            },
+            {
+              "id": "product_knowledge",
+              "labelEn": "Product knowledge",
+              "labelHi": "Product knowledge"
+            },
+            {
+              "id": "patient_counseling",
+              "labelEn": "Patient counseling",
+              "labelHi": "Patient counseling"
+            }
+          ]
+        },
+        {
+          "id": "hair_patch_artist",
+          "labelEn": "Hair Patch Artist",
+          "labelHi": "हेयर पैच आर्टिस्ट",
+          "subcategories": [
+            {
+              "id": "bald_area_measurement_mapping",
+              "labelEn": "Bald area measurement & mapping",
+              "labelHi": "Bald area measurement & mapping"
+            },
+            {
+              "id": "patch_cutting_blending_styling",
+              "labelEn": "Patch cutting, blending & styling",
+              "labelHi": "Patch cutting, blending & styling"
+            },
+            {
+              "id": "glue_tape_clip_fixing",
+              "labelEn": "Glue/tape/clip fixing",
+              "labelHi": "Glue/tape/clip fixing"
+            },
+            {
+              "id": "patch_maintenance",
+              "labelEn": "Patch maintenance",
+              "labelHi": "Patch maintenance"
+            },
+            {
+              "id": "product_patch_knowledge",
+              "labelEn": "Product & patch knowledge",
+              "labelHi": "Product & patch knowledge"
+            },
+            {
+              "id": "client_consultation",
+              "labelEn": "Client consultation",
+              "labelHi": "Client consultation"
+            },
+            {
+              "id": "explaining_patch_types",
+              "labelEn": "Explaining patch types",
+              "labelHi": "Explaining patch types"
+            },
+            {
+              "id": "daily_care_advice",
+              "labelEn": "Daily care advice",
+              "labelHi": "Daily care advice"
+            }
+          ]
+        },
+        {
+          "id": "aesthetician",
+          "labelEn": "Aesthetician / Esthetician",
+          "labelHi": "एस्थेटिशियन",
+          "subcategories": [
+            {
+              "id": "advanced_facials",
+              "labelEn": "Advanced facials",
+              "labelHi": "Advanced facials"
+            },
+            {
+              "id": "chemical_peels",
+              "labelEn": "Chemical peels",
+              "labelHi": "Chemical peels"
+            },
+            {
+              "id": "microdermabrasion",
+              "labelEn": "Microdermabrasion",
+              "labelHi": "Microdermabrasion"
+            },
+            {
+              "id": "hydrafacial",
+              "labelEn": "Hydrafacial",
+              "labelHi": "Hydrafacial"
+            },
+            {
+              "id": "dermaplaning",
+              "labelEn": "Dermaplaning",
+              "labelHi": "Dermaplaning"
+            },
+            {
+              "id": "microneedling",
+              "labelEn": "Microneedling",
+              "labelHi": "Microneedling"
+            },
+            {
+              "id": "acne_pigmentation",
+              "labelEn": "Acne & pigmentation",
+              "labelHi": "Acne & pigmentation"
+            },
+            {
+              "id": "skin_type_identification",
+              "labelEn": "Skin type identification",
+              "labelHi": "Skin type identification"
+            },
+            {
+              "id": "laser_hair_reduction",
+              "labelEn": "Laser hair reduction",
+              "labelHi": "Laser hair reduction"
+            },
+            {
+              "id": "laser_toning",
+              "labelEn": "Laser toning",
+              "labelHi": "Laser toning"
+            },
+            {
+              "id": "photo_facials",
+              "labelEn": "Photo facials",
+              "labelHi": "Photo facials"
+            },
+            {
+              "id": "rf_skin_tightening",
+              "labelEn": "RF skin tightening",
+              "labelHi": "RF skin tightening"
+            },
+            {
+              "id": "led_therapy",
+              "labelEn": "LED therapy",
+              "labelHi": "LED therapy"
+            },
+            {
+              "id": "waxing",
+              "labelEn": "Waxing",
+              "labelHi": "Waxing"
+            },
+            {
+              "id": "product_knowledge",
+              "labelEn": "Product knowledge",
+              "labelHi": "Product knowledge"
+            },
+            {
+              "id": "hygiene_safety",
+              "labelEn": "Hygiene & safety",
+              "labelHi": "Hygiene & safety"
+            },
+            {
+              "id": "professionalism",
+              "labelEn": "Professionalism",
+              "labelHi": "Professionalism"
+            }
+          ]
+        },
+        {
+          "id": "manicurist_pedicurist",
+          "labelEn": "Manicurist / Pedicurist",
+          "labelHi": "मैनीक्योरिस्ट / पेडीक्योरिस्ट",
+          "subcategories": [
+            {
+              "id": "nail_trimming_shaping_buffing",
+              "labelEn": "Nail trimming, shaping & buffing",
+              "labelHi": "Nail trimming, shaping & buffing"
+            },
+            {
+              "id": "cuticle_care",
+              "labelEn": "Cuticle care",
+              "labelHi": "Cuticle care"
+            },
+            {
+              "id": "hand_foot_exfoliation",
+              "labelEn": "Hand & foot exfoliation",
+              "labelHi": "Hand & foot exfoliation"
+            },
+            {
+              "id": "manicure",
+              "labelEn": "Manicure",
+              "labelHi": "Manicure"
+            },
+            {
+              "id": "pedicure",
+              "labelEn": "Pedicure",
+              "labelHi": "Pedicure"
+            },
+            {
+              "id": "spa_manicure_pedicure",
+              "labelEn": "Spa manicure & pedicure",
+              "labelHi": "Spa manicure & pedicure"
+            },
+            {
+              "id": "tan_removal",
+              "labelEn": "Tan removal",
+              "labelHi": "Tan removal"
+            },
+            {
+              "id": "callus_removal",
+              "labelEn": "Callus removal",
+              "labelHi": "Callus removal"
+            },
+            {
+              "id": "hand_massage",
+              "labelEn": "Hand massage",
+              "labelHi": "Hand massage"
+            },
+            {
+              "id": "foot_lowerleg_massage",
+              "labelEn": "Foot & lower-leg massage",
+              "labelHi": "Foot & lower-leg massage"
+            },
+            {
+              "id": "smooth_polish",
+              "labelEn": "Smooth polish",
+              "labelHi": "Smooth polish"
+            },
+            {
+              "id": "french_polish",
+              "labelEn": "French polish",
+              "labelHi": "French polish"
+            },
+            {
+              "id": "gel_polish",
+              "labelEn": "Gel polish",
+              "labelHi": "Gel polish"
+            },
+            {
+              "id": "hygiene_safety",
+              "labelEn": "Hygiene & safety",
+              "labelHi": "Hygiene & safety"
+            },
+            {
+              "id": "product_knowledge",
+              "labelEn": "Product knowledge",
+              "labelHi": "Product knowledge"
+            },
+            {
+              "id": "professionalism",
+              "labelEn": "Professionalism",
+              "labelHi": "Professionalism"
+            }
+          ]
+        },
+        {
+          "id": "freelance_makeup_artist",
+          "labelEn": "Freelance Makeup Artist",
+          "labelHi": "Freelance Makeup Artist",
+          "subcategories": [
+            {
+              "id": "basic_makeup",
+              "labelEn": "Basic Makeup",
+              "labelHi": "Basic Makeup"
+            },
+            {
+              "id": "advance_makeup",
+              "labelEn": "Advance Makeup",
+              "labelHi": "Advance Makeup"
+            },
+            {
+              "id": "party_makeup",
+              "labelEn": "Party Makeup",
+              "labelHi": "Party Makeup"
+            },
+            {
+              "id": "bridal_makeup",
+              "labelEn": "Bridal Makeup",
+              "labelHi": "Bridal Makeup"
+            },
+            {
+              "id": "hd_makeup",
+              "labelEn": "HD Makeup",
+              "labelHi": "HD Makeup"
+            },
+            {
+              "id": "waterproof_makeup",
+              "labelEn": "Waterproof Makeup",
+              "labelHi": "Waterproof Makeup"
+            },
+            {
+              "id": "longlasting_makeup",
+              "labelEn": "Long-Lasting Makeup",
+              "labelHi": "Long-Lasting Makeup"
+            },
+            {
+              "id": "airbrush",
+              "labelEn": "Airbrush",
+              "labelHi": "Airbrush"
+            },
+            {
+              "id": "3d_makeup",
+              "labelEn": "3D Makeup",
+              "labelHi": "3D Makeup"
+            },
+            {
+              "id": "celebrity_fashion_makeup",
+              "labelEn": "Celebrity & Fashion Makeup",
+              "labelHi": "Celebrity & Fashion Makeup"
+            },
+            {
+              "id": "natural_glam_matte_dewy_looks",
+              "labelEn": "Natural, Glam, Matte, Dewy Looks",
+              "labelHi": "Natural, Glam, Matte, Dewy Looks"
+            },
+            {
+              "id": "skin_prepping_priming",
+              "labelEn": "Skin Prepping & Priming",
+              "labelHi": "Skin Prepping & Priming"
+            },
+            {
+              "id": "colour_correction",
+              "labelEn": "Colour Correction",
+              "labelHi": "Colour Correction"
+            },
+            {
+              "id": "eye_shadow_blending",
+              "labelEn": "Eye Shadow Blending",
+              "labelHi": "Eye Shadow Blending"
+            },
+            {
+              "id": "eyeliner_styles",
+              "labelEn": "Eyeliner Styles",
+              "labelHi": "Eyeliner Styles"
+            },
+            {
+              "id": "eyelash_application",
+              "labelEn": "Eyelash Application",
+              "labelHi": "Eyelash Application"
+            },
+            {
+              "id": "threading",
+              "labelEn": "Threading",
+              "labelHi": "Threading"
+            },
+            {
+              "id": "contour",
+              "labelEn": "Contour",
+              "labelHi": "Contour"
+            },
+            {
+              "id": "blush",
+              "labelEn": "Blush",
+              "labelHi": "Blush"
+            },
+            {
+              "id": "highlight",
+              "labelEn": "Highlight",
+              "labelHi": "Highlight"
+            },
+            {
+              "id": "product_knowledge",
+              "labelEn": "Product Knowledge",
+              "labelHi": "Product Knowledge"
+            },
+            {
+              "id": "hygiene_safety",
+              "labelEn": "Hygiene & Safety",
+              "labelHi": "Hygiene & Safety"
+            },
+            {
+              "id": "salon_management",
+              "labelEn": "Salon Management",
+              "labelHi": "Salon Management"
+            },
+            {
+              "id": "professionalism",
+              "labelEn": "Professionalism",
+              "labelHi": "Professionalism"
+            },
+            {
+              "id": "open_to_travel",
+              "labelEn": "Open to travel",
+              "labelHi": "Open to travel"
+            }
+          ]
+        },
+        {
+          "id": "freelance_hairstylist",
+          "labelEn": "Freelance Hairstylist",
+          "labelHi": "फ्रीलांस हेयरस्टाइलिस्ट",
+          "subcategories": [
+            {
+              "id": "women_haircutting",
+              "labelEn": "Women haircutting",
+              "labelHi": "महिलाओं के हेयरकटिंग"
+            },
+            {
+              "id": "mens_haircutting",
+              "labelEn": "Men's haircutting",
+              "labelHi": "पुरुषों के हेयरकटिंग"
+            },
+            {
+              "id": "styling",
+              "labelEn": "Styling",
+              "labelHi": "स्टाइलिंग की नॉलेज"
+            },
+            {
+              "id": "blowdrying",
+              "labelEn": "Blow-drying",
+              "labelHi": "ब्लो-ड्राइंग की नॉलेज"
+            },
+            {
+              "id": "basic_to_advanced_hair_colouring",
+              "labelEn": "Basic to advanced hair colouring",
+              "labelHi": "बेसिक से एडवांस हेयर कलरिंग की नॉलेज"
+            },
+            {
+              "id": "bridal_party_event_hairstyles",
+              "labelEn": "Bridal, party & event hairstyles",
+              "labelHi": "ब्राइडल, पार्टी और इवेंट-आधारित हेयरस्टाइल बनाने की क्षमता"
+            },
+            {
+              "id": "hair_care_products_treatments",
+              "labelEn": "Hair care products & treatments",
+              "labelHi": "हेयर केयर प्रोडक्ट्स और ट्रीटमेंट की नॉलेज"
+            },
+            {
+              "id": "strong_client_communication",
+              "labelEn": "Strong client communication",
+              "labelHi": "अच्छी कम्यूनिकेशन स्किल"
+            },
+            {
+              "id": "open_to_travel",
+              "labelEn": "Open to travel",
+              "labelHi": "Open to travel"
+            }
+          ]
+        },
+        {
+          "id": "freelance_nail_artist",
+          "labelEn": "Freelance Nail Artist",
+          "labelHi": "Freelance नेल आर्टिस्ट",
+          "subcategories": [
+            {
+              "id": "nail_cleaning_shaping_filing",
+              "labelEn": "Nail cleaning, shaping & filing",
+              "labelHi": "Nail cleaning, shaping & filing"
+            },
+            {
+              "id": "cuticle_care_buffing",
+              "labelEn": "Cuticle care & buffing",
+              "labelHi": "Cuticle care & buffing"
+            },
+            {
+              "id": "freehand_nail_art",
+              "labelEn": "Freehand nail art",
+              "labelHi": "Freehand nail art"
+            },
+            {
+              "id": "glitter_stones_chrome_foil_stickers",
+              "labelEn": "Glitter, stones, chrome, foil, stickers",
+              "labelHi": "Glitter, stones, chrome, foil, stickers"
+            },
+            {
+              "id": "ombre_gradient",
+              "labelEn": "Ombre & gradient",
+              "labelHi": "Ombre & gradient"
+            },
+            {
+              "id": "3d_nail_art",
+              "labelEn": "3D nail art",
+              "labelHi": "3D nail art"
+            },
+            {
+              "id": "acrylic_gel_extensions",
+              "labelEn": "Acrylic/gel extensions",
+              "labelHi": "Acrylic/gel extensions"
+            },
+            {
+              "id": "polygel_extensions",
+              "labelEn": "Polygel extensions",
+              "labelHi": "Polygel extensions"
+            },
+            {
+              "id": "french_extensions",
+              "labelEn": "French extensions",
+              "labelHi": "French extensions"
+            },
+            {
+              "id": "refill_repair_removal",
+              "labelEn": "Refill, repair & removal",
+              "labelHi": "Refill, repair & removal"
+            },
+            {
+              "id": "gel_polish_uv_led",
+              "labelEn": "Gel polish UV/LED",
+              "labelHi": "Gel polish UV/LED"
+            },
+            {
+              "id": "classic_matte_chrome_french_polish",
+              "labelEn": "Classic/matte/chrome/French polish",
+              "labelHi": "Classic/matte/chrome/French polish"
+            },
+            {
+              "id": "nail_shapes",
+              "labelEn": "Nail shapes",
+              "labelHi": "Nail shapes"
+            },
+            {
+              "id": "top_base_gels_acrylics_knowledge",
+              "labelEn": "Top/base/gels/acrylics knowledge",
+              "labelHi": "Top/base/gels/acrylics knowledge"
+            },
+            {
+              "id": "open_to_travel",
+              "labelEn": "Open to travel",
+              "labelHi": "Open to travel"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "support_operations",
+      "labelEn": "Support & operations",
+      "labelHi": "सपोर्ट और संचालन",
+      "categories": [
+        {
+          "id": "salon_helper_housekeeping",
+          "labelEn": "Salon Helper / Housekeeping",
+          "labelHi": "सैलून हेल्पर / हाउसकीपिंग",
+          "subcategories": [
+            {
+              "id": "salon_floor_stations_cleaning",
+              "labelEn": "Salon floor & stations cleaning",
+              "labelHi": "Salon floor & stations cleaning"
+            },
+            {
+              "id": "washrooms_reception_cleanliness",
+              "labelEn": "Washrooms & reception cleanliness",
+              "labelHi": "Washrooms & reception cleanliness"
+            },
+            {
+              "id": "assisting_stylists_therapists",
+              "labelEn": "Assisting stylists & therapists",
+              "labelHi": "Assisting stylists & therapists"
+            },
+            {
+              "id": "setting_up_stations",
+              "labelEn": "Setting up stations",
+              "labelHi": "Setting up stations"
+            },
+            {
+              "id": "towel_laundry",
+              "labelEn": "Towel & laundry",
+              "labelHi": "Towel & laundry"
+            },
+            {
+              "id": "water_tea_service",
+              "labelEn": "Water/tea service",
+              "labelHi": "Water/tea service"
+            },
+            {
+              "id": "organizing_shelves",
+              "labelEn": "Organizing shelves",
+              "labelHi": "Organizing shelves"
+            },
+            {
+              "id": "neat_appearance",
+              "labelEn": "Neat appearance",
+              "labelHi": "Neat appearance"
+            }
+          ]
+        },
+        {
+          "id": "sweeper",
+          "labelEn": "Sweeper",
+          "labelHi": "स्वीपर",
+          "subcategories": [
+            {
+              "id": "removing_hair_dust_waste",
+              "labelEn": "Removing hair, dust & waste",
+              "labelHi": "Removing hair, dust & waste"
+            },
+            {
+              "id": "sweeping_mopping",
+              "labelEn": "Sweeping & mopping",
+              "labelHi": "Sweeping & mopping"
+            },
+            {
+              "id": "wiping_mirrors_counters",
+              "labelEn": "Wiping mirrors & counters",
+              "labelHi": "Wiping mirrors & counters"
+            },
+            {
+              "id": "chairs_stations_clean",
+              "labelEn": "Chairs & stations clean",
+              "labelHi": "Chairs & stations clean"
+            },
+            {
+              "id": "emptying_bins",
+              "labelEn": "Emptying bins",
+              "labelHi": "Emptying bins"
+            },
+            {
+              "id": "waste_segregation",
+              "labelEn": "Waste segregation",
+              "labelHi": "Waste segregation"
+            },
+            {
+              "id": "washroom_cleanliness",
+              "labelEn": "Washroom cleanliness",
+              "labelHi": "Washroom cleanliness"
+            },
+            {
+              "id": "neat_appearance",
+              "labelEn": "Neat appearance",
+              "labelHi": "Neat appearance"
+            }
+          ]
+        },
+        {
+          "id": "shampoo_boy",
+          "labelEn": "Shampoo Boy",
+          "labelHi": "शैम्पू बॉय",
+          "subcategories": [
+            {
+              "id": "proper_shampooing",
+              "labelEn": "Proper shampooing",
+              "labelHi": "Proper shampooing"
+            },
+            {
+              "id": "gentle_scalp_massage",
+              "labelEn": "Gentle scalp massage",
+              "labelHi": "Gentle scalp massage"
+            },
+            {
+              "id": "preparing_client_for_services",
+              "labelEn": "Preparing client for services",
+              "labelHi": "Preparing client for services"
+            },
+            {
+              "id": "assisting_stylists",
+              "labelEn": "Assisting stylists",
+              "labelHi": "Assisting stylists"
+            },
+            {
+              "id": "shampoo_knowledge",
+              "labelEn": "Shampoo knowledge",
+              "labelHi": "Shampoo knowledge"
+            },
+            {
+              "id": "personal_hygiene",
+              "labelEn": "Personal hygiene",
+              "labelHi": "Personal hygiene"
+            },
+            {
+              "id": "towels_laundry",
+              "labelEn": "Towels & laundry",
+              "labelHi": "Towels & laundry"
+            }
+          ]
+        },
+        {
+          "id": "pantry_boy",
+          "labelEn": "Pantry Boy",
+          "labelHi": "पेंट्री बॉय",
+          "subcategories": [
+            {
+              "id": "tea_coffee_beverages",
+              "labelEn": "Tea, coffee & beverages",
+              "labelHi": "Tea, coffee & beverages"
+            },
+            {
+              "id": "serving_water_refreshments",
+              "labelEn": "Serving water & refreshments",
+              "labelHi": "Serving water & refreshments"
+            },
+            {
+              "id": "pantry_cleanliness",
+              "labelEn": "Pantry cleanliness",
+              "labelHi": "Pantry cleanliness"
+            },
+            {
+              "id": "small_errands",
+              "labelEn": "Small errands",
+              "labelHi": "Small errands"
+            }
+          ]
+        },
+        {
+          "id": "front_desk_receptionist",
+          "labelEn": "Front Desk / Receptionist",
+          "labelHi": "फ्रंट डेस्क / रिसेप्शनिस्ट",
+          "subcategories": [
+            {
+              "id": "greeting_clients",
+              "labelEn": "Greeting clients",
+              "labelHi": "Greeting clients"
+            },
+            {
+              "id": "understanding_needs_guiding",
+              "labelEn": "Understanding needs & guiding",
+              "labelHi": "Understanding needs & guiding"
+            },
+            {
+              "id": "scheduling_rescheduling",
+              "labelEn": "Scheduling & rescheduling",
+              "labelHi": "Scheduling & rescheduling"
+            },
+            {
+              "id": "walkins_wait_times",
+              "labelEn": "Walk-ins & wait times",
+              "labelHi": "Walk-ins & wait times"
+            },
+            {
+              "id": "coordinating_with_staff",
+              "labelEn": "Coordinating with staff",
+              "labelHi": "Coordinating with staff"
+            },
+            {
+              "id": "bookings_queries",
+              "labelEn": "Bookings & queries",
+              "labelHi": "Bookings & queries"
+            },
+            {
+              "id": "bills_payments",
+              "labelEn": "Bills & payments",
+              "labelHi": "Bills & payments"
+            },
+            {
+              "id": "client_records",
+              "labelEn": "Client records",
+              "labelHi": "Client records"
+            },
+            {
+              "id": "daily_register",
+              "labelEn": "Daily register",
+              "labelHi": "Daily register"
+            },
+            {
+              "id": "salon_services_knowledge",
+              "labelEn": "Salon services knowledge",
+              "labelHi": "Salon services knowledge"
+            },
+            {
+              "id": "grooming",
+              "labelEn": "Grooming",
+              "labelHi": "Grooming"
+            },
+            {
+              "id": "basic_computer_skills",
+              "labelEn": "Basic computer skills",
+              "labelHi": "Basic computer skills"
+            },
+            {
+              "id": "whatsapp_sms_email",
+              "labelEn": "WhatsApp/SMS/email",
+              "labelHi": "WhatsApp/SMS/email"
+            }
+          ]
+        },
+        {
+          "id": "salon_manager",
+          "labelEn": "Salon Manager",
+          "labelHi": "सैलून मैनेजर",
+          "subcategories": [
+            {
+              "id": "daily_operations",
+              "labelEn": "Daily operations",
+              "labelHi": "Daily operations"
+            },
+            {
+              "id": "staff_schedules",
+              "labelEn": "Staff schedules",
+              "labelHi": "Staff schedules"
+            },
+            {
+              "id": "queries_complaints",
+              "labelEn": "Queries & complaints",
+              "labelHi": "Queries & complaints"
+            },
+            {
+              "id": "service_quality",
+              "labelEn": "Service quality",
+              "labelHi": "Service quality"
+            },
+            {
+              "id": "client_retention",
+              "labelEn": "Client retention",
+              "labelHi": "Client retention"
+            },
+            {
+              "id": "supervising_team",
+              "labelEn": "Supervising team",
+              "labelHi": "Supervising team"
+            },
+            {
+              "id": "training_motivation",
+              "labelEn": "Training & motivation",
+              "labelHi": "Training & motivation"
+            },
+            {
+              "id": "team_meetings",
+              "labelEn": "Team meetings",
+              "labelHi": "Team meetings"
+            },
+            {
+              "id": "targets",
+              "labelEn": "Targets",
+              "labelHi": "Targets"
+            },
+            {
+              "id": "upselling_retail",
+              "labelEn": "Upselling & retail",
+              "labelHi": "Upselling & retail"
+            },
+            {
+              "id": "offers_promotions",
+              "labelEn": "Offers & promotions",
+              "labelHi": "Offers & promotions"
+            },
+            {
+              "id": "cash_register_closing",
+              "labelEn": "Cash register & closing",
+              "labelHi": "Cash register & closing"
+            },
+            {
+              "id": "stock_wastage",
+              "labelEn": "Stock & wastage",
+              "labelHi": "Stock & wastage"
+            },
+            {
+              "id": "safety_protocols",
+              "labelEn": "Safety protocols",
+              "labelHi": "Safety protocols"
+            },
+            {
+              "id": "reporting",
+              "labelEn": "Reporting",
+              "labelHi": "Reporting"
+            },
+            {
+              "id": "performance_tracking",
+              "labelEn": "Performance tracking",
+              "labelHi": "Performance tracking"
+            },
+            {
+              "id": "communication_skills",
+              "labelEn": "Communication skills",
+              "labelHi": "Communication skills"
+            },
+            {
+              "id": "problemsolving",
+              "labelEn": "Problem-solving",
+              "labelHi": "Problem-solving"
+            },
+            {
+              "id": "professional_appearance",
+              "labelEn": "Professional appearance",
+              "labelHi": "Professional appearance"
+            }
+          ]
+        },
+        {
+          "id": "assistant_salon_manager",
+          "labelEn": "Assistant Salon Manager",
+          "labelHi": "असिस्टेंट सैलून मैनेजर",
+          "subcategories": [
+            {
+              "id": "assist_manager_daily",
+              "labelEn": "Assist manager daily",
+              "labelHi": "Assist manager daily"
+            },
+            {
+              "id": "walkins_appointments",
+              "labelEn": "Walk-ins & appointments",
+              "labelHi": "Walk-ins & appointments"
+            },
+            {
+              "id": "greeting_clients",
+              "labelEn": "Greeting clients",
+              "labelHi": "Greeting clients"
+            },
+            {
+              "id": "complaints",
+              "labelEn": "Complaints",
+              "labelHi": "Complaints"
+            },
+            {
+              "id": "client_satisfaction",
+              "labelEn": "Client satisfaction",
+              "labelHi": "Client satisfaction"
+            },
+            {
+              "id": "training_newcomers",
+              "labelEn": "Training newcomers",
+              "labelHi": "Training newcomers"
+            },
+            {
+              "id": "service_quality_monitoring",
+              "labelEn": "Service quality monitoring",
+              "labelHi": "Service quality monitoring"
+            },
+            {
+              "id": "promotions",
+              "labelEn": "Promotions",
+              "labelHi": "Promotions"
+            },
+            {
+              "id": "targets",
+              "labelEn": "Targets",
+              "labelHi": "Targets"
+            },
+            {
+              "id": "product_displays",
+              "labelEn": "Product displays",
+              "labelHi": "Product displays"
+            },
+            {
+              "id": "billing_payments",
+              "labelEn": "Billing & payments",
+              "labelHi": "Billing & payments"
+            },
+            {
+              "id": "appointments_followups",
+              "labelEn": "Appointments & follow-ups",
+              "labelHi": "Appointments & follow-ups"
+            },
+            {
+              "id": "records",
+              "labelEn": "Records",
+              "labelHi": "Records"
+            },
+            {
+              "id": "stock_checks",
+              "labelEn": "Stock checks",
+              "labelHi": "Stock checks"
+            },
+            {
+              "id": "salon_cleanliness",
+              "labelEn": "Salon cleanliness",
+              "labelHi": "Salon cleanliness"
+            },
+            {
+              "id": "communication_grooming",
+              "labelEn": "Communication & grooming",
+              "labelHi": "Communication & grooming"
+            },
+            {
+              "id": "basic_problemsolving",
+              "labelEn": "Basic problem-solving",
+              "labelHi": "Basic problem-solving"
+            }
+          ]
+        },
+        {
+          "id": "salon_supervisor",
+          "labelEn": "Salon Supervisor",
+          "labelHi": "सैलून सुपरवाइज़र",
+          "subcategories": [
+            {
+              "id": "daytoday_activities",
+              "labelEn": "Day-to-day activities",
+              "labelHi": "Day-to-day activities"
+            },
+            {
+              "id": "service_monitoring",
+              "labelEn": "Service monitoring",
+              "labelHi": "Service monitoring"
+            },
+            {
+              "id": "staff_coordination",
+              "labelEn": "Staff coordination",
+              "labelHi": "Staff coordination"
+            },
+            {
+              "id": "greeting_clients",
+              "labelEn": "Greeting clients",
+              "labelHi": "Greeting clients"
+            },
+            {
+              "id": "stock_monitoring",
+              "labelEn": "Stock monitoring",
+              "labelHi": "Stock monitoring"
+            },
+            {
+              "id": "reporting_to_manager",
+              "labelEn": "Reporting to manager",
+              "labelHi": "Reporting to manager"
+            },
+            {
+              "id": "grooming",
+              "labelEn": "Grooming",
+              "labelHi": "Grooming"
+            }
+          ]
+        },
+        {
+          "id": "guest_relations_executive",
+          "labelEn": "Guest Relations Executive",
+          "labelHi": "गेस्ट रिलेशंस एग्ज़िक्यूटिव",
+          "subcategories": [
+            {
+              "id": "welcoming_clients",
+              "labelEn": "Welcoming clients",
+              "labelHi": "Welcoming clients"
+            },
+            {
+              "id": "refreshments_comfort",
+              "labelEn": "Refreshments & comfort",
+              "labelHi": "Refreshments & comfort"
+            },
+            {
+              "id": "professional_attitude",
+              "labelEn": "Professional attitude",
+              "labelHi": "Professional attitude"
+            },
+            {
+              "id": "understanding_needs",
+              "labelEn": "Understanding needs",
+              "labelHi": "Understanding needs"
+            },
+            {
+              "id": "vip_care",
+              "labelEn": "VIP care",
+              "labelHi": "VIP care"
+            },
+            {
+              "id": "communication",
+              "labelEn": "Communication",
+              "labelHi": "Communication"
+            },
+            {
+              "id": "listening_to_concerns",
+              "labelEn": "Listening to concerns",
+              "labelHi": "Listening to concerns"
+            },
+            {
+              "id": "escalation",
+              "labelEn": "Escalation",
+              "labelHi": "Escalation"
+            },
+            {
+              "id": "waiting_time",
+              "labelEn": "Waiting time",
+              "labelHi": "Waiting time"
+            },
+            {
+              "id": "offers_memberships",
+              "labelEn": "Offers & memberships",
+              "labelHi": "Offers & memberships"
+            },
+            {
+              "id": "grooming",
+              "labelEn": "Grooming",
+              "labelHi": "Grooming"
+            },
+            {
+              "id": "appointment_help",
+              "labelEn": "Appointment help",
+              "labelHi": "Appointment help"
+            },
+            {
+              "id": "billing_support",
+              "labelEn": "Billing support",
+              "labelHi": "Billing support"
+            }
+          ]
+        },
+        {
+          "id": "cashier_billing_executive",
+          "labelEn": "Cashier / Billing Executive",
+          "labelHi": "कैशियर / बिलिंग एग्ज़िक्यूटिव",
+          "subcategories": [
+            {
+              "id": "generating_bills",
+              "labelEn": "Generating bills",
+              "labelHi": "Generating bills"
+            },
+            {
+              "id": "cash_payments",
+              "labelEn": "Cash & payments",
+              "labelHi": "Cash & payments"
+            },
+            {
+              "id": "daily_register",
+              "labelEn": "Daily register",
+              "labelHi": "Daily register"
+            },
+            {
+              "id": "billing_software",
+              "labelEn": "Billing software",
+              "labelHi": "Billing software"
+            },
+            {
+              "id": "greeting_at_counter",
+              "labelEn": "Greeting at counter",
+              "labelHi": "Greeting at counter"
+            },
+            {
+              "id": "manager_coordination",
+              "labelEn": "Manager coordination",
+              "labelHi": "Manager coordination"
+            },
+            {
+              "id": "grooming",
+              "labelEn": "Grooming",
+              "labelHi": "Grooming"
+            },
+            {
+              "id": "appointments",
+              "labelEn": "Appointments",
+              "labelHi": "Appointments"
+            }
+          ]
+        },
+        {
+          "id": "sales_executive",
+          "labelEn": "Sales Executive",
+          "labelHi": "सेल्स एग्ज़िक्यूटिव",
+          "subcategories": [
+            {
+              "id": "lead_generation",
+              "labelEn": "Lead generation",
+              "labelHi": "Lead generation"
+            },
+            {
+              "id": "product_service_knowledge",
+              "labelEn": "Product/service knowledge",
+              "labelHi": "Product/service knowledge"
+            },
+            {
+              "id": "crm",
+              "labelEn": "CRM",
+              "labelHi": "CRM"
+            },
+            {
+              "id": "communication",
+              "labelEn": "Communication",
+              "labelHi": "Communication"
+            },
+            {
+              "id": "sales_reporting",
+              "labelEn": "Sales reporting",
+              "labelHi": "Sales reporting"
+            },
+            {
+              "id": "coordination",
+              "labelEn": "Coordination",
+              "labelHi": "Coordination"
+            },
+            {
+              "id": "market_understanding",
+              "labelEn": "Market understanding",
+              "labelHi": "Market understanding"
+            },
+            {
+              "id": "basic_admin",
+              "labelEn": "Basic admin",
+              "labelHi": "Basic admin"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "academy",
+      "labelEn": "Academy",
+      "labelHi": "अकादमी",
+      "categories": [
+        {
+          "id": "academy_head",
+          "labelEn": "Academy Head",
+          "labelHi": "एकेडमी हेड",
+          "subcategories": [
+            {
+              "id": "academic_operational_leadership",
+              "labelEn": "Academic & operational leadership",
+              "labelHi": "Academic & operational leadership"
+            },
+            {
+              "id": "curriculum_training_quality",
+              "labelEn": "Curriculum & training quality",
+              "labelHi": "Curriculum & training quality"
+            },
+            {
+              "id": "faculty_management",
+              "labelEn": "Faculty management",
+              "labelHi": "Faculty management"
+            },
+            {
+              "id": "student_experience",
+              "labelEn": "Student experience",
+              "labelHi": "Student experience"
+            },
+            {
+              "id": "admissions_marketing",
+              "labelEn": "Admissions & marketing",
+              "labelHi": "Admissions & marketing"
+            },
+            {
+              "id": "quality_compliance",
+              "labelEn": "Quality & compliance",
+              "labelHi": "Quality & compliance"
+            },
+            {
+              "id": "planning_reporting",
+              "labelEn": "Planning & reporting",
+              "labelHi": "Planning & reporting"
+            },
+            {
+              "id": "industry_placement",
+              "labelEn": "Industry & placement",
+              "labelHi": "Industry & placement"
+            },
+            {
+              "id": "report_management",
+              "labelEn": "Report management",
+              "labelHi": "Report management"
+            }
+          ]
+        },
+        {
+          "id": "academy_manager",
+          "labelEn": "Academy Manager",
+          "labelHi": "एकेडमी मैनेजर",
+          "subcategories": [
+            {
+              "id": "academic_leadership",
+              "labelEn": "Academic leadership",
+              "labelHi": "Academic leadership"
+            },
+            {
+              "id": "training_quality",
+              "labelEn": "Training quality",
+              "labelHi": "Training quality"
+            },
+            {
+              "id": "faculty",
+              "labelEn": "Faculty",
+              "labelHi": "Faculty"
+            },
+            {
+              "id": "student_experience",
+              "labelEn": "Student experience",
+              "labelHi": "Student experience"
+            },
+            {
+              "id": "admissions_marketing",
+              "labelEn": "Admissions & marketing",
+              "labelHi": "Admissions & marketing"
+            },
+            {
+              "id": "compliance",
+              "labelEn": "Compliance",
+              "labelHi": "Compliance"
+            },
+            {
+              "id": "reporting",
+              "labelEn": "Reporting",
+              "labelHi": "Reporting"
+            },
+            {
+              "id": "placement_coordination",
+              "labelEn": "Placement coordination",
+              "labelHi": "Placement coordination"
+            }
+          ]
+        },
+        {
+          "id": "academy_assistant_manager",
+          "labelEn": "Academy Assistant Manager",
+          "labelHi": "एकेडमी असिस्टेंट मैनेजर",
+          "subcategories": [
+            {
+              "id": "academic_coordination",
+              "labelEn": "Academic coordination",
+              "labelHi": "Academic coordination"
+            },
+            {
+              "id": "student_management",
+              "labelEn": "Student management",
+              "labelHi": "Student management"
+            },
+            {
+              "id": "trainer_support",
+              "labelEn": "Trainer support",
+              "labelHi": "Trainer support"
+            },
+            {
+              "id": "admin_ops",
+              "labelEn": "Admin & ops",
+              "labelHi": "Admin & ops"
+            },
+            {
+              "id": "sales_admissions_help",
+              "labelEn": "Sales & admissions help",
+              "labelHi": "Sales & admissions help"
+            },
+            {
+              "id": "reporting_documentation",
+              "labelEn": "Reporting & documentation",
+              "labelHi": "Reporting & documentation"
+            },
+            {
+              "id": "customer_service",
+              "labelEn": "Customer service",
+              "labelHi": "Customer service"
+            },
+            {
+              "id": "events_workshops",
+              "labelEn": "Events & workshops",
+              "labelHi": "Events & workshops"
+            }
+          ]
+        },
+        {
+          "id": "academy_supervisor",
+          "labelEn": "Academy Supervisor",
+          "labelHi": "Academy supervisor",
+          "subcategories": [
+            {
+              "id": "daily_academic_coordination",
+              "labelEn": "Daily academic coordination",
+              "labelHi": "Daily academic coordination"
+            },
+            {
+              "id": "classroom_management",
+              "labelEn": "Classroom management",
+              "labelHi": "Classroom management"
+            },
+            {
+              "id": "student_monitoring",
+              "labelEn": "Student monitoring",
+              "labelHi": "Student monitoring"
+            },
+            {
+              "id": "admin_support",
+              "labelEn": "Admin support",
+              "labelHi": "Admin support"
+            },
+            {
+              "id": "quality_hygiene",
+              "labelEn": "Quality & hygiene",
+              "labelHi": "Quality & hygiene"
+            },
+            {
+              "id": "assist_head_manager",
+              "labelEn": "Assist head/manager",
+              "labelHi": "Assist head/manager"
+            },
+            {
+              "id": "internal_communication",
+              "labelEn": "Internal communication",
+              "labelHi": "Internal communication"
+            },
+            {
+              "id": "events_workshops",
+              "labelEn": "Events & workshops",
+              "labelHi": "Events & workshops"
+            }
+          ]
+        },
+        {
+          "id": "academy_executive",
+          "labelEn": "Academy Executive",
+          "labelHi": "एकेडमी एग्ज़िक्यूटिव",
+          "subcategories": [
+            {
+              "id": "daily_academic_coordination",
+              "labelEn": "Daily academic coordination",
+              "labelHi": "Daily academic coordination"
+            },
+            {
+              "id": "classroom_management",
+              "labelEn": "Classroom management",
+              "labelHi": "Classroom management"
+            },
+            {
+              "id": "student_support",
+              "labelEn": "Student support",
+              "labelHi": "Student support"
+            },
+            {
+              "id": "admin_support",
+              "labelEn": "Admin support",
+              "labelHi": "Admin support"
+            },
+            {
+              "id": "quality_hygiene",
+              "labelEn": "Quality & hygiene",
+              "labelHi": "Quality & hygiene"
+            },
+            {
+              "id": "assist_head_manager",
+              "labelEn": "Assist head/manager",
+              "labelHi": "Assist head/manager"
+            },
+            {
+              "id": "notices_communication",
+              "labelEn": "Notices & communication",
+              "labelHi": "Notices & communication"
+            },
+            {
+              "id": "events_workshops",
+              "labelEn": "Events & workshops",
+              "labelHi": "Events & workshops"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "creative_leadership",
+      "labelEn": "Creative & education leadership",
+      "labelHi": "क्रिएटिव और शिक्षा नेतृत्व",
+      "categories": [
+        {
+          "id": "creative_head",
+          "labelEn": "Creative Head (Hair/Makeup/Beauty)",
+          "labelHi": "क्रिएटिव हेड (हेयर/मेकअप/ब्यूटी)",
+          "subcategories": [
+            {
+              "id": "advanced_techniques",
+              "labelEn": "Advanced techniques",
+              "labelHi": "Advanced techniques"
+            },
+            {
+              "id": "trendsetting_looks",
+              "labelEn": "Trend-setting looks",
+              "labelHi": "Trend-setting looks"
+            },
+            {
+              "id": "products_tools",
+              "labelEn": "Products & tools",
+              "labelHi": "Products & tools"
+            },
+            {
+              "id": "artistic_vision",
+              "labelEn": "Artistic vision",
+              "labelHi": "Artistic vision"
+            },
+            {
+              "id": "team_mentoring",
+              "labelEn": "Team mentoring",
+              "labelHi": "Team mentoring"
+            },
+            {
+              "id": "creative_projects",
+              "labelEn": "Creative projects",
+              "labelHi": "Creative projects"
+            },
+            {
+              "id": "collaboration",
+              "labelEn": "Collaboration",
+              "labelHi": "Collaboration"
+            },
+            {
+              "id": "client_communication",
+              "labelEn": "Client communication",
+              "labelHi": "Client communication"
+            },
+            {
+              "id": "trend_forecasting",
+              "labelEn": "Trend forecasting",
+              "labelHi": "Trend forecasting"
+            },
+            {
+              "id": "time_resource_management",
+              "labelEn": "Time & resource management",
+              "labelHi": "Time & resource management"
+            }
+          ]
+        },
+        {
+          "id": "creative_director",
+          "labelEn": "Creative Director",
+          "labelHi": "क्रिएटिव डायरेक्टर",
+          "subcategories": [
+            {
+              "id": "artistic_vision",
+              "labelEn": "Artistic vision",
+              "labelHi": "Artistic vision"
+            },
+            {
+              "id": "trends_colour_theory",
+              "labelEn": "Trends & colour theory",
+              "labelHi": "Trends & colour theory"
+            },
+            {
+              "id": "campaigns_photoshoots",
+              "labelEn": "Campaigns & photoshoots",
+              "labelHi": "Campaigns & photoshoots"
+            },
+            {
+              "id": "leading_teams",
+              "labelEn": "Leading teams",
+              "labelHi": "Leading teams"
+            },
+            {
+              "id": "project_planning",
+              "labelEn": "Project planning",
+              "labelHi": "Project planning"
+            },
+            {
+              "id": "creative_decisions",
+              "labelEn": "Creative decisions",
+              "labelHi": "Creative decisions"
+            },
+            {
+              "id": "communication",
+              "labelEn": "Communication",
+              "labelHi": "Communication"
+            },
+            {
+              "id": "trend_forecasting",
+              "labelEn": "Trend forecasting",
+              "labelHi": "Trend forecasting"
+            },
+            {
+              "id": "collaboration",
+              "labelEn": "Collaboration",
+              "labelHi": "Collaboration"
+            }
+          ]
+        },
+        {
+          "id": "education_director",
+          "labelEn": "Education Director",
+          "labelHi": "एजुकेशन डायरेक्टर",
+          "subcategories": [
+            {
+              "id": "deep_domain_knowledge",
+              "labelEn": "Deep domain knowledge",
+              "labelHi": "Deep domain knowledge"
+            },
+            {
+              "id": "training_programs_curriculum",
+              "labelEn": "Training programs & curriculum",
+              "labelHi": "Training programs & curriculum"
+            },
+            {
+              "id": "mentoring_trainers",
+              "labelEn": "Mentoring trainers",
+              "labelHi": "Mentoring trainers"
+            },
+            {
+              "id": "educational_strategy",
+              "labelEn": "Educational strategy",
+              "labelHi": "Educational strategy"
+            },
+            {
+              "id": "training_monitoring",
+              "labelEn": "Training monitoring",
+              "labelHi": "Training monitoring"
+            },
+            {
+              "id": "communication",
+              "labelEn": "Communication",
+              "labelHi": "Communication"
+            },
+            {
+              "id": "trend_awareness",
+              "labelEn": "Trend awareness",
+              "labelHi": "Trend awareness"
+            },
+            {
+              "id": "collaboration",
+              "labelEn": "Collaboration",
+              "labelHi": "Collaboration"
+            }
+          ]
+        },
+        {
+          "id": "technical_director_hair",
+          "labelEn": "Technical Director - Hair",
+          "labelHi": "टेक्निकल डायरेक्टर - हेयर",
+          "subcategories": [
+            {
+              "id": "advanced_haircutting_colouring_styling_treatments",
+              "labelEn": "Advanced haircutting/colouring/styling/treatments",
+              "labelHi": "Advanced haircutting/colouring/styling/treatments"
+            },
+            {
+              "id": "hair_textures_techniques",
+              "labelEn": "Hair textures & techniques",
+              "labelHi": "Hair textures & techniques"
+            },
+            {
+              "id": "standard_procedures",
+              "labelEn": "Standard procedures",
+              "labelHi": "Standard procedures"
+            },
+            {
+              "id": "mentoring_stylists",
+              "labelEn": "Mentoring stylists",
+              "labelHi": "Mentoring stylists"
+            },
+            {
+              "id": "skill_workshops",
+              "labelEn": "Skill workshops",
+              "labelHi": "Skill workshops"
+            },
+            {
+              "id": "problem_solving",
+              "labelEn": "Problem solving",
+              "labelHi": "Problem solving"
+            },
+            {
+              "id": "global_trends",
+              "labelEn": "Global trends",
+              "labelHi": "Global trends"
+            },
+            {
+              "id": "creative_collaboration",
+              "labelEn": "Creative collaboration",
+              "labelHi": "Creative collaboration"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "technician",
+      "labelEn": "Technician",
+      "labelHi": "टेक्नीशियन",
+      "categories": [
+        {
+          "id": "beauty_technician",
+          "labelEn": "Beauty Technician",
+          "labelHi": "ब्यूटी टेक्नीशियन",
+          "subcategories": [
+            {
+              "id": "cleanup",
+              "labelEn": "Clean-up",
+              "labelHi": "Clean-up"
+            },
+            {
+              "id": "basic_advance_facials",
+              "labelEn": "Basic & advance facials",
+              "labelHi": "Basic & advance facials"
+            },
+            {
+              "id": "bleach",
+              "labelEn": "Bleach",
+              "labelHi": "Bleach"
+            },
+            {
+              "id": "detan",
+              "labelEn": "De-tan",
+              "labelHi": "De-tan"
+            },
+            {
+              "id": "skin_analysis",
+              "labelEn": "Skin analysis",
+              "labelHi": "Skin analysis"
+            },
+            {
+              "id": "waxing",
+              "labelEn": "Waxing",
+              "labelHi": "Waxing"
+            },
+            {
+              "id": "threading",
+              "labelEn": "Threading",
+              "labelHi": "Threading"
+            },
+            {
+              "id": "manicure_pedicure",
+              "labelEn": "Manicure & pedicure",
+              "labelHi": "Manicure & pedicure"
+            },
+            {
+              "id": "nail_shaping_polish",
+              "labelEn": "Nail shaping & polish",
+              "labelHi": "Nail shaping & polish"
+            },
+            {
+              "id": "daily_party_makeup",
+              "labelEn": "Daily & party makeup",
+              "labelHi": "Daily & party makeup"
+            },
+            {
+              "id": "advance_3d_hd_makeup",
+              "labelEn": "Advance & 3D & HD makeup",
+              "labelHi": "Advance & 3D & HD makeup"
+            },
+            {
+              "id": "airbrush",
+              "labelEn": "Airbrush",
+              "labelHi": "Airbrush"
+            },
+            {
+              "id": "saree_draping",
+              "labelEn": "Saree draping",
+              "labelHi": "Saree draping"
+            },
+            {
+              "id": "hairdos",
+              "labelEn": "Hairdos",
+              "labelHi": "Hairdos"
+            },
+            {
+              "id": "extensions",
+              "labelEn": "Extensions",
+              "labelHi": "Extensions"
+            },
+            {
+              "id": "body_scrub_polish",
+              "labelEn": "Body scrub/polish",
+              "labelHi": "Body scrub/polish"
+            },
+            {
+              "id": "consultation",
+              "labelEn": "Consultation",
+              "labelHi": "Consultation"
+            },
+            {
+              "id": "product_knowledge",
+              "labelEn": "Product knowledge",
+              "labelHi": "Product knowledge"
+            },
+            {
+              "id": "hygiene_safety",
+              "labelEn": "Hygiene & safety",
+              "labelHi": "Hygiene & safety"
+            },
+            {
+              "id": "professionalism",
+              "labelEn": "Professionalism",
+              "labelHi": "Professionalism"
+            }
+          ]
+        },
+        {
+          "id": "colour_technician",
+          "labelEn": "Colour Technician",
+          "labelHi": "कलर टेक्निशियन",
+          "subcategories": [
+            {
+              "id": "root_touchups",
+              "labelEn": "Root touch-ups",
+              "labelHi": "Root touch-ups"
+            },
+            {
+              "id": "global_colour",
+              "labelEn": "Global colour",
+              "labelHi": "Global colour"
+            },
+            {
+              "id": "grey_coverage",
+              "labelEn": "Grey coverage",
+              "labelHi": "Grey coverage"
+            },
+            {
+              "id": "highlights_lowlights",
+              "labelEn": "Highlights & lowlights",
+              "labelHi": "Highlights & lowlights"
+            },
+            {
+              "id": "balayage",
+              "labelEn": "Balayage",
+              "labelHi": "Balayage"
+            },
+            {
+              "id": "ombr",
+              "labelEn": "Ombré",
+              "labelHi": "Ombré"
+            },
+            {
+              "id": "colour_melting",
+              "labelEn": "Colour melting",
+              "labelHi": "Colour melting"
+            },
+            {
+              "id": "foiling",
+              "labelEn": "Foiling",
+              "labelHi": "Foiling"
+            },
+            {
+              "id": "slicing",
+              "labelEn": "Slicing",
+              "labelHi": "Slicing"
+            },
+            {
+              "id": "weaving",
+              "labelEn": "Weaving",
+              "labelHi": "Weaving"
+            },
+            {
+              "id": "freehand",
+              "labelEn": "Freehand",
+              "labelHi": "Freehand"
+            },
+            {
+              "id": "chemical_knowledge",
+              "labelEn": "Chemical knowledge",
+              "labelHi": "Chemical knowledge"
+            },
+            {
+              "id": "consultation",
+              "labelEn": "Consultation",
+              "labelHi": "Consultation"
+            },
+            {
+              "id": "colour_correction",
+              "labelEn": "Colour correction",
+              "labelHi": "Colour correction"
+            },
+            {
+              "id": "safety_hygiene",
+              "labelEn": "Safety & hygiene",
+              "labelHi": "Safety & hygiene"
+            },
+            {
+              "id": "products_tools",
+              "labelEn": "Products & tools",
+              "labelHi": "Products & tools"
+            },
+            {
+              "id": "blowdrying",
+              "labelEn": "Blow-drying",
+              "labelHi": "Blow-drying"
+            }
+          ]
+        },
+        {
+          "id": "nail_technician",
+          "labelEn": "Nail Technician",
+          "labelHi": "नेल टेक्निशियन",
+          "subcategories": [
+            {
+              "id": "manicure",
+              "labelEn": "Manicure",
+              "labelHi": "Manicure"
+            },
+            {
+              "id": "pedicure",
+              "labelEn": "Pedicure",
+              "labelHi": "Pedicure"
+            },
+            {
+              "id": "shaping",
+              "labelEn": "Shaping",
+              "labelHi": "Shaping"
+            },
+            {
+              "id": "cuticle_work",
+              "labelEn": "Cuticle work",
+              "labelHi": "Cuticle work"
+            },
+            {
+              "id": "buffing",
+              "labelEn": "Buffing",
+              "labelHi": "Buffing"
+            },
+            {
+              "id": "prep",
+              "labelEn": "Prep",
+              "labelHi": "Prep"
+            },
+            {
+              "id": "gel_polish",
+              "labelEn": "Gel polish",
+              "labelHi": "Gel polish"
+            },
+            {
+              "id": "french",
+              "labelEn": "French",
+              "labelHi": "French"
+            },
+            {
+              "id": "chrome",
+              "labelEn": "Chrome",
+              "labelHi": "Chrome"
+            },
+            {
+              "id": "ombr",
+              "labelEn": "Ombré",
+              "labelHi": "Ombré"
+            },
+            {
+              "id": "nail_art_basics",
+              "labelEn": "Nail art basics",
+              "labelHi": "Nail art basics"
+            },
+            {
+              "id": "extensions",
+              "labelEn": "Extensions",
+              "labelHi": "Extensions"
+            },
+            {
+              "id": "infills",
+              "labelEn": "Infills",
+              "labelHi": "Infills"
+            },
+            {
+              "id": "refills",
+              "labelEn": "Refills",
+              "labelHi": "Refills"
+            },
+            {
+              "id": "hygiene",
+              "labelEn": "Hygiene",
+              "labelHi": "Hygiene"
+            },
+            {
+              "id": "glitter_stones_patterns",
+              "labelEn": "Glitter/stones/patterns",
+              "labelHi": "Glitter/stones/patterns"
+            }
+          ]
+        },
+        {
+          "id": "lash_technician",
+          "labelEn": "Lash Technician",
+          "labelHi": "लैश टेक्निशियन",
+          "subcategories": [
+            {
+              "id": "extensions_classic_hybrid_volume",
+              "labelEn": "Extensions classic/hybrid/volume",
+              "labelHi": "Extensions classic/hybrid/volume"
+            },
+            {
+              "id": "mapping",
+              "labelEn": "Mapping",
+              "labelHi": "Mapping"
+            },
+            {
+              "id": "isolation",
+              "labelEn": "Isolation",
+              "labelHi": "Isolation"
+            },
+            {
+              "id": "placement",
+              "labelEn": "Placement",
+              "labelHi": "Placement"
+            },
+            {
+              "id": "curls_lengths_diameter",
+              "labelEn": "Curls/lengths/diameter",
+              "labelHi": "Curls/lengths/diameter"
+            },
+            {
+              "id": "lash_lifts",
+              "labelEn": "Lash lifts",
+              "labelHi": "Lash lifts"
+            },
+            {
+              "id": "tinting",
+              "labelEn": "Tinting",
+              "labelHi": "Tinting"
+            },
+            {
+              "id": "refills",
+              "labelEn": "Refills",
+              "labelHi": "Refills"
+            },
+            {
+              "id": "safety",
+              "labelEn": "Safety",
+              "labelHi": "Safety"
+            },
+            {
+              "id": "client_handling",
+              "labelEn": "Client handling",
+              "labelHi": "Client handling"
+            },
+            {
+              "id": "appointments",
+              "labelEn": "Appointments",
+              "labelHi": "Appointments"
+            }
+          ]
+        },
+        {
+          "id": "laser_technician",
+          "labelEn": "Laser Technician",
+          "labelHi": "लेज़र टेक्नीशियन",
+          "subcategories": [
+            {
+              "id": "laser_machines_knowledge",
+              "labelEn": "Laser machines knowledge",
+              "labelHi": "Laser machines knowledge"
+            },
+            {
+              "id": "hair_reduction_safely",
+              "labelEn": "Hair reduction safely",
+              "labelHi": "Hair reduction safely"
+            },
+            {
+              "id": "fitzpatrick_scale",
+              "labelEn": "Fitzpatrick scale",
+              "labelHi": "Fitzpatrick scale"
+            },
+            {
+              "id": "parameters",
+              "labelEn": "Parameters",
+              "labelHi": "Parameters"
+            },
+            {
+              "id": "pre_post_care",
+              "labelEn": "Pre/post care",
+              "labelHi": "Pre/post care"
+            },
+            {
+              "id": "equipment_maintenance",
+              "labelEn": "Equipment maintenance",
+              "labelHi": "Equipment maintenance"
+            },
+            {
+              "id": "contraindications",
+              "labelEn": "Contraindications",
+              "labelHi": "Contraindications"
+            },
+            {
+              "id": "patch_testing",
+              "labelEn": "Patch testing",
+              "labelHi": "Patch testing"
+            },
+            {
+              "id": "burns_pigmentation_knowledge",
+              "labelEn": "Burns/pigmentation knowledge",
+              "labelHi": "Burns/pigmentation knowledge"
+            },
+            {
+              "id": "consultation",
+              "labelEn": "Consultation",
+              "labelHi": "Consultation"
+            },
+            {
+              "id": "records",
+              "labelEn": "Records",
+              "labelHi": "Records"
+            },
+            {
+              "id": "sops",
+              "labelEn": "SOPs",
+              "labelHi": "SOPs"
+            }
+          ]
+        },
+        {
+          "id": "chemical_peel_technician",
+          "labelEn": "Chemical Peel Technician",
+          "labelHi": "केमिकल पील टेक्नीशियन",
+          "subcategories": [
+            {
+              "id": "skin_analysis_consultation",
+              "labelEn": "Skin analysis & consultation",
+              "labelHi": "Skin analysis & consultation"
+            },
+            {
+              "id": "aha_bha_tca_enzyme_peels",
+              "labelEn": "AHA/BHA/TCA/enzyme peels",
+              "labelHi": "AHA/BHA/TCA/enzyme peels"
+            },
+            {
+              "id": "peel_strengths",
+              "labelEn": "Peel strengths",
+              "labelHi": "Peel strengths"
+            },
+            {
+              "id": "correct_peel_selection",
+              "labelEn": "Correct peel selection",
+              "labelHi": "Correct peel selection"
+            },
+            {
+              "id": "skin_prep",
+              "labelEn": "Skin prep",
+              "labelHi": "Skin prep"
+            },
+            {
+              "id": "monitoring_reactions",
+              "labelEn": "Monitoring reactions",
+              "labelHi": "Monitoring reactions"
+            },
+            {
+              "id": "safety_hygiene",
+              "labelEn": "Safety & hygiene",
+              "labelHi": "Safety & hygiene"
+            },
+            {
+              "id": "patch_testing",
+              "labelEn": "Patch testing",
+              "labelHi": "Patch testing"
+            },
+            {
+              "id": "aftercare",
+              "labelEn": "Aftercare",
+              "labelHi": "Aftercare"
+            },
+            {
+              "id": "product_suggestions",
+              "labelEn": "Product suggestions",
+              "labelHi": "Product suggestions"
+            },
+            {
+              "id": "managing_reactions",
+              "labelEn": "Managing reactions",
+              "labelHi": "Managing reactions"
+            },
+            {
+              "id": "records",
+              "labelEn": "Records",
+              "labelHi": "Records"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "therapist",
+      "labelEn": "Therapist",
+      "labelHi": "थैरेपिस्ट",
+      "categories": [
+        {
+          "id": "beauty_therapist",
+          "labelEn": "Beauty Therapist",
+          "labelHi": "ब्यूटी थेरेपिस्ट",
+          "subcategories": [
+            {
+              "id": "basic_advance_facials",
+              "labelEn": "Basic & advance facials",
+              "labelHi": "Basic & advance facials"
+            },
+            {
+              "id": "skin_analysis",
+              "labelEn": "Skin analysis",
+              "labelHi": "Skin analysis"
+            },
+            {
+              "id": "cleanups",
+              "labelEn": "Clean-ups",
+              "labelHi": "Clean-ups"
+            },
+            {
+              "id": "body_polishing",
+              "labelEn": "Body polishing",
+              "labelHi": "Body polishing"
+            },
+            {
+              "id": "relaxing_massage",
+              "labelEn": "Relaxing massage",
+              "labelHi": "Relaxing massage"
+            },
+            {
+              "id": "waxing",
+              "labelEn": "Waxing",
+              "labelHi": "Waxing"
+            },
+            {
+              "id": "threading",
+              "labelEn": "Threading",
+              "labelHi": "Threading"
+            },
+            {
+              "id": "manicure_pedicure",
+              "labelEn": "Manicure & pedicure",
+              "labelHi": "Manicure & pedicure"
+            },
+            {
+              "id": "spa",
+              "labelEn": "Spa",
+              "labelHi": "Spa"
+            },
+            {
+              "id": "basic_advance_3d_hd_makeup",
+              "labelEn": "Basic & advance & 3D & HD makeup",
+              "labelHi": "Basic & advance & 3D & HD makeup"
+            },
+            {
+              "id": "airbrush",
+              "labelEn": "Airbrush",
+              "labelHi": "Airbrush"
+            },
+            {
+              "id": "hairdos",
+              "labelEn": "Hairdos",
+              "labelHi": "Hairdos"
+            },
+            {
+              "id": "extensions",
+              "labelEn": "Extensions",
+              "labelHi": "Extensions"
+            },
+            {
+              "id": "consultation",
+              "labelEn": "Consultation",
+              "labelHi": "Consultation"
+            },
+            {
+              "id": "hygiene_safety",
+              "labelEn": "Hygiene & safety",
+              "labelHi": "Hygiene & safety"
+            },
+            {
+              "id": "professionalism",
+              "labelEn": "Professionalism",
+              "labelHi": "Professionalism"
+            }
+          ]
+        },
+        {
+          "id": "skin_clinic_therapist",
+          "labelEn": "Skin Clinic Therapist",
+          "labelHi": "स्किन क्लिनिक थैरेपिस्ट",
+          "subcategories": [
+            {
+              "id": "consultation",
+              "labelEn": "Consultation",
+              "labelHi": "Consultation"
+            },
+            {
+              "id": "deep_cleansing_facials",
+              "labelEn": "Deep cleansing facials",
+              "labelHi": "Deep cleansing facials"
+            },
+            {
+              "id": "chemical_peels",
+              "labelEn": "Chemical peels",
+              "labelHi": "Chemical peels"
+            },
+            {
+              "id": "hydrafacial",
+              "labelEn": "Hydrafacial",
+              "labelHi": "Hydrafacial"
+            },
+            {
+              "id": "advance_facial",
+              "labelEn": "Advance facial",
+              "labelHi": "Advance facial"
+            },
+            {
+              "id": "acne_facials",
+              "labelEn": "Acne facials",
+              "labelHi": "Acne facials"
+            },
+            {
+              "id": "antiaging",
+              "labelEn": "Anti-aging",
+              "labelHi": "Anti-aging"
+            },
+            {
+              "id": "microdermabrasion",
+              "labelEn": "Microdermabrasion",
+              "labelHi": "Microdermabrasion"
+            },
+            {
+              "id": "microneedling",
+              "labelEn": "Microneedling",
+              "labelHi": "Microneedling"
+            },
+            {
+              "id": "highfrequency_ultrasonic_led",
+              "labelEn": "High-frequency/ultrasonic/LED",
+              "labelHi": "High-frequency/ultrasonic/LED"
+            },
+            {
+              "id": "laser_hair_reduction_assist",
+              "labelEn": "Laser hair reduction assist",
+              "labelHi": "Laser hair reduction assist"
+            },
+            {
+              "id": "hygiene",
+              "labelEn": "Hygiene",
+              "labelHi": "Hygiene"
+            },
+            {
+              "id": "products",
+              "labelEn": "Products",
+              "labelHi": "Products"
+            },
+            {
+              "id": "clinical_assist",
+              "labelEn": "Clinical assist",
+              "labelHi": "Clinical assist"
+            },
+            {
+              "id": "followups",
+              "labelEn": "Follow-ups",
+              "labelHi": "Follow-ups"
+            },
+            {
+              "id": "records",
+              "labelEn": "Records",
+              "labelHi": "Records"
+            },
+            {
+              "id": "stock",
+              "labelEn": "Stock",
+              "labelHi": "Stock"
+            }
+          ]
+        },
+        {
+          "id": "hair_spa_therapist",
+          "labelEn": "Hair Spa Therapist",
+          "labelHi": "हेयर स्पा थैरेपिस्ट",
+          "subcategories": [
+            {
+              "id": "hydration_spa",
+              "labelEn": "Hydration spa",
+              "labelHi": "Hydration spa"
+            },
+            {
+              "id": "antidandruff",
+              "labelEn": "Anti-dandruff",
+              "labelHi": "Anti-dandruff"
+            },
+            {
+              "id": "keratin_spa",
+              "labelEn": "Keratin spa",
+              "labelHi": "Keratin spa"
+            },
+            {
+              "id": "repair_spa",
+              "labelEn": "Repair spa",
+              "labelHi": "Repair spa"
+            },
+            {
+              "id": "smoothening_spa",
+              "labelEn": "Smoothening spa",
+              "labelHi": "Smoothening spa"
+            },
+            {
+              "id": "scalp_detox",
+              "labelEn": "Scalp detox",
+              "labelHi": "Scalp detox"
+            },
+            {
+              "id": "scalp_analysis",
+              "labelEn": "Scalp analysis",
+              "labelHi": "Scalp analysis"
+            },
+            {
+              "id": "pressure_points",
+              "labelEn": "Pressure points",
+              "labelHi": "Pressure points"
+            },
+            {
+              "id": "spa_machines",
+              "labelEn": "Spa machines",
+              "labelHi": "Spa machines"
+            },
+            {
+              "id": "custom_solutions",
+              "labelEn": "Custom solutions",
+              "labelHi": "Custom solutions"
+            },
+            {
+              "id": "product_knowledge",
+              "labelEn": "Product knowledge",
+              "labelHi": "Product knowledge"
+            }
+          ]
+        },
+        {
+          "id": "body_spa_therapist",
+          "labelEn": "Body Spa Therapist",
+          "labelHi": "बॉडी स्पा थैरेपिस्ट",
+          "subcategories": [
+            {
+              "id": "swedish",
+              "labelEn": "Swedish",
+              "labelHi": "Swedish"
+            },
+            {
+              "id": "deep_tissue",
+              "labelEn": "Deep tissue",
+              "labelHi": "Deep tissue"
+            },
+            {
+              "id": "aromatherapy",
+              "labelEn": "Aromatherapy",
+              "labelHi": "Aromatherapy"
+            },
+            {
+              "id": "balinese",
+              "labelEn": "Balinese",
+              "labelHi": "Balinese"
+            },
+            {
+              "id": "scrubs_wraps_steam_sauna",
+              "labelEn": "Scrubs, wraps, steam & sauna",
+              "labelHi": "Scrubs, wraps, steam & sauna"
+            },
+            {
+              "id": "pressure_strokes",
+              "labelEn": "Pressure & strokes",
+              "labelHi": "Pressure & strokes"
+            },
+            {
+              "id": "oils_blends",
+              "labelEn": "Oils & blends",
+              "labelHi": "Oils & blends"
+            },
+            {
+              "id": "hygiene",
+              "labelEn": "Hygiene",
+              "labelHi": "Hygiene"
+            },
+            {
+              "id": "privacy",
+              "labelEn": "Privacy",
+              "labelHi": "Privacy"
+            },
+            {
+              "id": "professional_empathy",
+              "labelEn": "Professional empathy",
+              "labelHi": "Professional empathy"
+            }
+          ]
+        },
+        {
+          "id": "reflexology_therapist",
+          "labelEn": "Reflexology Therapist",
+          "labelHi": "रिफ्लेक्सोलॉजी थैरेपिस्ट",
+          "subcategories": [
+            {
+              "id": "reflex_zones",
+              "labelEn": "Reflex zones",
+              "labelHi": "Reflex zones"
+            },
+            {
+              "id": "pressurepoint_techniques",
+              "labelEn": "Pressure-point techniques",
+              "labelHi": "Pressure-point techniques"
+            },
+            {
+              "id": "foot_hand_massage",
+              "labelEn": "Foot/hand massage",
+              "labelHi": "Foot/hand massage"
+            },
+            {
+              "id": "tension_relief",
+              "labelEn": "Tension relief",
+              "labelHi": "Tension relief"
+            },
+            {
+              "id": "pressure_rhythm",
+              "labelEn": "Pressure rhythm",
+              "labelHi": "Pressure rhythm"
+            },
+            {
+              "id": "relaxing_environment",
+              "labelEn": "Relaxing environment",
+              "labelHi": "Relaxing environment"
+            },
+            {
+              "id": "hygiene",
+              "labelEn": "Hygiene",
+              "labelHi": "Hygiene"
+            },
+            {
+              "id": "basic_aromatherapy_oils",
+              "labelEn": "Basic aromatherapy oils",
+              "labelHi": "Basic aromatherapy oils"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "educator",
+      "labelEn": "Educator",
+      "labelHi": "एजुकेटर",
+      "categories": [
+        {
+          "id": "beauty_educator",
+          "labelEn": "Beauty Educator",
+          "labelHi": "ब्यूटी एजुकेटर",
+          "subcategories": [
+            {
+              "id": "skin_theory_practical",
+              "labelEn": "Skin theory & practical",
+              "labelHi": "Skin theory & practical"
+            },
+            {
+              "id": "beauty_theory_practical",
+              "labelEn": "Beauty theory & practical",
+              "labelHi": "Beauty theory & practical"
+            },
+            {
+              "id": "makeup",
+              "labelEn": "Makeup",
+              "labelHi": "Makeup"
+            },
+            {
+              "id": "facials",
+              "labelEn": "Facials",
+              "labelHi": "Facials"
+            },
+            {
+              "id": "cleanups",
+              "labelEn": "Clean-ups",
+              "labelHi": "Clean-ups"
+            },
+            {
+              "id": "bleaching",
+              "labelEn": "Bleaching",
+              "labelHi": "Bleaching"
+            },
+            {
+              "id": "threading",
+              "labelEn": "Threading",
+              "labelHi": "Threading"
+            },
+            {
+              "id": "waxing",
+              "labelEn": "Waxing",
+              "labelHi": "Waxing"
+            },
+            {
+              "id": "mani_pedi",
+              "labelEn": "Mani/pedi",
+              "labelHi": "Mani/pedi"
+            },
+            {
+              "id": "skin_types",
+              "labelEn": "Skin types",
+              "labelHi": "Skin types"
+            },
+            {
+              "id": "products",
+              "labelEn": "Products",
+              "labelHi": "Products"
+            },
+            {
+              "id": "beauty_science",
+              "labelEn": "Beauty science",
+              "labelHi": "Beauty science"
+            },
+            {
+              "id": "tests_practical_exams",
+              "labelEn": "Tests & practical exams",
+              "labelHi": "Tests & practical exams"
+            },
+            {
+              "id": "student_performance",
+              "labelEn": "Student performance",
+              "labelHi": "Student performance"
+            },
+            {
+              "id": "hygiene_standards",
+              "labelEn": "Hygiene standards",
+              "labelHi": "Hygiene standards"
+            },
+            {
+              "id": "communication",
+              "labelEn": "Communication",
+              "labelHi": "Communication"
+            },
+            {
+              "id": "course_materials",
+              "labelEn": "Course materials",
+              "labelHi": "Course materials"
+            },
+            {
+              "id": "professional_behaviour",
+              "labelEn": "Professional behaviour",
+              "labelHi": "Professional behaviour"
+            }
+          ]
+        },
+        {
+          "id": "makeup_educator",
+          "labelEn": "Makeup Educator",
+          "labelHi": "मेकअप एजुकेटर",
+          "subcategories": [
+            {
+              "id": "training_skills",
+              "labelEn": "Training skills",
+              "labelHi": "Training skills"
+            },
+            {
+              "id": "basic_advance_makeup",
+              "labelEn": "Basic & advance makeup",
+              "labelHi": "Basic & advance makeup"
+            },
+            {
+              "id": "demonstrations",
+              "labelEn": "Demonstrations",
+              "labelHi": "Demonstrations"
+            },
+            {
+              "id": "lesson_plans",
+              "labelEn": "Lesson plans",
+              "labelHi": "Lesson plans"
+            },
+            {
+              "id": "day_evening_party_hd_airbrush_bridal_editorial",
+              "labelEn": "Day/evening/party/HD/airbrush/bridal/editorial",
+              "labelHi": "Day/evening/party/HD/airbrush/bridal/editorial"
+            },
+            {
+              "id": "colour_theory",
+              "labelEn": "Colour theory",
+              "labelHi": "Colour theory"
+            },
+            {
+              "id": "face_shapes",
+              "labelEn": "Face shapes",
+              "labelHi": "Face shapes"
+            },
+            {
+              "id": "tools_blending",
+              "labelEn": "Tools & blending",
+              "labelHi": "Tools & blending"
+            },
+            {
+              "id": "student_guidance",
+              "labelEn": "Student guidance",
+              "labelHi": "Student guidance"
+            },
+            {
+              "id": "practical_exams",
+              "labelEn": "Practical exams",
+              "labelHi": "Practical exams"
+            },
+            {
+              "id": "brand_knowledge",
+              "labelEn": "Brand knowledge",
+              "labelHi": "Brand knowledge"
+            },
+            {
+              "id": "hygiene",
+              "labelEn": "Hygiene",
+              "labelHi": "Hygiene"
+            },
+            {
+              "id": "presentation",
+              "labelEn": "Presentation",
+              "labelHi": "Presentation"
+            },
+            {
+              "id": "global_trends",
+              "labelEn": "Global trends",
+              "labelHi": "Global trends"
+            },
+            {
+              "id": "professionalism",
+              "labelEn": "Professionalism",
+              "labelHi": "Professionalism"
+            }
+          ]
+        },
+        {
+          "id": "nail_educator",
+          "labelEn": "Nail Educator",
+          "labelHi": "Nail educator",
+          "subcategories": [
+            {
+              "id": "nail_anatomy",
+              "labelEn": "Nail anatomy",
+              "labelHi": "Nail anatomy"
+            },
+            {
+              "id": "mani_pedi_techniques",
+              "labelEn": "Mani/pedi techniques",
+              "labelHi": "Mani/pedi techniques"
+            },
+            {
+              "id": "extensions",
+              "labelEn": "Extensions",
+              "labelHi": "Extensions"
+            },
+            {
+              "id": "gel_acrylic",
+              "labelEn": "Gel/acrylic",
+              "labelHi": "Gel/acrylic"
+            },
+            {
+              "id": "nail_art",
+              "labelEn": "Nail art",
+              "labelHi": "Nail art"
+            },
+            {
+              "id": "trends",
+              "labelEn": "Trends",
+              "labelHi": "Trends"
+            },
+            {
+              "id": "products",
+              "labelEn": "Products",
+              "labelHi": "Products"
+            },
+            {
+              "id": "teaching_skills",
+              "labelEn": "Teaching skills",
+              "labelHi": "Teaching skills"
+            },
+            {
+              "id": "lesson_plans",
+              "labelEn": "Lesson plans",
+              "labelHi": "Lesson plans"
+            },
+            {
+              "id": "communication",
+              "labelEn": "Communication",
+              "labelHi": "Communication"
+            },
+            {
+              "id": "workshops",
+              "labelEn": "Workshops",
+              "labelHi": "Workshops"
+            },
+            {
+              "id": "documentation",
+              "labelEn": "Documentation",
+              "labelHi": "Documentation"
+            },
+            {
+              "id": "records",
+              "labelEn": "Records",
+              "labelHi": "Records"
+            },
+            {
+              "id": "collaboration",
+              "labelEn": "Collaboration",
+              "labelHi": "Collaboration"
+            }
+          ]
+        },
+        {
+          "id": "hair_educator",
+          "labelEn": "Hair Educator",
+          "labelHi": "हेयर एजुकेटर",
+          "subcategories": [
+            {
+              "id": "cutting_layering_texturizing",
+              "labelEn": "Cutting, layering, texturizing",
+              "labelHi": "Cutting, layering, texturizing"
+            },
+            {
+              "id": "colour_highlights_balayage_ombr",
+              "labelEn": "Colour, highlights, balayage, ombré",
+              "labelHi": "Colour, highlights, balayage, ombré"
+            },
+            {
+              "id": "fashion_shades",
+              "labelEn": "Fashion shades",
+              "labelHi": "Fashion shades"
+            },
+            {
+              "id": "smoothing_straightening",
+              "labelEn": "Smoothing & straightening",
+              "labelHi": "Smoothing & straightening"
+            },
+            {
+              "id": "keratin_perming",
+              "labelEn": "Keratin & perming",
+              "labelHi": "Keratin & perming"
+            },
+            {
+              "id": "hair_science",
+              "labelEn": "Hair science",
+              "labelHi": "Hair science"
+            },
+            {
+              "id": "scalp_knowledge",
+              "labelEn": "Scalp knowledge",
+              "labelHi": "Scalp knowledge"
+            },
+            {
+              "id": "blowdry_curls_updos",
+              "labelEn": "Blow-dry, curls, updos",
+              "labelHi": "Blow-dry, curls, updos"
+            },
+            {
+              "id": "mens_grooming",
+              "labelEn": "Men's grooming",
+              "labelHi": "Men's grooming"
+            },
+            {
+              "id": "teaching",
+              "labelEn": "Teaching",
+              "labelHi": "Teaching"
+            },
+            {
+              "id": "communication",
+              "labelEn": "Communication",
+              "labelHi": "Communication"
+            },
+            {
+              "id": "industry_knowledge",
+              "labelEn": "Industry knowledge",
+              "labelHi": "Industry knowledge"
+            },
+            {
+              "id": "trends",
+              "labelEn": "Trends",
+              "labelHi": "Trends"
+            },
+            {
+              "id": "hygiene",
+              "labelEn": "Hygiene",
+              "labelHi": "Hygiene"
+            },
+            {
+              "id": "records",
+              "labelEn": "Records",
+              "labelHi": "Records"
+            }
+          ]
+        },
+        {
+          "id": "skin_educator",
+          "labelEn": "Skin Educator",
+          "labelHi": "स्किन एजुकेटर",
+          "subcategories": [
+            {
+              "id": "skin_anatomy",
+              "labelEn": "Skin anatomy",
+              "labelHi": "Skin anatomy"
+            },
+            {
+              "id": "facials_advance",
+              "labelEn": "Facials advance",
+              "labelHi": "Facials advance"
+            },
+            {
+              "id": "peels_microderm_dermaplaning_hydrafacial_led",
+              "labelEn": "Peels, microderm, dermaplaning, hydrafacial, LED",
+              "labelHi": "Peels, microderm, dermaplaning, hydrafacial, LED"
+            },
+            {
+              "id": "teaching",
+              "labelEn": "Teaching",
+              "labelHi": "Teaching"
+            },
+            {
+              "id": "brands",
+              "labelEn": "Brands",
+              "labelHi": "Brands"
+            },
+            {
+              "id": "trends",
+              "labelEn": "Trends",
+              "labelHi": "Trends"
+            },
+            {
+              "id": "hygiene",
+              "labelEn": "Hygiene",
+              "labelHi": "Hygiene"
+            },
+            {
+              "id": "client_handling",
+              "labelEn": "Client handling",
+              "labelHi": "Client handling"
+            },
+            {
+              "id": "communication",
+              "labelEn": "Communication",
+              "labelHi": "Communication"
+            },
+            {
+              "id": "records",
+              "labelEn": "Records",
+              "labelHi": "Records"
+            },
+            {
+              "id": "workshops",
+              "labelEn": "Workshops",
+              "labelHi": "Workshops"
+            },
+            {
+              "id": "demos",
+              "labelEn": "Demos",
+              "labelHi": "Demos"
+            }
+          ]
+        },
+        {
+          "id": "lash_brow_educator",
+          "labelEn": "Lash & Brow Educator",
+          "labelHi": "लैश और ब्रो एजुकेटर",
+          "subcategories": [
+            {
+              "id": "anatomy_growth_cycles",
+              "labelEn": "Anatomy & growth cycles",
+              "labelHi": "Anatomy & growth cycles"
+            },
+            {
+              "id": "classic_hybrid_volume_mega",
+              "labelEn": "Classic/hybrid/volume/mega",
+              "labelHi": "Classic/hybrid/volume/mega"
+            },
+            {
+              "id": "lash_lifts_tinting",
+              "labelEn": "Lash lifts & tinting",
+              "labelHi": "Lash lifts & tinting"
+            },
+            {
+              "id": "brow_shaping_threading",
+              "labelEn": "Brow shaping & threading",
+              "labelHi": "Brow shaping & threading"
+            },
+            {
+              "id": "brow_lamination",
+              "labelEn": "Brow lamination",
+              "labelHi": "Brow lamination"
+            },
+            {
+              "id": "henna_brows",
+              "labelEn": "Henna brows",
+              "labelHi": "Henna brows"
+            },
+            {
+              "id": "teaching",
+              "labelEn": "Teaching",
+              "labelHi": "Teaching"
+            },
+            {
+              "id": "hygiene",
+              "labelEn": "Hygiene",
+              "labelHi": "Hygiene"
+            },
+            {
+              "id": "products",
+              "labelEn": "Products",
+              "labelHi": "Products"
+            },
+            {
+              "id": "communication",
+              "labelEn": "Communication",
+              "labelHi": "Communication"
+            },
+            {
+              "id": "records",
+              "labelEn": "Records",
+              "labelHi": "Records"
+            },
+            {
+              "id": "workshops",
+              "labelEn": "Workshops",
+              "labelHi": "Workshops"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "trainer",
+      "labelEn": "Trainer",
+      "labelHi": "ट्रेनर",
+      "categories": [
+        {
+          "id": "makeup_trainer",
+          "labelEn": "Makeup Trainer",
+          "labelHi": "मेकअप ट्रेनर",
+          "subcategories": [
+            {
+              "id": "basic_party_bridal_hd_waterproof_longlasting_airbrush_3d_celebri",
+              "labelEn": "Basic/party/bridal/HD/waterproof/long-lasting/airbrush/3D/celebrity looks",
+              "labelHi": "Basic/party/bridal/HD/waterproof/long-lasting/airbrush/3D/celebrity looks"
+            },
+            {
+              "id": "skin_prep_priming",
+              "labelEn": "Skin prep & priming",
+              "labelHi": "Skin prep & priming"
+            },
+            {
+              "id": "colour_correction",
+              "labelEn": "Colour correction",
+              "labelHi": "Colour correction"
+            },
+            {
+              "id": "eye_shadow_eyeliner",
+              "labelEn": "Eye shadow & eyeliner",
+              "labelHi": "Eye shadow & eyeliner"
+            },
+            {
+              "id": "strip_lashes",
+              "labelEn": "Strip lashes",
+              "labelHi": "Strip lashes"
+            },
+            {
+              "id": "threading",
+              "labelEn": "Threading",
+              "labelHi": "Threading"
+            },
+            {
+              "id": "contour_blush_highlight",
+              "labelEn": "Contour/blush/highlight",
+              "labelHi": "Contour/blush/highlight"
+            },
+            {
+              "id": "baking_setting",
+              "labelEn": "Baking & setting",
+              "labelHi": "Baking & setting"
+            },
+            {
+              "id": "extensions",
+              "labelEn": "Extensions",
+              "labelHi": "Extensions"
+            },
+            {
+              "id": "products",
+              "labelEn": "Products",
+              "labelHi": "Products"
+            },
+            {
+              "id": "hygiene_tools",
+              "labelEn": "Hygiene & tools",
+              "labelHi": "Hygiene & tools"
+            },
+            {
+              "id": "trends",
+              "labelEn": "Trends",
+              "labelHi": "Trends"
+            },
+            {
+              "id": "communication",
+              "labelEn": "Communication",
+              "labelHi": "Communication"
+            }
+          ]
+        },
+        {
+          "id": "nail_trainer",
+          "labelEn": "Nail Trainer",
+          "labelHi": "नेल ट्रेनर",
+          "subcategories": [
+            {
+              "id": "nail_service_proficiency",
+              "labelEn": "Nail service proficiency",
+              "labelHi": "Nail service proficiency"
+            },
+            {
+              "id": "mani_pedi_prep",
+              "labelEn": "Mani/pedi/prep",
+              "labelHi": "Mani/pedi/prep"
+            },
+            {
+              "id": "gel_polish",
+              "labelEn": "Gel polish",
+              "labelHi": "Gel polish"
+            },
+            {
+              "id": "extensions_refills",
+              "labelEn": "Extensions & refills",
+              "labelHi": "Extensions & refills"
+            },
+            {
+              "id": "shapes_filing",
+              "labelEn": "Shapes & filing",
+              "labelHi": "Shapes & filing"
+            },
+            {
+              "id": "live_demos",
+              "labelEn": "Live demos",
+              "labelHi": "Live demos"
+            },
+            {
+              "id": "handson_supervision",
+              "labelEn": "Hands-on supervision",
+              "labelHi": "Hands-on supervision"
+            },
+            {
+              "id": "communication",
+              "labelEn": "Communication",
+              "labelHi": "Communication"
+            },
+            {
+              "id": "records",
+              "labelEn": "Records",
+              "labelHi": "Records"
+            }
+          ]
+        },
+        {
+          "id": "body_spa_trainer",
+          "labelEn": "Body Spa Trainer",
+          "labelHi": "बॉडी स्पा ट्रेनर",
+          "subcategories": [
+            {
+              "id": "swedish_deep_tissue_balinese_aromatherapy_hot_stone",
+              "labelEn": "Swedish, deep tissue, Balinese, aromatherapy, hot stone",
+              "labelHi": "Swedish, deep tissue, Balinese, aromatherapy, hot stone"
+            },
+            {
+              "id": "polishing_wraps",
+              "labelEn": "Polishing & wraps",
+              "labelHi": "Polishing & wraps"
+            },
+            {
+              "id": "pressure_strokes",
+              "labelEn": "Pressure & strokes",
+              "labelHi": "Pressure & strokes"
+            },
+            {
+              "id": "relaxation",
+              "labelEn": "Relaxation",
+              "labelHi": "Relaxation"
+            },
+            {
+              "id": "equipment",
+              "labelEn": "Equipment",
+              "labelHi": "Equipment"
+            },
+            {
+              "id": "hygiene",
+              "labelEn": "Hygiene",
+              "labelHi": "Hygiene"
+            },
+            {
+              "id": "teaching_client_handling",
+              "labelEn": "Teaching client handling",
+              "labelHi": "Teaching client handling"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "legacy_quick_roles",
+      "labelEn": "Common roles (quick)",
+      "labelHi": "आम रोल (जल्दी)",
+      "categories": [
+        {
+          "id": "hair_stylist",
+          "labelEn": "Hair stylist (legacy)",
+          "labelHi": "हेयर स्टाइलिस्ट",
+          "subcategories": [
+            {
+              "id": "general_hair_services",
+              "labelEn": "General hair services",
+              "labelHi": "हेयर सर्विस"
+            }
+          ]
+        },
+        {
+          "id": "massage_therapist",
+          "labelEn": "Massage therapist (legacy)",
+          "labelHi": "मसाज थेरेपिस्ट",
+          "subcategories": [
+            {
+              "id": "body_massage",
+              "labelEn": "Body massage",
+              "labelHi": "बॉडी मसाज"
+            }
+          ]
+        },
+        {
+          "id": "receptionist",
+          "labelEn": "Receptionist (legacy)",
+          "labelHi": "रिसेप्शनिस्ट",
+          "subcategories": [
+            {
+              "id": "front_desk_duties",
+              "labelEn": "Front desk duties",
+              "labelHi": "फ्रंट डेस्क"
+            }
+          ]
+        },
+        {
+          "id": "helper",
+          "labelEn": "Helper (legacy)",
+          "labelHi": "हेल्पर",
+          "subcategories": [
+            {
+              "id": "salon_support",
+              "labelEn": "Salon support",
+              "labelHi": "सहायता"
+            }
+          ]
+        },
+        {
+          "id": "manager",
+          "labelEn": "Manager (legacy)",
+          "labelHi": "मैनेजर",
+          "subcategories": [
+            {
+              "id": "team_management",
+              "labelEn": "Team management",
+              "labelHi": "टीम प्रबंधन"
+            }
+          ]
+        },
+        {
+          "id": "other",
+          "labelEn": "Other (custom title)",
+          "labelHi": "अन्य",
+          "subcategories": [
+            {
+              "id": "custom_duties_as_discussed",
+              "labelEn": "Custom duties as discussed",
+              "labelHi": "कस्टम"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

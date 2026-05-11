@@ -13,6 +13,19 @@ class ApiConfig {
   // Timeout durations
   static const Duration connectionTimeout = Duration(seconds: 30);
   static const Duration receiveTimeout = Duration(seconds: 30);
+
+  /// Same host/port as [baseUrl], path `/ws/chat?token=…` (not under `/api`).
+  static Uri webSocketChatUri(String accessToken) {
+    final api = Uri.parse(ApiConfig.baseUrl);
+    final wsScheme = api.scheme == 'https' ? 'wss' : 'ws';
+    return Uri(
+      scheme: wsScheme,
+      host: api.host,
+      port: api.hasPort ? api.port : null,
+      path: '/ws/chat',
+      queryParameters: {'token': accessToken},
+    );
+  }
 }
 
 /// API Response wrapper
@@ -253,26 +266,36 @@ class ApiService {
 
   // ============== AUTH ENDPOINTS ==============
 
-  /// Send OTP to phone number
-  Future<ApiResponse> sendOtp(String phoneNumber, {String countryCode = '+91'}) async {
-    return post(
-      '/auth/send-otp',
-      body: {
-        'phoneNumber': phoneNumber,
-        'countryCode': countryCode,
-      },
-    );
+  /// Send OTP to phone number. [smsAppHash]: Android-only 11-char SMS Retriever hash from [SmsAutoFill.getAppSignature].
+  Future<ApiResponse> sendOtp(
+    String phoneNumber, {
+    String countryCode = '+91',
+    String? smsAppHash,
+  }) async {
+    final body = <String, dynamic>{
+      'phoneNumber': phoneNumber,
+      'countryCode': countryCode,
+    };
+    if (smsAppHash != null && smsAppHash.length == 11) {
+      body['smsAppHash'] = smsAppHash;
+    }
+    return post('/auth/send-otp', body: body);
   }
 
   /// Resend OTP
-  Future<ApiResponse> resendOtp(String phoneNumber, {String countryCode = '+91'}) async {
-    return post(
-      '/auth/resend-otp',
-      body: {
-        'phoneNumber': phoneNumber,
-        'countryCode': countryCode,
-      },
-    );
+  Future<ApiResponse> resendOtp(
+    String phoneNumber, {
+    String countryCode = '+91',
+    String? smsAppHash,
+  }) async {
+    final body = <String, dynamic>{
+      'phoneNumber': phoneNumber,
+      'countryCode': countryCode,
+    };
+    if (smsAppHash != null && smsAppHash.length == 11) {
+      body['smsAppHash'] = smsAppHash;
+    }
+    return post('/auth/resend-otp', body: body);
   }
 
   /// Verify OTP and login/signup
@@ -421,6 +444,24 @@ class ApiService {
     );
   }
 
+  /// Presigned upload for seeker profile photo (PUT file, then PATCH profile with fileUrl).
+  Future<ApiResponse<PresignedUrl>> getSeekerMediaPresignedUrl({
+    required String mediaType,
+    required String contentType,
+    String? filename,
+  }) async {
+    return post<PresignedUrl>(
+      '/seeker/media/presign',
+      body: {
+        'mediaType': mediaType,
+        'contentType': contentType,
+        if (filename != null) 'filename': filename,
+      },
+      requireAuth: true,
+      fromJson: PresignedUrl.fromJson,
+    );
+  }
+
   /// Save media record after upload
   Future<ApiResponse> saveMediaRecord({
     required String mediaType,
@@ -436,6 +477,105 @@ class ApiService {
       },
       requireAuth: true,
     );
+  }
+
+  static const Duration _mediaUploadTimeout = Duration(seconds: 120);
+
+  /// Upload salon image/video through API (server writes to S3; returns saved media row).
+  Future<ApiResponse<Map<String, dynamic>>> uploadSalonMediaDirect({
+    required List<int> bodyBytes,
+    required String contentType,
+    required String mediaType,
+    bool isPrimary = false,
+    String? filename,
+  }) async {
+    try {
+      final token = await _authService.getAccessToken();
+      if (token == null) {
+        return ApiResponse.error('Not authenticated', errorCode: 'UNAUTHORIZED');
+      }
+      final uri = Uri.parse('${ApiConfig.baseUrl}/salon/media/upload');
+      final headers = <String, String>{
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': contentType,
+        'X-Media-Type': mediaType,
+        if (isPrimary) 'X-Is-Primary': 'true',
+        if (filename != null && filename.isNotEmpty) 'X-Filename': filename,
+      };
+      final response = await http
+          .post(uri, headers: headers, body: bodyBytes)
+          .timeout(_mediaUploadTimeout);
+      return _handleResponse(response, (m) => Map<String, dynamic>.from(m));
+    } on SocketException {
+      return ApiResponse.error('No internet connection', errorCode: 'NETWORK_ERROR');
+    } catch (e) {
+      return ApiResponse.error('Something went wrong: ${e.toString()}', errorCode: 'UNKNOWN_ERROR');
+    }
+  }
+
+  /// Upload seeker image/video through API (server writes to S3).
+  Future<ApiResponse<Map<String, dynamic>>> uploadSeekerMediaDirect({
+    required List<int> bodyBytes,
+    required String contentType,
+    required String mediaType,
+    String? filename,
+  }) async {
+    try {
+      final token = await _authService.getAccessToken();
+      if (token == null) {
+        return ApiResponse.error('Not authenticated', errorCode: 'UNAUTHORIZED');
+      }
+      final uri = Uri.parse('${ApiConfig.baseUrl}/seeker/media/upload');
+      final headers = <String, String>{
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': contentType,
+        'X-Media-Type': mediaType,
+        if (filename != null && filename.isNotEmpty) 'X-Filename': filename,
+      };
+      final response = await http
+          .post(uri, headers: headers, body: bodyBytes)
+          .timeout(_mediaUploadTimeout);
+      return _handleResponse(response, (m) => Map<String, dynamic>.from(m));
+    } on SocketException {
+      return ApiResponse.error('No internet connection', errorCode: 'NETWORK_ERROR');
+    } catch (e) {
+      return ApiResponse.error('Something went wrong: ${e.toString()}', errorCode: 'UNKNOWN_ERROR');
+    }
+  }
+
+  /// Upload KYC / business proof (image or PDF) for salon verification review.
+  Future<ApiResponse<Map<String, dynamic>>> uploadSalonVerificationDocument({
+    required List<int> bodyBytes,
+    required String contentType,
+    required String docType,
+    String? docLast4,
+    String? filename,
+  }) async {
+    try {
+      final token = await _authService.getAccessToken();
+      if (token == null) {
+        return ApiResponse.error('Not authenticated', errorCode: 'UNAUTHORIZED');
+      }
+      final uri = Uri.parse('${ApiConfig.baseUrl}/salon/verification/upload');
+      final headers = <String, String>{
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': contentType,
+        'X-Doc-Type': docType,
+        if (docLast4 != null && docLast4.trim().isNotEmpty) 'X-Doc-Last-4': docLast4.trim(),
+        if (filename != null && filename.isNotEmpty) 'X-Filename': filename,
+      };
+      final response = await http
+          .post(uri, headers: headers, body: bodyBytes)
+          .timeout(_mediaUploadTimeout);
+      return _handleResponse(response, (m) => Map<String, dynamic>.from(m));
+    } on SocketException {
+      return ApiResponse.error('No internet connection', errorCode: 'NETWORK_ERROR');
+    } catch (e) {
+      return ApiResponse.error('Something went wrong: ${e.toString()}', errorCode: 'UNKNOWN_ERROR');
+    }
   }
 
   /// Delete media
@@ -1001,6 +1141,49 @@ class ApiService {
 
   // ============== OWNER CANDIDATE MANAGEMENT ==============
 
+  /// List chat threads (applications) for the logged-in owner or seeker.
+  Future<ApiResponse<List<Map<String, dynamic>>>> getChatThreads() async {
+    try {
+      final headers = await _getHeaders(requireAuth: true);
+      final uri = Uri.parse('${ApiConfig.baseUrl}/chat/threads');
+      final httpResponse = await http.get(uri, headers: headers).timeout(ApiConfig.connectionTimeout);
+      final responseBody = json.decode(httpResponse.body);
+      if (httpResponse.statusCode >= 200 && httpResponse.statusCode < 300) {
+        final threads = (responseBody['threads'] as List<dynamic>? ?? [])
+            .map((e) => Map<String, dynamic>.from(e as Map))
+            .toList();
+        return ApiResponse(success: true, data: threads);
+      }
+      return ApiResponse.error(responseBody['message'] ?? 'Failed to load conversations');
+    } on SocketException {
+      return ApiResponse.error('No internet connection', errorCode: 'NETWORK_ERROR');
+    } catch (e) {
+      return ApiResponse.error('Something went wrong: ${e.toString()}', errorCode: 'UNKNOWN_ERROR');
+    }
+  }
+
+  /// Chat history for one application (oldest → newest).
+  Future<ApiResponse<List<Map<String, dynamic>>>> getChatMessages(String applicationId, {int limit = 50}) async {
+    try {
+      final headers = await _getHeaders(requireAuth: true);
+      final uri = Uri.parse('${ApiConfig.baseUrl}/chat/applications/$applicationId/messages')
+          .replace(queryParameters: {'limit': limit.toString()});
+      final httpResponse = await http.get(uri, headers: headers).timeout(ApiConfig.connectionTimeout);
+      final responseBody = json.decode(httpResponse.body);
+      if (httpResponse.statusCode >= 200 && httpResponse.statusCode < 300) {
+        final messages = (responseBody['messages'] as List<dynamic>? ?? [])
+            .map((e) => Map<String, dynamic>.from(e as Map))
+            .toList();
+        return ApiResponse(success: true, data: messages);
+      }
+      return ApiResponse.error(responseBody['message'] ?? 'Failed to load messages');
+    } on SocketException {
+      return ApiResponse.error('No internet connection', errorCode: 'NETWORK_ERROR');
+    } catch (e) {
+      return ApiResponse.error('Something went wrong: ${e.toString()}', errorCode: 'UNKNOWN_ERROR');
+    }
+  }
+
   /// Get candidates (applications) for a specific job owned by the salon owner
   Future<ApiResponse<Map<String, dynamic>>> getJobCandidates(String jobId, {String? status, int limit = 50, int offset = 0}) async {
     try {
@@ -1176,6 +1359,80 @@ class AuthResult {
   }
 }
 
+/// Uploaded salon image (from `GET /salon/me` → `media` array).
+class SalonMediaItem {
+  final String id;
+  final String mediaType;
+  final String mediaUrl;
+  final String? thumbnailUrl;
+  final bool isPrimary;
+  final int displayOrder;
+
+  SalonMediaItem({
+    required this.id,
+    required this.mediaType,
+    required this.mediaUrl,
+    this.thumbnailUrl,
+    this.isPrimary = false,
+    this.displayOrder = 0,
+  });
+
+  factory SalonMediaItem.fromJson(Map<String, dynamic> json) {
+    return SalonMediaItem(
+      id: json['id']?.toString() ?? '',
+      mediaType: json['mediaType']?.toString() ?? json['media_type']?.toString() ?? 'photo',
+      mediaUrl: json['mediaUrl']?.toString() ?? json['media_url']?.toString() ?? '',
+      thumbnailUrl: json['thumbnailUrl']?.toString() ?? json['thumbnail_url']?.toString(),
+      isPrimary: json['isPrimary'] == true || json['is_primary'] == true,
+      displayOrder: (json['displayOrder'] ?? json['display_order'] ?? 0) is int
+          ? (json['displayOrder'] ?? json['display_order']) as int
+          : int.tryParse('${json['displayOrder'] ?? json['display_order'] ?? 0}') ?? 0,
+    );
+  }
+
+  bool get isImage => mediaType == 'photo' || mediaType == 'logo';
+}
+
+/// KYC / business document row from `GET /salon/me` → `verificationDocs`.
+class SalonVerificationDoc {
+  final String id;
+  final String docType;
+  final String? docLast4;
+  final String status;
+  final String? rejectionReason;
+  final DateTime? createdAt;
+  final DateTime? reviewedAt;
+  final String? docFileUrl;
+
+  SalonVerificationDoc({
+    required this.id,
+    required this.docType,
+    this.docLast4,
+    required this.status,
+    this.rejectionReason,
+    this.createdAt,
+    this.reviewedAt,
+    this.docFileUrl,
+  });
+
+  factory SalonVerificationDoc.fromJson(Map<String, dynamic> json) {
+    return SalonVerificationDoc(
+      id: json['id']?.toString() ?? '',
+      docType: json['docType']?.toString() ?? json['doc_type']?.toString() ?? 'other',
+      docLast4: json['docLast4']?.toString() ?? json['doc_last_4']?.toString(),
+      status: json['status']?.toString() ?? json['verification_status']?.toString() ?? 'pending',
+      rejectionReason: json['rejectionReason']?.toString() ?? json['rejection_reason']?.toString(),
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'].toString())
+          : (json['created_at'] != null ? DateTime.tryParse(json['created_at'].toString()) : null),
+      reviewedAt: json['reviewedAt'] != null
+          ? DateTime.tryParse(json['reviewedAt'].toString())
+          : (json['reviewed_at'] != null ? DateTime.tryParse(json['reviewed_at'].toString()) : null),
+      docFileUrl: json['docFileUrl']?.toString() ?? json['doc_file_url']?.toString(),
+    );
+  }
+}
+
 /// Salon profile data
 class SalonProfile {
   final String id;
@@ -1193,6 +1450,8 @@ class SalonProfile {
   final bool isProfileComplete;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final List<SalonMediaItem> media;
+  final List<SalonVerificationDoc> verificationDocs;
 
   SalonProfile({
     required this.id,
@@ -1210,9 +1469,21 @@ class SalonProfile {
     this.isProfileComplete = false,
     this.createdAt,
     this.updatedAt,
+    this.media = const [],
+    this.verificationDocs = const [],
   });
 
+  bool get isSalonVerified => verificationStatus == 'verified';
+
   factory SalonProfile.fromJson(Map<String, dynamic> json) {
+    final mediaList = (json['media'] as List<dynamic>?)
+            ?.map((e) => SalonMediaItem.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [];
+    final docsList = (json['verificationDocs'] as List<dynamic>?)
+            ?.map((e) => SalonVerificationDoc.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [];
     return SalonProfile(
       id: json['id'] ?? '',
       phoneNumber: json['phoneNumber'] ?? '',
@@ -1229,6 +1500,8 @@ class SalonProfile {
       isProfileComplete: json['isProfileComplete'] ?? false,
       createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
       updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      media: mediaList,
+      verificationDocs: docsList,
     );
   }
 
@@ -1541,6 +1814,16 @@ class NotificationPreferences {
 
 // ============== SEEKER DATA MODELS ==============
 
+/// Single work sample (image or short video) for a seeker portfolio.
+class SeekerPortfolioItem {
+  final String url;
+  final String kind;
+
+  SeekerPortfolioItem({required this.url, this.kind = 'image'});
+
+  Map<String, dynamic> toJson() => {'url': url, 'kind': kind};
+}
+
 /// Auth result from verify-otp for seekers
 class SeekerAuthResult {
   final bool isNewUser;
@@ -1580,10 +1863,22 @@ class SeekerProfile {
   final String? city;
   final String? preferredRole;
   final String? experience;
+  final int? experienceYears;
   final double? expectedSalary;
+  final double? expectedSalaryMax;
+  final double? currentSalary;
+  final String? maritalStatus;
+  final String? email;
+  final bool? hasProfessionalCourse;
+  final String? professionalCourseCertificateUrl;
+  final List<SeekerPortfolioItem> workPortfolioUrls;
   final List<String> skills;
   final String? profilePhotoUrl;
   final int profileCompletionPercent;
+  final String? jobType;
+  final List<String> preferredCities;
+  final bool immediateJoin;
+  final double? preferredSalary;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -1595,15 +1890,48 @@ class SeekerProfile {
     this.city,
     this.preferredRole,
     this.experience,
+    this.experienceYears,
     this.expectedSalary,
+    this.expectedSalaryMax,
+    this.currentSalary,
+    this.maritalStatus,
+    this.email,
+    this.hasProfessionalCourse,
+    this.professionalCourseCertificateUrl,
+    this.workPortfolioUrls = const [],
     this.skills = const [],
     this.profilePhotoUrl,
     this.profileCompletionPercent = 0,
+    this.jobType,
+    this.preferredCities = const [],
+    this.immediateJoin = true,
+    this.preferredSalary,
     this.createdAt,
     this.updatedAt,
   });
 
   bool get hasBasicProfile => fullName != null && city != null && preferredRole != null;
+
+  static List<SeekerPortfolioItem> _parsePortfolio(dynamic raw) {
+    if (raw is! List<dynamic>) return [];
+    final out = <SeekerPortfolioItem>[];
+    for (final e in raw) {
+      if (e is Map) {
+        final u = e['url']?.toString() ?? '';
+        if (u.isEmpty) continue;
+        final k = e['kind']?.toString() == 'video' ? 'video' : 'image';
+        out.add(SeekerPortfolioItem(url: u, kind: k));
+      } else if (e is String && e.isNotEmpty) {
+        out.add(SeekerPortfolioItem(url: e));
+      }
+    }
+    return out;
+  }
+
+  static List<String> _parseStringList(dynamic raw) {
+    if (raw is! List<dynamic>) return [];
+    return raw.map((e) => e.toString()).where((s) => s.isNotEmpty).toList();
+  }
 
   factory SeekerProfile.fromJson(Map<String, dynamic> json) {
     return SeekerProfile(
@@ -1614,10 +1942,22 @@ class SeekerProfile {
       city: json['city'],
       preferredRole: json['preferredRole'],
       experience: json['experience'],
-      expectedSalary: json['expectedSalary']?.toDouble(),
+      experienceYears: json['experienceYears'] is int ? json['experienceYears'] as int : int.tryParse(json['experienceYears']?.toString() ?? ''),
+      expectedSalary: json['expectedSalary'] != null ? (json['expectedSalary'] as num).toDouble() : null,
+      expectedSalaryMax: json['expectedSalaryMax'] != null ? (json['expectedSalaryMax'] as num).toDouble() : null,
+      currentSalary: json['currentSalary'] != null ? (json['currentSalary'] as num).toDouble() : null,
+      maritalStatus: json['maritalStatus'],
+      email: json['email'],
+      hasProfessionalCourse: json['hasProfessionalCourse'] is bool ? json['hasProfessionalCourse'] as bool : null,
+      professionalCourseCertificateUrl: json['professionalCourseCertificateUrl'],
+      workPortfolioUrls: _parsePortfolio(json['workPortfolioUrls']),
       skills: json['skills'] != null ? List<String>.from(json['skills']) : [],
       profilePhotoUrl: json['profilePhotoUrl'],
       profileCompletionPercent: json['profileCompletionPercent'] ?? 0,
+      jobType: json['jobType'],
+      preferredCities: _parseStringList(json['preferredCities']),
+      immediateJoin: json['immediateJoin'] is bool ? json['immediateJoin'] as bool : true,
+      preferredSalary: json['preferredSalary'] != null ? (json['preferredSalary'] as num).toDouble() : null,
       createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
       updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
     );
@@ -1632,10 +1972,22 @@ class SeekerProfile {
       'city': city,
       'preferredRole': preferredRole,
       'experience': experience,
+      'experienceYears': experienceYears,
       'expectedSalary': expectedSalary,
+      'expectedSalaryMax': expectedSalaryMax,
+      'currentSalary': currentSalary,
+      'maritalStatus': maritalStatus,
+      'email': email,
+      'hasProfessionalCourse': hasProfessionalCourse,
+      'professionalCourseCertificateUrl': professionalCourseCertificateUrl,
+      'workPortfolioUrls': workPortfolioUrls.map((e) => e.toJson()).toList(),
       'skills': skills,
       'profilePhotoUrl': profilePhotoUrl,
       'profileCompletionPercent': profileCompletionPercent,
+      'jobType': jobType,
+      'preferredCities': preferredCities,
+      'immediateJoin': immediateJoin,
+      'preferredSalary': preferredSalary,
     };
   }
 }
@@ -1655,6 +2007,10 @@ class SeekerJobItem {
   final String status;
   final bool hasApplied;
   final DateTime createdAt;
+  /// Public salon / workspace photos (from `GET /seeker/jobs`).
+  final List<String> salonPhotoUrls;
+  /// `verified` when admin approved salon KYC (from `GET /seeker/jobs`).
+  final String salonVerificationStatus;
 
   SeekerJobItem({
     required this.id,
@@ -1670,7 +2026,11 @@ class SeekerJobItem {
     this.status = 'active',
     this.hasApplied = false,
     required this.createdAt,
+    this.salonPhotoUrls = const [],
+    this.salonVerificationStatus = 'unverified',
   });
+
+  bool get isSalonVerified => salonVerificationStatus == 'verified';
 
   String get displayRole {
     if (customRoleName != null && customRoleName!.isNotEmpty) return customRoleName!;
@@ -1688,6 +2048,11 @@ class SeekerJobItem {
   }
 
   factory SeekerJobItem.fromJson(Map<String, dynamic> json) {
+    final rawPhotos = json['salonPhotoUrls'] ?? json['salon_photo_urls'];
+    List<String> photos = const [];
+    if (rawPhotos is List) {
+      photos = rawPhotos.map((e) => e.toString()).where((s) => s.isNotEmpty).toList();
+    }
     return SeekerJobItem(
       id: json['id'] ?? '',
       jobRole: json['jobRole'] ?? json['job_role'] ?? '',
@@ -1704,6 +2069,9 @@ class SeekerJobItem {
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'])
           : (json['created_at'] != null ? DateTime.parse(json['created_at']) : DateTime.now()),
+      salonPhotoUrls: photos,
+      salonVerificationStatus:
+          json['salonVerificationStatus']?.toString() ?? json['salon_verification_status']?.toString() ?? 'unverified',
     );
   }
 }

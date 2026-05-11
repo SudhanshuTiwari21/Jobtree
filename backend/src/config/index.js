@@ -82,6 +82,11 @@ const config = {
       'http://localhost:8080',
     ],
   },
+
+  /** Optional: `PATCH /api/admin/salons/:id/verification` header `X-Admin-Secret` */
+  admin: {
+    webhookSecret: process.env.ADMIN_WEBHOOK_SECRET || '',
+  },
 };
 
 // Validate required environment variables in production

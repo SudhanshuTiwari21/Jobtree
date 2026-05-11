@@ -208,6 +208,7 @@ class AuthService {
     const refreshToken = await this.generateSeekerRefreshToken(seeker);
 
     const seekerProfileExists = seekerService.hasBasicProfile(seeker);
+    const prefs = await seekerService.getPreferences(seeker.id);
 
     logger.info(`Seeker ${isNew ? 'signed up' : 'logged in'}: ${phoneNumber} (profileExists: ${seekerProfileExists})`);
 
@@ -218,7 +219,7 @@ class AuthService {
       accessToken,
       refreshToken,
       expiresIn: config.jwt.expiresIn,
-      seeker: seekerService.formatSeekerResponse(seeker),
+      seeker: seekerService.formatSeekerResponse(seeker, prefs),
     };
   }
 

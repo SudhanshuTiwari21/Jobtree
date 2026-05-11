@@ -32,6 +32,14 @@ export const validatePhoneNumber = [
     .trim()
     .matches(/^\+\d{1,4}$/)
     .withMessage('Invalid country code format (e.g., +91)'),
+  /** Android SMS Retriever: 11-char app hash from client (sms_autofill). Optional. */
+  body('smsAppHash')
+    .optional({ values: 'falsy' })
+    .trim()
+    .isLength({ min: 11, max: 11 })
+    .withMessage('smsAppHash must be exactly 11 characters')
+    .matches(/^[A-Za-z0-9+/=-]{11}$/)
+    .withMessage('Invalid smsAppHash format'),
   validate,
 ];
 

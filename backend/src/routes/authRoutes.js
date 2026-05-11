@@ -19,11 +19,11 @@ router.post(
   otpRateLimiter,
   validatePhoneNumber,
   asyncHandler(async (req, res) => {
-    const { phoneNumber, countryCode = '+91' } = req.body;
+    const { phoneNumber, countryCode = '+91', smsAppHash } = req.body;
 
     logger.info(`OTP send request for: ${phoneNumber}`);
 
-    const result = await otpService.sendOTP(phoneNumber, countryCode);
+    const result = await otpService.sendOTP(phoneNumber, countryCode, smsAppHash || null);
 
     if (!result.success) {
       return res.status(429).json({
@@ -51,11 +51,11 @@ router.post(
   otpRateLimiter,
   validatePhoneNumber,
   asyncHandler(async (req, res) => {
-    const { phoneNumber, countryCode = '+91' } = req.body;
+    const { phoneNumber, countryCode = '+91', smsAppHash } = req.body;
 
     logger.info(`OTP resend request for: ${phoneNumber}`);
 
-    const result = await otpService.resendOTP(phoneNumber, countryCode);
+    const result = await otpService.resendOTP(phoneNumber, countryCode, smsAppHash || null);
 
     if (!result.success) {
       return res.status(429).json({

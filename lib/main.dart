@@ -6,13 +6,97 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import 'package:http/http.dart' as http;
+import 'package:file_picker/file_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:image_picker/image_picker.dart';
 import 'firebase_options.dart';
+import 'app_responsive.dart';
+import 'application_chat_screen.dart';
 import 'services/api_service.dart';
 import 'services/auth_service.dart';
+import 'services/india_city_service.dart';
 import 'services/push_notification_service.dart';
+import 'widgets/india_city_picker_sheet.dart';
+import 'data/job_taxonomy_catalog.dart';
+import 'screens/job_taxonomy_selection_screen.dart';
+
+/// Android SMS Retriever: 11-char app hash for `/auth/send-otp` body field `smsAppHash`.
+Future<String?> androidSmsRetrieverHash() async {
+  if (!Platform.isAndroid) return null;
+  try {
+    final h = await SmsAutoFill().getAppSignature;
+    if (h.length == 11) return h;
+  } catch (_) {}
+  return null;
+}
+
+void showJobtreeImagePreview(BuildContext context, String url) {
+  if (url.isEmpty) return;
+  showDialog<void>(
+    context: context,
+    barrierColor: Colors.black87,
+    builder: (ctx) {
+      return Dialog(
+        backgroundColor: Colors.black,
+        insetPadding: const EdgeInsets.all(12),
+        child: Stack(
+          alignment: Alignment.topRight,
+          children: [
+            Center(
+              child: InteractiveViewer(
+                minScale: 0.5,
+                maxScale: 4,
+                child: Image.network(
+                  url,
+                  fit: BoxFit.contain,
+                  loadingBuilder: (_, child, prog) {
+                    if (prog == null) return child;
+                    return const Padding(
+                      padding: EdgeInsets.all(48),
+                      child: CircularProgressIndicator(color: Colors.white),
+                    );
+                  },
+                  errorBuilder: (_, __, ___) => const Padding(
+                    padding: EdgeInsets.all(24),
+                    child: Icon(Icons.broken_image_outlined, color: Colors.white54, size: 48),
+                  ),
+                ),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.close, color: Colors.white),
+              onPressed: () => Navigator.pop(ctx),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+/// Content-Type for direct API upload (prefer picker MIME, then extension).
+String jobtreeInferImageContentType(String path, [String? mimeType]) {
+  if (mimeType != null && mimeType.isNotEmpty) {
+    if (mimeType == 'image/jpg') return 'image/jpeg';
+    if (mimeType.startsWith('image/')) return mimeType;
+  }
+  final lower = path.toLowerCase();
+  if (lower.endsWith('.png')) return 'image/png';
+  if (lower.endsWith('.webp')) return 'image/webp';
+  if (lower.endsWith('.gif')) return 'image/gif';
+  if (lower.endsWith('.heic') || lower.endsWith('.heif')) return 'image/heic';
+  return 'image/jpeg';
+}
+
+/// Content-Type for KYC uploads (images + PDF).
+String jobtreeInferDocContentType(String filename, [String? ext]) {
+  final lower = filename.toLowerCase();
+  final e = (ext ?? '').toLowerCase();
+  if (lower.endsWith('.pdf') || e == 'pdf') return 'application/pdf';
+  return jobtreeInferImageContentType(filename, null);
+}
 
 // Helper function to load saved language preference
 Future<Language> loadSavedLanguage() async {
@@ -989,6 +1073,7 @@ class AppLocalizations {
   String get added => language == Language.hindi ? 'जोड़ा गया' : 'Added';
   String get mediaPhotos => language == Language.hindi ? 'मीडिया और फोटो' : 'Media & Photos';
   String get addPhoto => language == Language.hindi ? '+ फोटो जोड़ें' : '+ Add Photo';
+  String get salonPhotosSeeker => language == Language.hindi ? 'सैलून / कार्यस्थल की तस्वीरें' : 'Salon & workplace photos';
   String get settings => language == Language.hindi ? 'सेटिंग्स' : 'Settings';
   String get languageLabel => language == Language.hindi ? 'भाषा' : 'Language';
   String get notifications => language == Language.hindi ? 'सूचनाएं' : 'Notifications';
@@ -1879,7 +1964,8 @@ class _AddPhoneNumberScreenState extends State<AddPhoneNumberScreen> {
 
     try {
       final phoneNumber = _phoneController.text.trim();
-      final response = await _apiService.sendOtp(phoneNumber, countryCode: '+91');
+      final smsHash = await androidSmsRetrieverHash();
+      final response = await _apiService.sendOtp(phoneNumber, countryCode: '+91', smsAppHash: smsHash);
 
       if (!mounted) return;
 
@@ -2226,7 +2312,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> with Code
   void initState() {
     super.initState();
     _localizations = AppLocalizations(widget.selectedLanguage);
-    _listenForCode();
+    listenForCode(smsCodeRegexPattern: r'\d{6}');
     _getAppSignature();
     _startResendCooldown();
   }
@@ -2248,28 +2334,25 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> with Code
   Future<void> _getAppSignature() async {
     try {
       _appSignature = await SmsAutoFill().getAppSignature;
-      // App signature can be used for SMS format configuration
+      if (_appSignature != null && _appSignature!.length != 11) {
+        _appSignature = null;
+      }
     } catch (e) {
       // Handle error silently
     }
-  }
-
-  void _listenForCode() async {
-    await SmsAutoFill().listenForCode();
   }
 
   @override
   void codeUpdated() {
     final receivedCode = code;
     if (receivedCode != null && receivedCode.length == 6) {
-      for (int i = 0; i < 6; i++) {
-        if (i < receivedCode.length) {
+      if (!mounted) return;
+      setState(() {
+        for (int i = 0; i < 6; i++) {
           _otpControllers[i].text = receivedCode[i];
         }
-      }
-      // Move focus to last field
+      });
       _focusNodes[5].unfocus();
-      // Trigger verification
       _verifyOTP();
     }
   }
@@ -2277,7 +2360,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> with Code
   @override
   void dispose() {
     _resendTimer?.cancel();
-    SmsAutoFill().unregisterListener();
+    cancel();
+    unregisterListener();
     for (var controller in _otpControllers) {
       controller.dispose();
     }
@@ -2412,7 +2496,12 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> with Code
 
     try {
       final phoneNumber = _getPhoneNumberOnly();
-      final response = await _apiService.resendOtp(phoneNumber, countryCode: '+91');
+      final smsHash = Platform.isAndroid
+          ? (_appSignature != null && _appSignature!.length == 11
+              ? _appSignature
+              : await androidSmsRetrieverHash())
+          : null;
+      final response = await _apiService.resendOtp(phoneNumber, countryCode: '+91', smsAppHash: smsHash);
 
       if (!mounted) return;
 
@@ -3932,7 +4021,8 @@ class _SeekerPhoneScreenState extends State<SeekerPhoneScreen> {
     }
     setState(() { _isLoading = true; _errorMessage = null; });
     try {
-      final response = await _apiService.sendOtp(phone);
+      final smsHash = await androidSmsRetrieverHash();
+      final response = await _apiService.sendOtp(phone, smsAppHash: smsHash);
       if (!mounted) return;
       if (response.success) {
         Navigator.of(context).push(MaterialPageRoute(
@@ -4048,7 +4138,7 @@ class SeekerOtpScreen extends StatefulWidget {
   State<SeekerOtpScreen> createState() => _SeekerOtpScreenState();
 }
 
-class _SeekerOtpScreenState extends State<SeekerOtpScreen> {
+class _SeekerOtpScreenState extends State<SeekerOtpScreen> with CodeAutoFill {
   final TextEditingController _otpController = TextEditingController();
   final ApiService _apiService = ApiService();
   final AuthService _authService = AuthService();
@@ -4062,7 +4152,19 @@ class _SeekerOtpScreenState extends State<SeekerOtpScreen> {
   void initState() {
     super.initState();
     _localizations = AppLocalizations(widget.selectedLanguage);
+    listenForCode(smsCodeRegexPattern: r'\d{6}');
     _startCooldown();
+  }
+
+  @override
+  void codeUpdated() {
+    final receivedCode = code;
+    if (receivedCode != null && receivedCode.length == 6 && mounted) {
+      setState(() {
+        _otpController.text = receivedCode;
+      });
+      _verifyOtp();
+    }
   }
 
   void _startCooldown() {
@@ -4077,11 +4179,14 @@ class _SeekerOtpScreenState extends State<SeekerOtpScreen> {
   @override
   void dispose() {
     _timer?.cancel();
+    cancel();
+    unregisterListener();
     _otpController.dispose();
     super.dispose();
   }
 
   Future<void> _verifyOtp() async {
+    if (_isLoading) return;
     final otp = _otpController.text.trim();
     if (otp.length != 6) {
       setState(() => _errorMessage = widget.selectedLanguage == Language.hindi ? '6 अंकों का OTP दर्ज करें' : 'Enter 6-digit OTP');
@@ -4119,7 +4224,8 @@ class _SeekerOtpScreenState extends State<SeekerOtpScreen> {
 
   Future<void> _resendOtp() async {
     if (_resendCooldown > 0) return;
-    await _apiService.resendOtp(widget.phoneNumber);
+    final smsHash = await androidSmsRetrieverHash();
+    await _apiService.resendOtp(widget.phoneNumber, countryCode: '+91', smsAppHash: smsHash);
     _startCooldown();
   }
 
@@ -4150,6 +4256,7 @@ class _SeekerOtpScreenState extends State<SeekerOtpScreen> {
                 maxLength: 6,
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700, letterSpacing: 8),
+                autofillHints: const [AutofillHints.oneTimeCode],
                 decoration: InputDecoration(
                   counterText: '',
                   hintText: '------',
@@ -4209,24 +4316,32 @@ class _SeekerCreateProfileScreenState extends State<SeekerCreateProfileScreen> {
   String? _selectedGender;
   String? _selectedCity;
   String? _selectedRole;
+  final Set<String> _selectedSkills = {};
+  JobTaxonomyCatalog? _jobTaxonomy;
   bool _isLoading = false;
   String? _errorMessage;
-
-  final List<String> _roles = [
-    'hair_stylist', 'beautician', 'makeup_artist', 'massage_therapist',
-    'receptionist', 'helper', 'manager', 'other',
-  ];
-
-  final List<String> _cities = [
-    'Delhi', 'Mumbai', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata',
-    'Pune', 'Ahmedabad', 'Jaipur', 'Lucknow', 'Chandigarh', 'Noida',
-    'Gurgaon', 'Indore', 'Bhopal', 'Surat', 'Nagpur', 'Patna',
-  ];
+  List<String> _cities = [];
+  bool _citiesLoading = true;
 
   @override
   void initState() {
     super.initState();
     _localizations = AppLocalizations(widget.selectedLanguage);
+    _cities = List<String>.from(IndiaCityService.kFallbackCities);
+    _loadCitiesIntoState();
+    JobTaxonomyCatalog.instance().then((c) {
+      if (mounted) setState(() => _jobTaxonomy = c);
+    });
+  }
+
+  Future<void> _loadCitiesIntoState() async {
+    setState(() => _citiesLoading = true);
+    final loaded = await IndiaCityService.instance.loadCities();
+    if (!mounted) return;
+    setState(() {
+      _cities = loaded;
+      _citiesLoading = false;
+    });
   }
 
   @override
@@ -4235,20 +4350,19 @@ class _SeekerCreateProfileScreenState extends State<SeekerCreateProfileScreen> {
     super.dispose();
   }
 
-  bool get _isValid => _nameController.text.trim().isNotEmpty && _selectedGender != null && _selectedCity != null && _selectedRole != null;
-
-  String _localizedRole(String roleId) {
-    final map = {
-      'hair_stylist': _localizations.hairStylist,
-      'beautician': _localizations.beautician,
-      'makeup_artist': _localizations.makeupArtist,
-      'massage_therapist': _localizations.massageTherapist,
-      'receptionist': _localizations.receptionist,
-      'helper': _localizations.helper,
-      'manager': _localizations.manager,
-      'other': _localizations.other,
-    };
-    return map[roleId] ?? roleId;
+  bool get _isValid {
+    if (_nameController.text.trim().isEmpty || _selectedGender == null || _selectedCity == null || _selectedRole == null) {
+      return false;
+    }
+    final role = _selectedRole!;
+    if (role == 'other') {
+      return _selectedSkills.isNotEmpty;
+    }
+    final cat = _jobTaxonomy?.categoryById(role);
+    if (cat != null && cat.subcategories.isNotEmpty) {
+      return _selectedSkills.any((s) => s.startsWith('$role/'));
+    }
+    return true;
   }
 
   Future<void> _saveProfile() async {
@@ -4260,6 +4374,7 @@ class _SeekerCreateProfileScreenState extends State<SeekerCreateProfileScreen> {
         'gender': _selectedGender,
         'city': _selectedCity,
         'preferredRole': _selectedRole,
+        if (_selectedSkills.isNotEmpty) 'skills': _selectedSkills.toList(),
       });
       if (!mounted) return;
       if (response.success) {
@@ -4309,6 +4424,15 @@ class _SeekerCreateProfileScreenState extends State<SeekerCreateProfileScreen> {
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Text(
+                  widget.selectedLanguage == Language.hindi
+                      ? 'आधार/पहचान पत्र जैसा ही नाम लिखें'
+                      : 'Spell your name the same way as on your ID',
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                ),
+              ),
               const SizedBox(height: 24),
 
               // Gender
@@ -4328,45 +4452,124 @@ class _SeekerCreateProfileScreenState extends State<SeekerCreateProfileScreen> {
               // City
               Text(_localizations.seekerCity, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF121A2C))),
               const SizedBox(height: 8),
-              DropdownButtonFormField<String>(
-                value: _selectedCity,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey.shade300)),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              InkWell(
+                onTap: _citiesLoading
+                    ? null
+                    : () async {
+                        final picked = await showIndiaCityPickerSheet(
+                          context,
+                          cities: _cities,
+                          isLoading: false,
+                          selected: _selectedCity,
+                          title: _localizations.seekerCity,
+                          searchHint: _localizations.searchLocation,
+                        );
+                        if (picked != null) setState(() => _selectedCity = picked);
+                      },
+                borderRadius: BorderRadius.circular(12),
+                child: InputDecorator(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey.shade300)),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    suffixIcon: _citiesLoading
+                        ? const Padding(
+                            padding: EdgeInsets.all(12),
+                            child: SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2)),
+                          )
+                        : const Icon(Icons.arrow_drop_down),
+                  ),
+                  child: Text(
+                    _selectedCity ??
+                        (_citiesLoading
+                            ? (widget.selectedLanguage == Language.hindi ? 'शहर लोड हो रहे हैं…' : 'Loading cities…')
+                            : _localizations.searchLocation),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: _selectedCity != null ? const Color(0xFF121A2C) : Colors.grey.shade600,
+                    ),
+                  ),
                 ),
-                hint: Text(_localizations.searchLocation),
-                items: _cities.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
-                onChanged: (v) => setState(() => _selectedCity = v),
               ),
               const SizedBox(height: 24),
 
-              // Preferred Role
+              // Preferred role (taxonomy)
               Text(_localizations.preferredJobRole, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF121A2C))),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8, runSpacing: 8,
-                children: _roles.map((role) {
-                  final isSelected = _selectedRole == role;
-                  return GestureDetector(
-                    onTap: () => setState(() => _selectedRole = role),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: isSelected ? const Color(0xFF3D3D7B).withOpacity(0.1) : Colors.grey.shade50,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade300, width: isSelected ? 1.5 : 1),
+              const SizedBox(height: 4),
+              Text(
+                widget.selectedLanguage == Language.hindi
+                    ? 'श्रेणी और उप-श्रेणी चुनें'
+                    : 'Choose category and sub-skills',
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _selectedRole == null
+                          ? (widget.selectedLanguage == Language.hindi ? 'अभी तक नहीं चुना' : 'None selected')
+                          : (_jobTaxonomy?.categoryLabel(_selectedRole!, widget.selectedLanguage == Language.hindi) ?? _selectedRole!),
+                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Color(0xFF121A2C)),
+                    ),
+                    if (_selectedSkills.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: _selectedSkills.map((s) {
+                          final lab = _jobTaxonomy?.compoundLabel(s, widget.selectedLanguage == Language.hindi) ?? s;
+                          return Chip(
+                            label: Text(lab, style: const TextStyle(fontSize: 11)),
+                            visualDensity: VisualDensity.compact,
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          );
+                        }).toList(),
                       ),
-                      child: Text(
-                        _localizedRole(role),
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                          color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade700,
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () async {
+                    final cat = await JobTaxonomyCatalog.instance();
+                    if (!mounted) return;
+                    final hi = widget.selectedLanguage == Language.hindi;
+                    final res = await Navigator.of(context).push<JobTaxonomyPickResult>(
+                      MaterialPageRoute(
+                        builder: (_) => JobTaxonomySelectionScreen(
+                          hindi: hi,
+                          catalog: cat,
+                          initialCategoryId: _selectedRole,
+                          initialCompoundSkills: _selectedSkills.toList(),
                         ),
                       ),
-                    ),
-                  );
-                }).toList(),
+                    );
+                    if (res != null && mounted) {
+                      setState(() {
+                        _selectedRole = res.categoryId;
+                        _selectedSkills
+                          ..clear()
+                          ..addAll(res.compoundSkillIds);
+                      });
+                    }
+                  },
+                  icon: const Icon(Icons.category_outlined),
+                  label: Text(
+                    widget.selectedLanguage == Language.hindi ? 'श्रेणी व कौशल चुनें' : 'Choose category & skills',
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
               ),
               const SizedBox(height: 32),
 
@@ -4518,6 +4721,7 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
             location: job.location, salaryMin: job.salaryMin, salaryMax: job.salaryMax,
             workType: job.workType, experience: job.experience, salonName: job.salonName,
             description: job.description, status: job.status, hasApplied: true, createdAt: job.createdAt,
+            salonPhotoUrls: job.salonPhotoUrls,
           );
         });
         ScaffoldMessenger.of(context).showSnackBar(
@@ -4549,11 +4753,13 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
       body: SafeArea(
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
-            : _selectedTab == 2
-                ? _buildProfileTab()
-                : _selectedTab == 1
-                    ? _buildApplicationsTab()
-                    : _buildJobFeedTab(),
+            : ResponsiveContent(
+                child: _selectedTab == 2
+                    ? _buildProfileTab()
+                    : _selectedTab == 1
+                        ? _buildApplicationsTab()
+                        : _buildJobFeedTab(),
+              ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedTab,
@@ -4578,7 +4784,7 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
           // Header
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+              padding: const EdgeInsets.fromLTRB(0, 20, 0, 8),
               child: Row(
                 children: [
                   Expanded(
@@ -4655,7 +4861,7 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
   Widget _buildCompletionCard() {
     final percent = _seekerProfile?.profileCompletionPercent ?? 0;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -4714,7 +4920,7 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
 
   Widget _buildJobCard(SeekerJobItem job, int index) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 6),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -4759,10 +4965,67 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
                 _infoChip(Icons.access_time, job.workType == 'full_time' ? _localizations.fullTime : _localizations.partTime),
                 if (job.salonName != null) ...[
                   const SizedBox(width: 8),
-                  _infoChip(Icons.storefront_outlined, job.salonName!),
+                  _infoChip(
+                    Icons.storefront_outlined,
+                    job.salonName!,
+                    trailing: job.isSalonVerified
+                        ? const Padding(
+                            padding: EdgeInsets.only(left: 2),
+                            child: Icon(Icons.verified, size: 14, color: Color(0xFF1565C0)),
+                          )
+                        : null,
+                  ),
                 ],
               ],
             ),
+            if (job.salonPhotoUrls.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(
+                _localizations.salonPhotosSeeker,
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.grey.shade800),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 88,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: job.salonPhotoUrls.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  itemBuilder: (context, i) {
+                    final url = job.salonPhotoUrls[i];
+                    return Material(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(10),
+                      child: InkWell(
+                        onTap: () => showJobtreeImagePreview(context, url),
+                        borderRadius: BorderRadius.circular(10),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: SizedBox(
+                            width: 88,
+                            height: 88,
+                            child: Image.network(
+                              url,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => ColoredBox(
+                                color: Colors.grey.shade200,
+                                child: Icon(Icons.storefront_outlined, color: Colors.grey.shade500, size: 32),
+                              ),
+                              loadingBuilder: (ctx, child, prog) {
+                                if (prog == null) return child;
+                                return const Center(
+                                  child: SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2)),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
             const SizedBox(height: 12),
             // Apply button
             SizedBox(
@@ -4790,7 +5053,7 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
     );
   }
 
-  Widget _infoChip(IconData icon, String label) {
+  Widget _infoChip(IconData icon, String label, {Widget? trailing}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(8)),
@@ -4800,6 +5063,7 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
           Icon(icon, size: 14, color: Colors.grey.shade600),
           const SizedBox(width: 4),
           Text(label, style: TextStyle(fontSize: 12, color: Colors.grey.shade700)),
+          if (trailing != null) trailing,
         ],
       ),
     );
@@ -4949,6 +5213,39 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
                       ),
                     ),
                   ],
+                  if (status != 'rejected' && app['id'] != null) ...[
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          final roleLine = (job['customRoleName'] as String?)?.isNotEmpty == true
+                              ? job['customRoleName'].toString()
+                              : (job['jobRole'] ?? '').toString().replaceAll('_', ' ');
+                          final salon = job['salonName']?.toString() ?? '';
+                          final title = salon.isNotEmpty ? '$salon · $roleLine' : roleLine;
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (context) => ApplicationChatScreen(
+                                applicationId: app['id'].toString(),
+                                languageCode: widget.selectedLanguage == Language.hindi ? 'hi' : 'en',
+                                title: title,
+                                isSalonOwner: false,
+                              ),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.chat_bubble_outline, size: 18),
+                        label: Text(widget.selectedLanguage == Language.hindi ? 'संदेश' : 'Message'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF3D3D7B),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          side: const BorderSide(color: Color(0xFF3D3D7B)),
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             );
@@ -4972,21 +5269,84 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
     }
   }
 
+  String _formatSeekerExperienceSummary(SeekerProfile? p) {
+    if (p == null) return '-';
+    final parts = <String>[];
+    if (p.experience == 'fresher') {
+      parts.add(_localizations.fresherSeeker);
+    } else if (p.experience == 'experienced_1_plus') {
+      parts.add(_localizations.experiencedSeeker);
+    } else if (p.experience == 'senior_3_plus') {
+      parts.add(_localizations.seniorSeeker);
+    } else if ((p.experience ?? '').isNotEmpty) {
+      parts.add(p.experience!);
+    }
+    if (p.experienceYears != null) {
+      parts.add(_currentLanguage == Language.hindi ? '${p.experienceYears} वर्ष' : '${p.experienceYears} yrs');
+    }
+    if (parts.isEmpty) return '-';
+    return parts.join(' · ');
+  }
+
+  String _formatSeekerSalaryRange(SeekerProfile? p) {
+    if (p == null) return '-';
+    final min = p.expectedSalary;
+    final max = p.expectedSalaryMax;
+    if (min != null && max != null) return '₹${min.toStringAsFixed(0)} – ₹${max.toStringAsFixed(0)}';
+    if (min != null) return '₹${min.toStringAsFixed(0)}';
+    if (max != null) return '₹${max.toStringAsFixed(0)}';
+    return '-';
+  }
+
+  String _seekerJobTypeLabel(String? jt) {
+    switch (jt) {
+      case 'full_time':
+        return _currentLanguage == Language.hindi ? 'फुल टाइम' : 'Full-time';
+      case 'part_time':
+        return _currentLanguage == Language.hindi ? 'पार्ट टाइम' : 'Part-time';
+      case 'any':
+      default:
+        return _currentLanguage == Language.hindi ? 'कोई भी' : 'Any';
+    }
+  }
+
+  String _seekerMaritalLabel(String? m) {
+    switch (m) {
+      case 'single':
+        return _currentLanguage == Language.hindi ? 'अविवाहित' : 'Single';
+      case 'married':
+        return _currentLanguage == Language.hindi ? 'विवाहित' : 'Married';
+      case 'widowed':
+        return _currentLanguage == Language.hindi ? 'विधवा/विधुर' : 'Widowed';
+      case 'divorced':
+        return _currentLanguage == Language.hindi ? 'तलाकशुदा' : 'Divorced';
+      case 'prefer_not_say':
+        return _currentLanguage == Language.hindi ? 'नहीं बताया' : 'Prefer not to say';
+      default:
+        return m ?? '-';
+    }
+  }
+
   // ============ PROFILE TAB ============
   Widget _buildProfileTab() {
     final p = _seekerProfile;
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
       child: Column(
         children: [
           // Avatar
           CircleAvatar(
             radius: 40,
             backgroundColor: const Color(0xFF3D3D7B).withOpacity(0.1),
-            child: Text(
-              (p?.fullName?.isNotEmpty == true) ? p!.fullName![0].toUpperCase() : '?',
-              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w700, color: Color(0xFF3D3D7B)),
-            ),
+            backgroundImage: (p?.profilePhotoUrl != null && p!.profilePhotoUrl!.trim().isNotEmpty)
+                ? NetworkImage(p.profilePhotoUrl!.trim())
+                : null,
+            child: (p?.profilePhotoUrl == null || p!.profilePhotoUrl!.trim().isEmpty)
+                ? Text(
+                    (p?.fullName?.isNotEmpty == true) ? p!.fullName![0].toUpperCase() : '?',
+                    style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w700, color: Color(0xFF3D3D7B)),
+                  )
+                : null,
           ),
           const SizedBox(height: 12),
           Text(p?.fullName ?? '-', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Color(0xFF121A2C))),
@@ -4995,10 +5355,68 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
 
           // Info cards
           _profileRow(Icons.location_on_outlined, _localizations.seekerCity, p?.city ?? '-'),
-          _profileRow(Icons.work_outline, _localizations.preferredJobRole, p?.preferredRole ?? '-'),
+          if ((p?.preferredCities ?? []).isNotEmpty)
+            _profileRow(
+              Icons.location_searching_outlined,
+              _currentLanguage == Language.hindi ? 'पसंदीदा शहर' : 'Preferred cities',
+              p!.preferredCities.join(', '),
+            ),
+          FutureBuilder<JobTaxonomyCatalog>(
+            future: JobTaxonomyCatalog.instance(),
+            builder: (context, snap) {
+              final hi = _currentLanguage == Language.hindi;
+              final cat = snap.data;
+              final pr = p?.preferredRole;
+              final roleText = pr == null || pr.isEmpty ? '-' : (cat?.categoryLabel(pr, hi) ?? pr);
+              return _profileRow(Icons.work_outline, _localizations.preferredJobRole, roleText);
+            },
+          ),
+          _profileRow(Icons.schedule_outlined, _currentLanguage == Language.hindi ? 'नौकरी का प्रकार' : 'Job type', _seekerJobTypeLabel(p?.jobType)),
+          _profileRow(
+            Icons.flash_on_outlined,
+            _currentLanguage == Language.hindi ? 'तुरंत जॉइन' : 'Immediate join',
+            p == null ? '-' : (p.immediateJoin ? (_currentLanguage == Language.hindi ? 'हाँ' : 'Yes') : (_currentLanguage == Language.hindi ? 'नहीं' : 'No')),
+          ),
           _profileRow(Icons.person_outline, _localizations.selectGender, p?.gender ?? '-'),
-          _profileRow(Icons.timeline, _localizations.experienceField, p?.experience ?? '-'),
-          _profileRow(Icons.currency_rupee, _localizations.expectedSalaryField, p?.expectedSalary != null ? '${p!.expectedSalary}' : '-'),
+          _profileRow(Icons.timeline, _localizations.experienceField, _formatSeekerExperienceSummary(p)),
+          if ((p?.skills ?? []).isNotEmpty)
+            FutureBuilder<JobTaxonomyCatalog>(
+              future: JobTaxonomyCatalog.instance(),
+              builder: (context, snap) {
+                final hi = _currentLanguage == Language.hindi;
+                final cat = snap.data;
+                final skills = p!.skills;
+                final text = skills.map((s) => cat?.compoundLabel(s, hi) ?? s).join(', ');
+                return _profileRow(Icons.auto_awesome_outlined, _localizations.selectRelevantSkills, text);
+              },
+            ),
+          if (p?.email != null && p!.email!.trim().isNotEmpty)
+            _profileRow(Icons.email_outlined, _currentLanguage == Language.hindi ? 'ईमेल' : 'Email', p.email!.trim()),
+          if (p?.maritalStatus != null && p!.maritalStatus!.isNotEmpty)
+            _profileRow(Icons.favorite_outline, _currentLanguage == Language.hindi ? 'वैवाहिक स्थिति' : 'Marital status', _seekerMaritalLabel(p.maritalStatus)),
+          if (p?.currentSalary != null)
+            _profileRow(
+              Icons.payments_outlined,
+              _currentLanguage == Language.hindi ? 'वर्तमान सैलरी' : 'Current salary',
+              '₹${p!.currentSalary!.toStringAsFixed(0)}',
+            ),
+          _profileRow(Icons.currency_rupee, _localizations.expectedSalaryField, _formatSeekerSalaryRange(p)),
+          if (p?.hasProfessionalCourse != null)
+            _profileRow(
+              Icons.school_outlined,
+              _currentLanguage == Language.hindi ? 'प्रोफेशनल कोर्स' : 'Professional course',
+              p!.hasProfessionalCourse == true ? (_currentLanguage == Language.hindi ? 'हाँ' : 'Yes') : (_currentLanguage == Language.hindi ? 'नहीं' : 'No'),
+            ),
+          if (p?.professionalCourseCertificateUrl != null && p!.professionalCourseCertificateUrl!.trim().isNotEmpty)
+            _profileRow(Icons.verified_outlined, _currentLanguage == Language.hindi ? 'प्रमाणपत्र' : 'Certificate', _currentLanguage == Language.hindi ? 'अपलोड किया गया' : 'On file'),
+          if ((p?.workPortfolioUrls ?? []).isNotEmpty)
+            _profileRow(
+              Icons.collections_outlined,
+              _currentLanguage == Language.hindi ? 'पोर्टफोलियो' : 'Portfolio',
+              _currentLanguage == Language.hindi
+                  ? '${(p?.workPortfolioUrls ?? []).length} फ़ाइलें'
+                  : '${(p?.workPortfolioUrls ?? []).length} items',
+            ),
 
           const SizedBox(height: 24),
 
@@ -5098,6 +5516,7 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
   final ApiService _apiService = ApiService();
   late AppLocalizations _localizations;
   bool _isSaving = false;
+  bool _pickingPhoto = false;
 
   String? _experience;
   final TextEditingController _salaryController = TextEditingController();
@@ -5105,17 +5524,40 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
   String? _selectedCity;
   String? _selectedRole;
   String? _selectedGender;
+  List<String> _cities = [];
+  bool _citiesLoading = true;
+  Set<String> _selectedSkills = {};
+  JobTaxonomyCatalog? _jobTaxonomy;
+  String? _profilePhotoUrl;
+  late Map<String, List<Map<String, String>>> _skillBundlesPerRole;
+
+  String? _jobType;
+  final Set<String> _preferredCities = {};
+  bool _immediateJoin = true;
+  final TextEditingController _currentSalaryController = TextEditingController();
+  final TextEditingController _expectedSalaryMaxController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  double _experienceYears = 0;
+  String? _maritalStatus;
+  bool? _hasProfessionalCourse;
+  String? _certificateUrl;
+  final List<Map<String, String>> _workPortfolio = [];
+  bool _uploadingCertificate = false;
+  bool _uploadingPortfolio = false;
+
+  static const List<String> _coreServiceRoles = [
+    'hair_stylist', 'beautician', 'makeup_artist', 'massage_therapist',
+  ];
+
+  static final List<Map<String, String>> _generalSkillDefs = [
+    {'id': 'customer_service', 'labelEn': 'Customer service', 'labelHi': 'ग्राहक सेवा'},
+    {'id': 'cash_billing', 'labelEn': 'Cash / billing', 'labelHi': 'कैश / बिलिंग'},
+    {'id': 'english_basic', 'labelEn': 'Basic English', 'labelHi': 'बेसिक अंग्रेज़ी'},
+    {'id': 'hygiene_standards', 'labelEn': 'Hygiene & safety', 'labelHi': 'सफ़ाई व सुरक्षा'},
+    {'id': 'teamwork', 'labelEn': 'Teamwork', 'labelHi': 'टीम वर्क'},
+  ];
 
   final List<String> _experienceOptions = ['fresher', 'experienced_1_plus', 'senior_3_plus'];
-  final List<String> _cities = [
-    'Delhi', 'Mumbai', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata',
-    'Pune', 'Ahmedabad', 'Jaipur', 'Lucknow', 'Chandigarh', 'Noida',
-    'Gurgaon', 'Indore', 'Bhopal', 'Surat', 'Nagpur', 'Patna',
-  ];
-  final List<String> _roles = [
-    'hair_stylist', 'beautician', 'makeup_artist', 'massage_therapist',
-    'receptionist', 'helper', 'manager', 'other',
-  ];
 
   @override
   void initState() {
@@ -5127,28 +5569,171 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
     _selectedCity = p.city;
     _selectedRole = p.preferredRole;
     _experience = p.experience;
+    _selectedSkills = p.skills.toSet();
+    _profilePhotoUrl = p.profilePhotoUrl;
     if (p.expectedSalary != null) _salaryController.text = p.expectedSalary!.toStringAsFixed(0);
+    _jobType = p.jobType ?? 'any';
+    _immediateJoin = p.immediateJoin;
+    _preferredCities.clear();
+    _preferredCities.addAll(p.preferredCities);
+    if (_preferredCities.isEmpty && (p.city ?? '').isNotEmpty) {
+      _preferredCities.add(p.city!);
+    }
+    if (p.currentSalary != null) _currentSalaryController.text = p.currentSalary!.toStringAsFixed(0);
+    if (p.expectedSalaryMax != null) _expectedSalaryMaxController.text = p.expectedSalaryMax!.toStringAsFixed(0);
+    if (p.experienceYears != null) {
+      _experienceYears = p.experienceYears!.toDouble().clamp(0, 25);
+    } else if (p.experience == 'fresher') {
+      _experienceYears = 0;
+    } else if (p.experience == 'experienced_1_plus') {
+      _experienceYears = 1;
+    } else if (p.experience == 'senior_3_plus') {
+      _experienceYears = 3;
+    }
+    _maritalStatus = p.maritalStatus;
+    _emailController.text = p.email ?? '';
+    _hasProfessionalCourse = p.hasProfessionalCourse;
+    _certificateUrl = p.professionalCourseCertificateUrl;
+    _workPortfolio.clear();
+    for (final item in p.workPortfolioUrls) {
+      _workPortfolio.add({'url': item.url, 'kind': item.kind});
+    }
+    _initSkillBundles();
+    _syncSkillsToRole(_selectedRole);
+    _cities = List<String>.from(IndiaCityService.kFallbackCities);
+    _loadCitiesIntoState();
+    JobTaxonomyCatalog.instance().then((c) {
+      if (!mounted) return;
+      setState(() {
+        _jobTaxonomy = c;
+        _syncSkillsToRole(_selectedRole);
+      });
+    });
+  }
+
+  void _initSkillBundles() {
+    _skillBundlesPerRole = {
+      'hair_stylist': [
+        {'id': 'haircuts_styling', 'label': _localizations.haircutsStyling},
+        {'id': 'color_treatments', 'label': _localizations.colorTreatments},
+        {'id': 'hair_spa_care', 'label': _localizations.hairSpaCare},
+        {'id': 'beard_grooming', 'label': _localizations.beardGrooming},
+      ],
+      'beautician': [
+        {'id': 'facials_skincare', 'label': _localizations.facialsSkincare},
+        {'id': 'waxing_threading', 'label': _localizations.waxingThreading},
+        {'id': 'manicure_pedicure', 'label': _localizations.manicurePedicure},
+        {'id': 'bleach_cleanup', 'label': _localizations.bleachCleanup},
+      ],
+      'makeup_artist': [
+        {'id': 'bridal_makeup', 'label': _localizations.bridalMakeup},
+        {'id': 'party_makeup', 'label': _localizations.partyMakeup},
+        {'id': 'hd_airbrush', 'label': _localizations.hdAirbrush},
+        {'id': 'eye_makeup', 'label': _localizations.eyeMakeup},
+      ],
+      'massage_therapist': [
+        {'id': 'body_massage', 'label': _localizations.bodyMassage},
+        {'id': 'head_shoulder', 'label': _localizations.headShoulder},
+        {'id': 'aromatherapy', 'label': _localizations.aromatherapy},
+        {'id': 'foot_reflexology', 'label': _localizations.footReflexology},
+      ],
+    };
+  }
+
+  Future<void> _loadCitiesIntoState() async {
+    setState(() => _citiesLoading = true);
+    final loaded = await IndiaCityService.instance.loadCities();
+    if (!mounted) return;
+    setState(() {
+      _cities = loaded;
+      _citiesLoading = false;
+    });
+  }
+
+  void _syncSkillsToRole(String? role) {
+    if (role == null) {
+      _selectedSkills.clear();
+      return;
+    }
+    final cat = _jobTaxonomy?.categoryById(role);
+    if (cat != null) {
+      _selectedSkills.removeWhere((s) => !s.startsWith('$role/'));
+      return;
+    }
+    if (_coreServiceRoles.contains(role)) {
+      final valid = _skillBundlesPerRole[role]?.map((e) => e['id']!).toSet() ?? {};
+      _selectedSkills.removeWhere((s) => !valid.contains(s));
+    } else {
+      final valid = _generalSkillDefs.map((e) => e['id']!).toSet();
+      _selectedSkills.removeWhere((s) => !valid.contains(s));
+    }
+  }
+
+  Future<void> _pickSeekerPhoto() async {
+    if (_pickingPhoto) return;
+    setState(() => _pickingPhoto = true);
+    try {
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(source: ImageSource.gallery, maxWidth: 1200, imageQuality: 85);
+      if (picked == null || !mounted) return;
+      final file = File(picked.path);
+      final contentType = jobtreeInferImageContentType(picked.path, picked.mimeType);
+
+      final bytes = await file.readAsBytes();
+      final uploadRes = await _apiService.uploadSeekerMediaDirect(
+        bodyBytes: bytes,
+        contentType: contentType,
+        mediaType: 'photo',
+        filename: picked.name,
+      );
+      if (!uploadRes.success || uploadRes.data == null) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(widget.selectedLanguage == Language.hindi
+              ? 'अपलोड असफल: ${uploadRes.message ?? uploadRes.errorCode ?? ''}'
+              : 'Upload failed: ${uploadRes.message ?? uploadRes.errorCode ?? ''}'),
+          backgroundColor: Colors.redAccent,
+        ));
+        return;
+      }
+      final fileUrl = uploadRes.data!['fileUrl'] as String?;
+      if (fileUrl == null || fileUrl.isEmpty) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(widget.selectedLanguage == Language.hindi ? 'अपलोड असफल' : 'Upload failed'),
+          backgroundColor: Colors.redAccent,
+        ));
+        return;
+      }
+      final patch = await _apiService.patchSeekerProfile({'profilePhotoUrl': fileUrl});
+      if (!mounted) return;
+      if (patch.success) {
+        setState(() => _profilePhotoUrl = fileUrl);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(widget.selectedLanguage == Language.hindi ? 'फोटो सहेजा गया' : 'Photo saved'),
+          backgroundColor: const Color(0xFF3D3D7B),
+        ));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(widget.selectedLanguage == Language.hindi ? 'फोटो में त्रुटि' : 'Photo error'),
+          backgroundColor: Colors.redAccent,
+        ));
+      }
+    } finally {
+      if (mounted) setState(() => _pickingPhoto = false);
+    }
   }
 
   @override
   void dispose() {
     _salaryController.dispose();
     _nameController.dispose();
+    _currentSalaryController.dispose();
+    _expectedSalaryMaxController.dispose();
+    _emailController.dispose();
     super.dispose();
-  }
-
-  String _localizedRole(String roleId) {
-    final map = {
-      'hair_stylist': _localizations.hairStylist,
-      'beautician': _localizations.beautician,
-      'makeup_artist': _localizations.makeupArtist,
-      'massage_therapist': _localizations.massageTherapist,
-      'receptionist': _localizations.receptionist,
-      'helper': _localizations.helper,
-      'manager': _localizations.manager,
-      'other': _localizations.other,
-    };
-    return map[roleId] ?? roleId;
   }
 
   String _localizedExperience(String exp) {
@@ -5156,6 +5741,138 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
     if (exp == 'experienced_1_plus') return _localizations.experiencedSeeker;
     if (exp == 'senior_3_plus') return _localizations.seniorSeeker;
     return exp;
+  }
+
+  String _jobTypeLabel(String code) {
+    final hi = widget.selectedLanguage == Language.hindi;
+    switch (code) {
+      case 'full_time':
+        return hi ? 'फुल टाइम' : 'Full-time';
+      case 'part_time':
+        return hi ? 'पार्ट टाइम' : 'Part-time';
+      case 'any':
+      default:
+        return hi ? 'कोई भी' : 'Any';
+    }
+  }
+
+  String _maritalLabel(String code) {
+    final hi = widget.selectedLanguage == Language.hindi;
+    switch (code) {
+      case 'single':
+        return hi ? 'अविवाहित' : 'Single';
+      case 'married':
+        return hi ? 'विवाहित' : 'Married';
+      case 'widowed':
+        return hi ? 'विधवा/विधुर' : 'Widowed';
+      case 'divorced':
+        return hi ? 'तलाकशुदा' : 'Divorced';
+      case 'prefer_not_say':
+        return hi ? 'नहीं बताना' : 'Prefer not to say';
+      default:
+        return code;
+    }
+  }
+
+  Future<String?> _uploadSeekerFileToPresigned({
+    required String mediaType,
+    required File file,
+    required String contentType,
+    String? filename,
+  }) async {
+    final bytes = await file.readAsBytes();
+    final uploadRes = await _apiService.uploadSeekerMediaDirect(
+      bodyBytes: bytes,
+      contentType: contentType,
+      mediaType: mediaType,
+      filename: filename,
+    );
+    if (!uploadRes.success || uploadRes.data == null) return null;
+    final url = uploadRes.data!['fileUrl'] as String?;
+    if (url == null || url.isEmpty) return null;
+    return url;
+  }
+
+  Future<void> _pickCertificate() async {
+    if (_uploadingCertificate) return;
+    setState(() => _uploadingCertificate = true);
+    try {
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(source: ImageSource.gallery, maxWidth: 1600, imageQuality: 88);
+      if (picked == null || !mounted) return;
+      final file = File(picked.path);
+      final lower = picked.path.toLowerCase();
+      String contentType = 'image/jpeg';
+      if (lower.endsWith('.png')) contentType = 'image/png';
+      if (lower.endsWith('.webp')) contentType = 'image/webp';
+      final url = await _uploadSeekerFileToPresigned(
+        mediaType: 'photo',
+        file: file,
+        contentType: contentType,
+        filename: picked.name,
+      );
+      if (!mounted) return;
+      if (url != null) {
+        setState(() => _certificateUrl = url);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(widget.selectedLanguage == Language.hindi ? 'प्रमाणपत्र अपलोड हुआ' : 'Certificate uploaded'),
+          backgroundColor: const Color(0xFF3D3D7B),
+        ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(widget.selectedLanguage == Language.hindi ? 'अपलोड असफल' : 'Upload failed'),
+          backgroundColor: Colors.redAccent,
+        ));
+      }
+    } finally {
+      if (mounted) setState(() => _uploadingCertificate = false);
+    }
+  }
+
+  Future<void> _pickPortfolioMedia({required bool video}) async {
+    if (_uploadingPortfolio || _workPortfolio.length >= 8) return;
+    setState(() => _uploadingPortfolio = true);
+    try {
+      final picker = ImagePicker();
+      final XFile? picked = video
+          ? await picker.pickVideo(source: ImageSource.gallery)
+          : await picker.pickImage(source: ImageSource.gallery, maxWidth: 1400, imageQuality: 85);
+      if (picked == null || !mounted) return;
+      final file = File(picked.path);
+      final lower = picked.path.toLowerCase();
+      String contentType;
+      String mediaType;
+      String kind;
+      if (video) {
+        contentType = 'video/mp4';
+        mediaType = 'video';
+        kind = 'video';
+        if (lower.endsWith('.mov')) contentType = 'video/quicktime';
+      } else {
+        kind = 'image';
+        mediaType = 'photo';
+        contentType = 'image/jpeg';
+        if (lower.endsWith('.png')) contentType = 'image/png';
+        if (lower.endsWith('.webp')) contentType = 'image/webp';
+      }
+      final url = await _uploadSeekerFileToPresigned(
+        mediaType: mediaType,
+        file: file,
+        contentType: contentType,
+        filename: picked.name,
+      );
+      if (!mounted) return;
+      if (url != null) {
+        setState(() => _workPortfolio.add({'url': url, 'kind': kind}));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(widget.selectedLanguage == Language.hindi ? 'अपलोड असफल' : 'Upload failed'),
+          backgroundColor: Colors.redAccent,
+        ));
+      }
+    } finally {
+      if (mounted) setState(() => _uploadingPortfolio = false);
+    }
   }
 
   Future<void> _save() async {
@@ -5167,14 +5884,68 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
       if (_selectedCity != null) data['city'] = _selectedCity;
       if (_selectedRole != null) data['preferredRole'] = _selectedRole;
       if (_experience != null) data['experience'] = _experience;
-      if (_salaryController.text.trim().isNotEmpty) data['expectedSalary'] = double.tryParse(_salaryController.text.trim());
-
-      if (data.isNotEmpty) {
-        await _apiService.patchSeekerProfile(data);
+      data['experienceYears'] = _experienceYears.round().clamp(0, 50);
+      if (_salaryController.text.trim().isNotEmpty) {
+        final v = double.tryParse(_salaryController.text.trim());
+        if (v != null) data['expectedSalary'] = v;
       }
+      if (_expectedSalaryMaxController.text.trim().isNotEmpty) {
+        final v = double.tryParse(_expectedSalaryMaxController.text.trim());
+        if (v != null) data['expectedSalaryMax'] = v;
+      }
+      if (_currentSalaryController.text.trim().isNotEmpty) {
+        final v = double.tryParse(_currentSalaryController.text.trim());
+        if (v != null) data['currentSalary'] = v;
+      }
+      data['skills'] = _selectedSkills.toList();
+      if (_profilePhotoUrl != null && _profilePhotoUrl!.trim().isNotEmpty) {
+        data['profilePhotoUrl'] = _profilePhotoUrl!.trim();
+      }
+      if (_maritalStatus != null) data['maritalStatus'] = _maritalStatus;
+      if (_emailController.text.trim().isNotEmpty) {
+        data['email'] = _emailController.text.trim();
+      }
+      if (_hasProfessionalCourse != null) {
+        data['hasProfessionalCourse'] = _hasProfessionalCourse;
+      }
+      if (_certificateUrl != null && _certificateUrl!.trim().isNotEmpty) {
+        data['professionalCourseCertificateUrl'] = _certificateUrl!.trim();
+      }
+      if (_workPortfolio.isNotEmpty) {
+        data['workPortfolioUrls'] = _workPortfolio.map((e) => {'url': e['url']!, 'kind': e['kind'] ?? 'image'}).toList();
+      }
+
+      final patch = await _apiService.patchSeekerProfile(data);
+      if (!patch.success) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(patch.message ?? (widget.selectedLanguage == Language.hindi ? 'सहेजने में त्रुटि' : 'Could not save')),
+            backgroundColor: Colors.redAccent,
+          ));
+        }
+        return;
+      }
+
+      final prefRes = await _apiService.updateSeekerPreferences({
+        'jobType': _jobType ?? 'any',
+        'preferredCities': _preferredCities.toList(),
+        'immediateJoin': _immediateJoin,
+      });
+      if (!prefRes.success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(prefRes.message ?? (widget.selectedLanguage == Language.hindi ? 'प्राथमिकताएँ सहेजी नहीं गईं' : 'Preferences not saved')),
+          backgroundColor: Colors.orange,
+        ));
+      }
+
       if (mounted) Navigator.pop(context);
     } catch (e) {
-      print('Error saving enhanced profile: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(widget.selectedLanguage == Language.hindi ? 'त्रुटि: $e' : 'Error: $e'),
+          backgroundColor: Colors.redAccent,
+        ));
+      }
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }
@@ -5207,6 +5978,53 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 ),
               ),
+              Text(
+                widget.selectedLanguage == Language.hindi
+                    ? 'आधार/पहचान पत्र जैसा ही नाम लिखें'
+                    : 'Spell your name the same way as on your ID',
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              ),
+              const SizedBox(height: 20),
+
+              Text(
+                widget.selectedLanguage == Language.hindi ? 'प्रोफाइल फोटो' : 'Profile photo',
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: _pickingPhoto ? null : _pickSeekerPhoto,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 44,
+                      backgroundColor: const Color(0xFF3D3D7B).withOpacity(0.12),
+                      backgroundImage: (_profilePhotoUrl != null && _profilePhotoUrl!.isNotEmpty)
+                          ? NetworkImage(_profilePhotoUrl!)
+                          : null,
+                      child: (_profilePhotoUrl == null || _profilePhotoUrl!.isEmpty)
+                          ? Text(
+                              _nameController.text.trim().isNotEmpty
+                                  ? _nameController.text.trim()[0].toUpperCase()
+                                  : '?',
+                              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: Color(0xFF3D3D7B)),
+                            )
+                          : null,
+                    ),
+                    if (_pickingPhoto)
+                      const SizedBox(
+                        width: 36,
+                        height: 36,
+                        child: CircularProgressIndicator(strokeWidth: 3),
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                widget.selectedLanguage == Language.hindi ? 'फोटो बदलने के लिए टैप करें' : 'Tap to add or change photo',
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              ),
               const SizedBox(height: 20),
 
               // Gender
@@ -5238,23 +6056,182 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
               // City
               Text(_localizations.seekerCity, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
-              DropdownButtonFormField<String>(
-                value: _selectedCity,
-                decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)), contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14)),
-                items: _cities.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
-                onChanged: (v) => setState(() => _selectedCity = v),
+              InkWell(
+                onTap: _citiesLoading
+                    ? null
+                    : () async {
+                        final picked = await showIndiaCityPickerSheet(
+                          context,
+                          cities: _cities,
+                          isLoading: false,
+                          selected: _selectedCity,
+                          title: _localizations.seekerCity,
+                          searchHint: _localizations.searchLocation,
+                        );
+                        if (picked != null) setState(() => _selectedCity = picked);
+                      },
+                borderRadius: BorderRadius.circular(12),
+                child: InputDecorator(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    suffixIcon: _citiesLoading
+                        ? const Padding(
+                            padding: EdgeInsets.all(12),
+                            child: SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2)),
+                          )
+                        : const Icon(Icons.arrow_drop_down),
+                  ),
+                  child: Text(
+                    _selectedCity ??
+                        (_citiesLoading
+                            ? (widget.selectedLanguage == Language.hindi ? 'शहर लोड हो रहे हैं…' : 'Loading cities…')
+                            : _localizations.searchLocation),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: _selectedCity != null ? const Color(0xFF121A2C) : Colors.grey.shade600,
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(height: 20),
 
-              // Role
-              Text(_localizations.preferredJobRole, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+              Text(
+                widget.selectedLanguage == Language.hindi ? 'काम करने की पसंदीदा जगहें' : 'Preferred work cities',
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                widget.selectedLanguage == Language.hindi ? 'एक से ज़्यादा शहर जोड़ सकते हैं' : 'You can add more than one city',
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              ),
               const SizedBox(height: 8),
               Wrap(
-                spacing: 8, runSpacing: 8,
-                children: _roles.map((r) {
-                  final isSelected = _selectedRole == r;
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  ..._preferredCities.map((c) {
+                    return Chip(
+                      label: Text(c, style: const TextStyle(fontSize: 13)),
+                      onDeleted: () => setState(() => _preferredCities.remove(c)),
+                      deleteIconColor: const Color(0xFF3D3D7B),
+                    );
+                  }),
+                  ActionChip(
+                    label: Text(widget.selectedLanguage == Language.hindi ? '+ शहर' : '+ Add city'),
+                    onPressed: _citiesLoading
+                        ? null
+                        : () async {
+                            final picked = await showIndiaCityPickerSheet(
+                              context,
+                              cities: _cities,
+                              isLoading: false,
+                              selected: null,
+                              title: widget.selectedLanguage == Language.hindi ? 'शहर चुनें' : 'Pick a city',
+                              searchHint: _localizations.searchLocation,
+                            );
+                            if (picked != null && picked.isNotEmpty) {
+                              setState(() => _preferredCities.add(picked));
+                            }
+                          },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+
+              // Role + skills (taxonomy)
+              Text(_localizations.preferredJobRole, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+              const SizedBox(height: 4),
+              Text(
+                widget.selectedLanguage == Language.hindi
+                    ? 'श्रेणी और उप-श्रेणी चुनें'
+                    : 'Choose category and sub-skills',
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _selectedRole == null
+                          ? (widget.selectedLanguage == Language.hindi ? 'अभी तक नहीं चुना' : 'None selected')
+                          : (_jobTaxonomy?.categoryLabel(_selectedRole!, widget.selectedLanguage == Language.hindi) ?? _selectedRole!),
+                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Color(0xFF121A2C)),
+                    ),
+                    if (_selectedSkills.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: _selectedSkills.map((s) {
+                          final lab = _jobTaxonomy?.compoundLabel(s, widget.selectedLanguage == Language.hindi) ?? s;
+                          return Chip(
+                            label: Text(lab, style: const TextStyle(fontSize: 11)),
+                            visualDensity: VisualDensity.compact,
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () async {
+                    final cat = await JobTaxonomyCatalog.instance();
+                    if (!mounted) return;
+                    final hi = widget.selectedLanguage == Language.hindi;
+                    final res = await Navigator.of(context).push<JobTaxonomyPickResult>(
+                      MaterialPageRoute(
+                        builder: (_) => JobTaxonomySelectionScreen(
+                          hindi: hi,
+                          catalog: cat,
+                          initialCategoryId: _selectedRole,
+                          initialCompoundSkills: _selectedSkills.toList(),
+                        ),
+                      ),
+                    );
+                    if (res != null && mounted) {
+                      setState(() {
+                        _selectedRole = res.categoryId;
+                        _selectedSkills
+                          ..clear()
+                          ..addAll(res.compoundSkillIds);
+                      });
+                    }
+                  },
+                  icon: const Icon(Icons.category_outlined),
+                  label: Text(
+                    widget.selectedLanguage == Language.hindi ? 'श्रेणी व कौशल चुनें' : 'Choose category & skills',
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              Text(
+                widget.selectedLanguage == Language.hindi ? 'नौकरी का प्रकार' : 'Job type',
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: ['full_time', 'part_time', 'any'].map((jt) {
+                  final isSelected = (_jobType ?? 'any') == jt;
                   return GestureDetector(
-                    onTap: () => setState(() => _selectedRole = r),
+                    onTap: () => setState(() => _jobType = jt),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                       decoration: BoxDecoration(
@@ -5262,12 +6239,30 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade300),
                       ),
-                      child: Text(_localizedRole(r), style: TextStyle(fontSize: 13, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400, color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade700)),
+                      child: Text(
+                        _jobTypeLabel(jt),
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                          color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade700,
+                        ),
+                      ),
                     ),
                   );
                 }).toList(),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 8),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  widget.selectedLanguage == Language.hindi ? 'तुरंत जॉइन कर सकता हूँ' : 'Available to join immediately',
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF121A2C)),
+                ),
+                value: _immediateJoin,
+                activeColor: const Color(0xFF3D3D7B),
+                onChanged: (v) => setState(() => _immediateJoin = v),
+              ),
+              const SizedBox(height: 12),
 
               // Experience
               Text(_localizations.experienceField, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
@@ -5290,10 +6285,93 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
                   );
                 }).toList(),
               ),
+              const SizedBox(height: 8),
+              Text(
+                widget.selectedLanguage == Language.hindi
+                    ? 'कुल अनुभव (साल) — ${_experienceYears.round()}'
+                    : 'Total experience (years): ${_experienceYears.round()}',
+                style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+              ),
+              Slider(
+                value: _experienceYears.clamp(0, 25),
+                min: 0,
+                max: 25,
+                divisions: 25,
+                activeColor: const Color(0xFF3D3D7B),
+                onChanged: (v) => setState(() => _experienceYears = v),
+              ),
               const SizedBox(height: 20),
 
-              // Expected Salary
-              Text(_localizations.expectedSalaryField, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+              Text(
+                widget.selectedLanguage == Language.hindi ? 'ईमेल (वैकल्पिक)' : 'Email (optional)',
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  hintText: 'you@example.com',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              Text(
+                widget.selectedLanguage == Language.hindi ? 'वैवाहिक स्थिति' : 'Marital status',
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: ['single', 'married', 'widowed', 'divorced', 'prefer_not_say'].map((m) {
+                  final isSelected = _maritalStatus == m;
+                  return GestureDetector(
+                    onTap: () => setState(() => _maritalStatus = m),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: isSelected ? const Color(0xFF3D3D7B).withOpacity(0.1) : Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade300),
+                      ),
+                      child: Text(
+                        _maritalLabel(m),
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                          color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade700,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 20),
+
+              Text(
+                widget.selectedLanguage == Language.hindi ? 'वर्तमान सैलरी (महीने में)' : 'Current salary (monthly)',
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _currentSalaryController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  prefixText: '₹ ',
+                  hintText: '12000',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              Text(
+                widget.selectedLanguage == Language.hindi ? 'अपेक्षित सैलरी (न्यूनतम)' : 'Expected salary (minimum)',
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
               const SizedBox(height: 8),
               TextField(
                 controller: _salaryController,
@@ -5303,6 +6381,133 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
                   hintText: '15000',
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                widget.selectedLanguage == Language.hindi ? 'अपेक्षित सैलरी (अधिकतम, वैकल्पिक)' : 'Expected salary max (optional)',
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _expectedSalaryMaxController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  prefixText: '₹ ',
+                  hintText: '22000',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              Text(
+                widget.selectedLanguage == Language.hindi ? 'कोई प्रोफेशनल कोर्स किया है?' : 'Completed a professional course?',
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  ChoiceChip(
+                    label: Text(widget.selectedLanguage == Language.hindi ? 'हाँ' : 'Yes'),
+                    selected: _hasProfessionalCourse == true,
+                    onSelected: (_) => setState(() => _hasProfessionalCourse = true),
+                  ),
+                  const SizedBox(width: 8),
+                  ChoiceChip(
+                    label: Text(widget.selectedLanguage == Language.hindi ? 'नहीं' : 'No'),
+                    selected: _hasProfessionalCourse == false,
+                    onSelected: (_) => setState(() => _hasProfessionalCourse = false),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: _uploadingCertificate ? null : _pickCertificate,
+                icon: _uploadingCertificate
+                    ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                    : const Icon(Icons.upload_file_outlined, size: 20),
+                label: Text(
+                  widget.selectedLanguage == Language.hindi ? 'प्रमाणपत्र फोटो अपलोड' : 'Upload certificate photo',
+                  style: const TextStyle(fontSize: 13),
+                ),
+              ),
+              if (_certificateUrl != null && _certificateUrl!.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    widget.selectedLanguage == Language.hindi ? 'अपलोड हो गया' : 'Uploaded',
+                    style: TextStyle(fontSize: 12, color: Colors.green.shade700),
+                  ),
+                ),
+              const SizedBox(height: 20),
+
+              Text(
+                widget.selectedLanguage == Language.hindi ? 'काम के नमूने (फोटो / छोटा वीडियो)' : 'Work portfolio (photos / short video)',
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 88,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    ..._workPortfolio.asMap().entries.map((e) {
+                      final i = e.key;
+                      final item = e.value;
+                      final isVideo = item['kind'] == 'video';
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Container(
+                                width: 88,
+                                height: 88,
+                                color: Colors.grey.shade200,
+                                child: isVideo
+                                    ? const Center(child: Icon(Icons.videocam, size: 36, color: Color(0xFF3D3D7B)))
+                                    : Image.network(item['url']!, fit: BoxFit.cover),
+                              ),
+                            ),
+                            Positioned(
+                              top: 2,
+                              right: 2,
+                              child: Material(
+                                color: Colors.black54,
+                                shape: const CircleBorder(),
+                                child: InkWell(
+                                  customBorder: const CircleBorder(),
+                                  onTap: () => setState(() => _workPortfolio.removeAt(i)),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(4),
+                                    child: Icon(Icons.close, color: Colors.white, size: 16),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                    if (_workPortfolio.length < 8)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Column(
+                          children: [
+                            IconButton.filledTonal(
+                              onPressed: _uploadingPortfolio ? null : () => _pickPortfolioMedia(video: false),
+                              icon: const Icon(Icons.add_photo_alternate_outlined),
+                            ),
+                            IconButton.filledTonal(
+                              onPressed: _uploadingPortfolio ? null : () => _pickPortfolioMedia(video: true),
+                              icon: const Icon(Icons.video_call_outlined),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
                 ),
               ),
               const SizedBox(height: 32),
@@ -5347,7 +6552,8 @@ class PostJobStep1Screen extends StatefulWidget {
 class _PostJobStep1ScreenState extends State<PostJobStep1Screen> {
   late AppLocalizations _localizations;
   final ApiService _apiService = ApiService();
-  
+  JobTaxonomyCatalog? _jobTaxonomy;
+
   // Mandatory fields
   String? _selectedJobRole;
   String? _selectedLocation;
@@ -5380,14 +6586,6 @@ class _PostJobStep1ScreenState extends State<PostJobStep1Screen> {
   // Skill bundles per role
   Map<String, List<Map<String, String>>> _skillBundlesPerRole = {};
   
-  // Core service roles that show skills
-  static const List<String> _coreServiceRoles = [
-    'hair_stylist',
-    'beautician', 
-    'makeup_artist',
-    'massage_therapist',
-  ];
-  
   // Saving state
   bool _isSavingProfile = false;
 
@@ -5400,6 +6598,9 @@ class _PostJobStep1ScreenState extends State<PostJobStep1Screen> {
     _initSkillBundles();
     _loadLocations();
     _loadExistingProfile();
+    JobTaxonomyCatalog.instance().then((c) {
+      if (mounted) setState(() => _jobTaxonomy = c);
+    });
   }
   
   // Load existing salon profile data if available
@@ -5517,182 +6718,41 @@ class _PostJobStep1ScreenState extends State<PostJobStep1Screen> {
       ],
     };
   }
-  
-  bool get _shouldShowSkills => _coreServiceRoles.contains(_selectedJobRole);
-  
-  String get _displayRoleName {
-    // For public display, never show "Other"
-    if (_selectedJobRole == 'other') {
-      if (_customRoleNameController.text.isNotEmpty) {
-        return _customRoleNameController.text;
-      }
-      return _localizations.salonStaff; // Neutral fallback
-    }
-    final role = _jobRoles.firstWhere(
-      (r) => r['id'] == _selectedJobRole,
-      orElse: () => {'label': ''},
-    );
-    return role['label'] as String? ?? '';
-  }
 
   Future<void> _loadLocations() async {
-    // Initialize with common Indian cities
-    _allLocations = [
-      'Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai',
-      'Kolkata', 'Pune', 'Ahmedabad', 'Jaipur', 'Lucknow',
-      'Surat', 'Kanpur', 'Nagpur', 'Indore', 'Thane',
-      'Bhopal', 'Visakhapatnam', 'Patna', 'Vadodara', 'Ghaziabad',
-      'Ludhiana', 'Agra', 'Nashik', 'Faridabad', 'Meerut',
-      'Rajkot', 'Varanasi', 'Srinagar', 'Aurangabad', 'Dhanbad',
-      'Amritsar', 'Navi Mumbai', 'Allahabad', 'Ranchi', 'Howrah',
-      'Coimbatore', 'Jabalpur', 'Gwalior', 'Vijayawada', 'Jodhpur',
-      'Madurai', 'Raipur', 'Kota', 'Chandigarh', 'Guwahati',
-      'Solapur', 'Hubli', 'Mysore', 'Tiruchirappalli', 'Bareilly',
-    ];
-    
-    // Try to load from API in background
     setState(() => _isLoadingLocations = true);
     try {
-      // Use POST request to get cities for India specifically
-      final response = await http.post(
-        Uri.parse('https://countriesnow.space/api/v0.1/countries/cities'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({'country': 'india'}),
-      ).timeout(const Duration(seconds: 10));
-      
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['error'] == false && data['data'] != null) {
-          final cities = List<String>.from(data['data']);
-          if (cities.isNotEmpty) {
-            // Filter out single-word entries that might be names, keep city-like entries
-            final validCities = cities.where((city) => city.length > 2).toList();
-            validCities.sort();
-            if (validCities.isNotEmpty) {
-              _allLocations = validCities;
-            }
-          }
-        }
-      }
-    } catch (e) {
-      // Silently use static list as fallback
-      debugPrint('Location API failed, using fallback: $e');
+      final cities = await IndiaCityService.instance.loadCities();
+      if (mounted) setState(() => _allLocations = cities);
+    } finally {
+      if (mounted) setState(() => _isLoadingLocations = false);
     }
-    if (mounted) setState(() => _isLoadingLocations = false);
   }
 
   bool get _isMandatoryFieldsFilled {
-    // For "Other" role, category selection is required
+    if (_selectedLocation == null || _numberOfStaff < 1) return false;
+    if (_selectedJobRole == null) return false;
     if (_selectedJobRole == 'other') {
-      return _selectedOtherCategory != null && _selectedLocation != null && _numberOfStaff > 0;
+      return _customRoleNameController.text.trim().isNotEmpty ||
+          _selectedSkillBundles.isNotEmpty;
     }
-    return _selectedJobRole != null && _selectedLocation != null && _numberOfStaff > 0;
+    final cat = _jobTaxonomy?.categoryById(_selectedJobRole);
+    if (cat != null && cat.subcategories.isNotEmpty) {
+      return _selectedSkillBundles.any((s) => s.startsWith('${_selectedJobRole!}/'));
+    }
+    return true;
   }
 
-  void _showLocationPicker() {
-    final searchController = TextEditingController();
-    
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            final filteredLocations = searchController.text.isEmpty
-                ? _allLocations
-                : _allLocations
-                    .where((city) => city.toLowerCase().contains(searchController.text.toLowerCase()))
-                    .toList();
-            
-            return Container(
-              height: MediaQuery.of(context).size.height * 0.7,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              child: Column(
-                children: [
-                  // Handle bar
-                  Container(
-                    margin: const EdgeInsets.only(top: 12),
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                  // Title
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      _localizations.location,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF121A2C),
-                      ),
-                    ),
-                  ),
-                  // Search field
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: TextField(
-                      controller: searchController,
-                      decoration: InputDecoration(
-                        hintText: _localizations.searchLocation,
-                        prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                        filled: true,
-                        fillColor: Colors.grey.shade100,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                      onChanged: (_) => setModalState(() {}),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  // Location list
-                  Expanded(
-                    child: _isLoadingLocations
-                        ? const Center(child: CircularProgressIndicator())
-                        : ListView.builder(
-                            itemCount: filteredLocations.length,
-                            itemBuilder: (context, index) {
-                              final location = filteredLocations[index];
-                              final isSelected = location == _selectedLocation;
-                              return ListTile(
-                                leading: Icon(
-                                  Icons.location_on_outlined,
-                                  color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey,
-                                ),
-                                title: Text(
-                                  location,
-                                  style: TextStyle(
-                                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                                    color: isSelected ? const Color(0xFF3D3D7B) : const Color(0xFF121A2C),
-                                  ),
-                                ),
-                                trailing: isSelected
-                                    ? const Icon(Icons.check, color: Color(0xFF3D3D7B))
-                                    : null,
-                                onTap: () {
-                                  setState(() => _selectedLocation = location);
-                                  Navigator.pop(context);
-                                },
-                              );
-                            },
-                          ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
+  Future<void> _showLocationPicker() async {
+    final picked = await showIndiaCityPickerSheet(
+      context,
+      cities: _allLocations,
+      isLoading: _isLoadingLocations,
+      selected: _selectedLocation,
+      title: _localizations.location,
+      searchHint: _localizations.searchLocation,
     );
+    if (picked != null && mounted) setState(() => _selectedLocation = picked);
   }
 
   String _formatSalary(double value) {
@@ -5816,126 +6876,86 @@ class _PostJobStep1ScreenState extends State<PostJobStep1Screen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    
-                    // Job role cards grid (Main roles - one-tap selection)
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        crossAxisSpacing: 8,
-                        mainAxisSpacing: 8,
-                        childAspectRatio: 0.85,
-                      ),
-                      itemCount: _jobRoles.length,
-                      itemBuilder: (context, index) {
-                        final role = _jobRoles[index];
-                        final isSelected = _selectedJobRole == role['id'];
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _selectedJobRole = role['id'];
-                              // Reset "Other" selections and skills when changing role
-                              if (role['id'] != 'other') {
-                                _selectedOtherCategory = null;
-                                _customRoleNameController.clear();
-                              }
-                              _selectedSkillBundles.clear();
-                            });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: isSelected ? const Color(0xFF3D3D7B).withOpacity(0.1) : Colors.grey.shade50,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade300,
-                                width: isSelected ? 2 : 1,
-                              ),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  role['icon'] as IconData,
-                                  size: 24,
-                                  color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade600,
-                                ),
-                                const SizedBox(height: 6),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text(
-                                    role['label'] as String,
-                                    textAlign: TextAlign.center,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                                      color: isSelected ? const Color(0xFF3D3D7B) : const Color(0xFF121A2C),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
+                    Text(
+                      widget.selectedLanguage == Language.hindi
+                          ? 'श्रेणी और उप-श्रेणी चुनें (सूची से)'
+                          : 'Choose category & sub-skills from the salon list',
+                      style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                     ),
-                    
-                    // "Other" category selection (only shown when "Other" is selected)
-                    if (_selectedJobRole == 'other') ...[
-                      const SizedBox(height: 20),
-                      Text(
-                        _localizations.selectCategory,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF121A2C),
-                        ),
+                    const SizedBox(height: 12),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade300),
                       ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: _otherCategories.map((category) {
-                          final isSelected = _selectedOtherCategory == category['id'];
-                          return GestureDetector(
-                            onTap: () => setState(() => _selectedOtherCategory = category['id']),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                              decoration: BoxDecoration(
-                                color: isSelected ? const Color(0xFF3D3D7B).withOpacity(0.1) : Colors.grey.shade50,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade300,
-                                  width: isSelected ? 2 : 1,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    category['icon'] as IconData,
-                                    size: 18,
-                                    color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade600,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    category['label'] as String,
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                                      color: isSelected ? const Color(0xFF3D3D7B) : const Color(0xFF121A2C),
-                                    ),
-                                  ),
-                                ],
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _selectedJobRole == null
+                                ? (widget.selectedLanguage == Language.hindi ? 'अभी तक नहीं चुना' : 'None selected')
+                                : (_jobTaxonomy?.categoryLabel(_selectedJobRole!, widget.selectedLanguage == Language.hindi) ?? _selectedJobRole!),
+                            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Color(0xFF121A2C)),
+                          ),
+                          if (_selectedSkillBundles.isNotEmpty) ...[
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 6,
+                              runSpacing: 6,
+                              children: _selectedSkillBundles.map((s) {
+                                final lab = _jobTaxonomy?.compoundLabel(s, widget.selectedLanguage == Language.hindi) ?? s;
+                                return Chip(
+                                  label: Text(lab, style: const TextStyle(fontSize: 11)),
+                                  visualDensity: VisualDensity.compact,
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () async {
+                          final cat = await JobTaxonomyCatalog.instance();
+                          if (!mounted) return;
+                          final res = await Navigator.of(context).push<JobTaxonomyPickResult>(
+                            MaterialPageRoute(
+                              builder: (_) => JobTaxonomySelectionScreen(
+                                hindi: widget.selectedLanguage == Language.hindi,
+                                catalog: cat,
+                                initialCategoryId: _selectedJobRole,
+                                initialCompoundSkills: _selectedSkillBundles.toList(),
                               ),
                             ),
                           );
-                        }).toList(),
+                          if (res != null && mounted) {
+                            setState(() {
+                              _selectedJobRole = res.categoryId;
+                              _selectedSkillBundles
+                                ..clear()
+                                ..addAll(res.compoundSkillIds);
+                              if (_selectedJobRole != 'other') {
+                                _selectedOtherCategory = null;
+                              }
+                            });
+                          }
+                        },
+                        icon: const Icon(Icons.category_outlined),
+                        label: Text(
+                          widget.selectedLanguage == Language.hindi ? 'श्रेणी व कौशल चुनें' : 'Choose category & skills',
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
                       ),
+                    ),
+                    if (_selectedJobRole == 'other') ...[
                       const SizedBox(height: 16),
-                      // Custom role name input (optional, lightweight)
                       Text(
                         _localizations.roleNameOptional,
                         style: const TextStyle(
@@ -5970,66 +6990,6 @@ class _PostJobStep1ScreenState extends State<PostJobStep1Screen> {
                       ),
                     ],
                     
-                    // Skill bundles (only for core service roles)
-                    if (_shouldShowSkills && _skillBundlesPerRole.containsKey(_selectedJobRole)) ...[
-                      const SizedBox(height: 20),
-                      Text(
-                        _localizations.selectSkills,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF121A2C),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: _skillBundlesPerRole[_selectedJobRole]!.map((skill) {
-                          final isSelected = _selectedSkillBundles.contains(skill['id']);
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                if (isSelected) {
-                                  _selectedSkillBundles.remove(skill['id']);
-                                } else {
-                                  _selectedSkillBundles.add(skill['id']!);
-                                }
-                              });
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                              decoration: BoxDecoration(
-                                color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade50,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade300,
-                                  width: 1,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  if (isSelected) ...[
-                                    const Icon(Icons.check, size: 16, color: Colors.white),
-                                    const SizedBox(width: 6),
-                                  ],
-                                  Text(
-                                    skill['label']!,
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                                      color: isSelected ? Colors.white : const Color(0xFF121A2C),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                    
                     const SizedBox(height: 24),
                     
                     // 2. LOCATION (Mandatory)
@@ -6043,7 +7003,7 @@ class _PostJobStep1ScreenState extends State<PostJobStep1Screen> {
                     ),
                     const SizedBox(height: 12),
                     GestureDetector(
-                      onTap: _showLocationPicker,
+                      onTap: () => _showLocationPicker(),
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         decoration: BoxDecoration(
@@ -6946,21 +7906,27 @@ class _PostJobStep3ScreenState extends State<PostJobStep3Screen> {
   late AppLocalizations _localizations;
   bool _isPosting = false;
   final ApiService _apiService = ApiService();
+  JobTaxonomyCatalog? _taxonomy;
 
   @override
   void initState() {
     super.initState();
     _localizations = AppLocalizations(widget.selectedLanguage);
+    JobTaxonomyCatalog.instance().then((c) {
+      if (mounted) setState(() => _taxonomy = c);
+    });
   }
 
   String get _displayRoleName {
+    final hi = widget.selectedLanguage == Language.hindi;
     if (widget.jobRole == 'other') {
       if (widget.customRoleName.isNotEmpty) {
         return widget.customRoleName;
       }
       return _localizations.salonStaff;
     }
-    // Map role IDs to localized names
+    final cat = _taxonomy?.categoryById(widget.jobRole);
+    if (cat != null) return cat.labelFor(hi);
     final roleNames = {
       'hair_stylist': _localizations.hairStylist,
       'beautician': _localizations.beautician,
@@ -7883,15 +8849,9 @@ class _ImproveJobScreenState extends State<ImproveJobScreen> {
   late List<String> _availableSkills;
   late List<Map<String, String>> _daysOfWeek;
   
-  // Skill bundles per role
+  // Skill bundles per role (legacy; improve flow uses taxonomy picker)
   Map<String, List<Map<String, String>>> _skillBundlesPerRole = {};
-  
-  static const List<String> _coreServiceRoles = [
-    'hair_stylist',
-    'beautician', 
-    'makeup_artist',
-    'massage_therapist',
-  ];
+  JobTaxonomyCatalog? _jobTaxonomy;
   
   @override
   void initState() {
@@ -7901,6 +8861,9 @@ class _ImproveJobScreenState extends State<ImproveJobScreen> {
     _initDaysOfWeek();
     _initSkillBundles();
     _loadJobFromDatabase();
+    JobTaxonomyCatalog.instance().then((c) {
+      if (mounted) setState(() => _jobTaxonomy = c);
+    });
   }
   
   void _initSkills() {
@@ -7958,8 +8921,6 @@ class _ImproveJobScreenState extends State<ImproveJobScreen> {
       ],
     };
   }
-  
-  bool get _shouldShowSkills => _job != null && _coreServiceRoles.contains(_job!.jobRole);
   
   Future<void> _loadJobFromDatabase() async {
     setState(() {
@@ -8028,9 +8989,18 @@ class _ImproveJobScreenState extends State<ImproveJobScreen> {
       Map<String, dynamic> updates = {};
       
       switch (section) {
-        case 0: // Skills
+        case 0: // Skills (and role if category changed in taxonomy picker)
+          String? newRole;
+          for (final s in _selectedSkills) {
+            final i = s.indexOf('/');
+            if (i > 0) {
+              newRole = s.substring(0, i);
+              break;
+            }
+          }
           updates = {
             'skills': _selectedSkills.toList(),
+            if (newRole != null && _job != null && newRole != _job!.jobRole) 'jobRole': newRole,
           };
           break;
         case 1: // Work Timings
@@ -8448,11 +9418,7 @@ class _ImproveJobScreenState extends State<ImproveJobScreen> {
   }
   
   Widget _buildSkillsContent() {
-    // Use skill bundles if job role supports it, otherwise use general skills
-    final skillsToShow = _shouldShowSkills && _skillBundlesPerRole.containsKey(_job!.jobRole)
-        ? _skillBundlesPerRole[_job!.jobRole]!
-        : _availableSkills.map((s) => {'id': s, 'label': s}).toList();
-    
+    final hi = widget.selectedLanguage == Language.hindi;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -8466,44 +9432,57 @@ class _ImproveJobScreenState extends State<ImproveJobScreen> {
             color: Colors.grey.shade600,
           ),
         ),
+        const SizedBox(height: 8),
+        Text(
+          hi ? 'पूरी सूची से श्रेणी और कौशल चुनें' : 'Pick category and skills from the full salon list',
+          style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+        ),
         const SizedBox(height: 12),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: skillsToShow.map((skill) {
-            final skillId = skill['id']!;
-            final skillLabel = skill['label']!;
-            final isSelected = _selectedSkills.contains(skillId);
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  if (isSelected) {
-                    _selectedSkills.remove(skillId);
-                  } else {
-                    _selectedSkills.add(skillId);
-                  }
-                });
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: isSelected ? const Color(0xFF3D3D7B) : Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade300,
-                  ),
-                ),
-                child: Text(
-                  skillLabel,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
-                    color: isSelected ? Colors.white : const Color(0xFF121A2C),
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
+        if (_selectedSkills.isNotEmpty)
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: _selectedSkills.map((s) {
+              final lab = _jobTaxonomy?.compoundLabel(s, hi) ?? s;
+              return Chip(
+                label: Text(lab, style: const TextStyle(fontSize: 12)),
+                visualDensity: VisualDensity.compact,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              );
+            }).toList(),
+          )
+        else
+          Text(hi ? 'अभी कोई कौशल नहीं चुना' : 'No skills selected yet', style: TextStyle(fontSize: 13, color: Colors.grey.shade500)),
+        const SizedBox(height: 12),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: _job == null
+                ? null
+                : () async {
+                    final cat = await JobTaxonomyCatalog.instance();
+                    if (!mounted) return;
+                    final res = await Navigator.of(context).push<JobTaxonomyPickResult>(
+                      MaterialPageRoute(
+                        builder: (_) => JobTaxonomySelectionScreen(
+                          hindi: hi,
+                          catalog: cat,
+                          initialCategoryId: _job!.jobRole,
+                          initialCompoundSkills: _selectedSkills.toList(),
+                        ),
+                      ),
+                    );
+                    if (res != null && mounted) {
+                      setState(() {
+                        _selectedSkills
+                          ..clear()
+                          ..addAll(res.compoundSkillIds);
+                      });
+                    }
+                  },
+            icon: const Icon(Icons.edit_outlined, size: 18),
+            label: Text(hi ? 'कौशल चुनें / बदलें' : 'Choose / change skills'),
+          ),
         ),
         const SizedBox(height: 16),
         _buildSaveButton(0),
@@ -8846,17 +9825,10 @@ class _JobEditScreenState extends State<JobEditScreen> {
   Map<String, List<Map<String, String>>> _skillBundlesPerRole = {};
   List<String> _allLocations = [];
   bool _isLoadingLocations = false;
+  JobTaxonomyCatalog? _jobTaxonomy;
   
   // Days of week
   late List<Map<String, String>> _daysOfWeek;
-  
-  // Core service roles that show skills
-  static const List<String> _coreServiceRoles = [
-    'hair_stylist',
-    'beautician', 
-    'makeup_artist',
-    'massage_therapist',
-  ];
 
   @override
   void initState() {
@@ -8868,6 +9840,9 @@ class _JobEditScreenState extends State<JobEditScreen> {
     _initDaysOfWeek();
     _loadLocations();
     _loadJobFromDatabase();
+    JobTaxonomyCatalog.instance().then((c) {
+      if (mounted) setState(() => _jobTaxonomy = c);
+    });
   }
   
   void _initJobRoles() {
@@ -8937,42 +9912,13 @@ class _JobEditScreenState extends State<JobEditScreen> {
   }
   
   Future<void> _loadLocations() async {
-    _allLocations = [
-      'Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai',
-      'Kolkata', 'Pune', 'Ahmedabad', 'Jaipur', 'Lucknow',
-      'Surat', 'Kanpur', 'Nagpur', 'Indore', 'Thane',
-      'Bhopal', 'Visakhapatnam', 'Patna', 'Vadodara', 'Ghaziabad',
-      'Ludhiana', 'Agra', 'Nashik', 'Faridabad', 'Meerut',
-      'Rajkot', 'Varanasi', 'Srinagar', 'Aurangabad', 'Dhanbad',
-      'Amritsar', 'Navi Mumbai', 'Allahabad', 'Ranchi', 'Howrah',
-      'Coimbatore', 'Jabalpur', 'Gwalior', 'Vijayawada', 'Jodhpur',
-      'Madurai', 'Raipur', 'Kota', 'Chandigarh', 'Guwahati',
-      'Solapur', 'Hubli', 'Mysore', 'Tiruchirappalli', 'Bareilly',
-    ];
-    
     setState(() => _isLoadingLocations = true);
     try {
-      final response = await http.post(
-        Uri.parse('https://countriesnow.space/api/v0.1/countries/cities'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({'country': 'india'}),
-      ).timeout(const Duration(seconds: 10));
-      
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['error'] == false && data['data'] != null) {
-          final cities = List<String>.from(data['data']);
-          final validCities = cities.where((city) => city.length > 2).toList();
-          validCities.sort();
-          if (validCities.isNotEmpty) {
-            _allLocations = validCities;
-          }
-        }
-      }
-    } catch (e) {
-      // Use static list as fallback
+      final cities = await IndiaCityService.instance.loadCities();
+      if (mounted) setState(() => _allLocations = cities);
+    } finally {
+      if (mounted) setState(() => _isLoadingLocations = false);
     }
-    if (mounted) setState(() => _isLoadingLocations = false);
   }
   
   /// Load job data from database and populate form
@@ -9045,14 +9991,23 @@ class _JobEditScreenState extends State<JobEditScreen> {
     }
   }
   
-  bool get _shouldShowSkills => _coreServiceRoles.contains(_selectedJobRole);
-  
   bool get _isFormValid {
     if (_selectedJobRole == null || _selectedLocation == null || _numberOfStaff <= 0) {
       return false;
     }
-    if (_selectedJobRole == 'other' && _selectedOtherCategory == null) {
-      return false;
+    if (_selectedJobRole == 'other') {
+      if (_selectedSkills.isEmpty &&
+          _customRoleNameController.text.trim().isEmpty &&
+          _selectedOtherCategory == null) {
+        return false;
+      }
+    } else {
+      final cat = _jobTaxonomy?.categoryById(_selectedJobRole);
+      if (cat != null && cat.subcategories.isNotEmpty) {
+        if (!_selectedSkills.any((s) => s.startsWith('${_selectedJobRole!}/'))) {
+          return false;
+        }
+      }
     }
     if (_salaryMin > _salaryMax) {
       return false;
@@ -9067,106 +10022,16 @@ class _JobEditScreenState extends State<JobEditScreen> {
     return '₹${value.toStringAsFixed(0)}';
   }
   
-  void _showLocationPicker() {
-    final searchController = TextEditingController();
-    
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            final filteredLocations = searchController.text.isEmpty
-                ? _allLocations
-                : _allLocations
-                    .where((city) => city.toLowerCase().contains(searchController.text.toLowerCase()))
-                    .toList();
-            
-            return Container(
-              height: MediaQuery.of(context).size.height * 0.7,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 12),
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      _localizations.location,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF121A2C),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: TextField(
-                      controller: searchController,
-                      decoration: InputDecoration(
-                        hintText: _localizations.searchLocation,
-                        prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                        filled: true,
-                        fillColor: Colors.grey.shade100,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                      onChanged: (_) => setModalState(() {}),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Expanded(
-                    child: _isLoadingLocations
-                        ? const Center(child: CircularProgressIndicator())
-                        : ListView.builder(
-                            itemCount: filteredLocations.length,
-                            itemBuilder: (context, index) {
-                              final location = filteredLocations[index];
-                              final isSelected = location == _selectedLocation;
-                              return ListTile(
-                                leading: Icon(
-                                  Icons.location_on_outlined,
-                                  color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey,
-                                ),
-                                title: Text(
-                                  location,
-                                  style: TextStyle(
-                                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                                    color: isSelected ? const Color(0xFF3D3D7B) : const Color(0xFF121A2C),
-                                  ),
-                                ),
-                                trailing: isSelected
-                                    ? const Icon(Icons.check, color: Color(0xFF3D3D7B))
-                                    : null,
-                                onTap: () {
-                                  setState(() => _selectedLocation = location);
-                                  Navigator.pop(context);
-                                },
-                              );
-                            },
-                          ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
+  Future<void> _showLocationPicker() async {
+    final picked = await showIndiaCityPickerSheet(
+      context,
+      cities: _allLocations,
+      isLoading: _isLoadingLocations,
+      selected: _selectedLocation,
+      title: _localizations.location,
+      searchHint: _localizations.searchLocation,
     );
+    if (picked != null && mounted) setState(() => _selectedLocation = picked);
   }
   
   /// Save all changes to backend
@@ -9364,122 +10229,96 @@ class _JobEditScreenState extends State<JobEditScreen> {
                     ),
                   ),
                     const SizedBox(height: 12),
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        crossAxisSpacing: 8,
-                        mainAxisSpacing: 8,
-                        childAspectRatio: 0.85,
+                    Text(
+                      widget.selectedLanguage == Language.hindi
+                          ? 'श्रेणी और उप-श्रेणी चुनें (सूची से)'
+                          : 'Choose category & sub-skills from the salon list',
+                      style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade300),
                       ),
-                      itemCount: _jobRoles.length,
-                      itemBuilder: (context, index) {
-                        final role = _jobRoles[index];
-                        final isSelected = _selectedJobRole == role['id'];
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _selectedJobRole = role['id'];
-                              if (role['id'] != 'other') {
-                                _selectedOtherCategory = null;
-                                _customRoleNameController.clear();
-                              }
-                              _selectedSkills.clear();
-                            });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: isSelected ? const Color(0xFF3D3D7B).withOpacity(0.1) : Colors.grey.shade50,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade300,
-                                width: isSelected ? 2 : 1,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _selectedJobRole == null
+                                ? (widget.selectedLanguage == Language.hindi ? 'अभी तक नहीं चुना' : 'None selected')
+                                : (_jobTaxonomy?.categoryLabel(_selectedJobRole!, widget.selectedLanguage == Language.hindi) ?? _selectedJobRole!),
+                            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Color(0xFF121A2C)),
+                          ),
+                          if (_selectedSkills.isNotEmpty) ...[
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 6,
+                              runSpacing: 6,
+                              children: _selectedSkills.map((s) {
+                                final lab = _jobTaxonomy?.compoundLabel(s, widget.selectedLanguage == Language.hindi) ?? s;
+                                return Chip(
+                                  label: Text(lab, style: const TextStyle(fontSize: 11)),
+                                  visualDensity: VisualDensity.compact,
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () async {
+                          final cat = await JobTaxonomyCatalog.instance();
+                          if (!mounted) return;
+                          final hi = widget.selectedLanguage == Language.hindi;
+                          final res = await Navigator.of(context).push<JobTaxonomyPickResult>(
+                            MaterialPageRoute(
+                              builder: (_) => JobTaxonomySelectionScreen(
+                                hindi: hi,
+                                catalog: cat,
+                                initialCategoryId: _selectedJobRole,
+                                initialCompoundSkills: _selectedSkills.toList(),
                               ),
                             ),
-                child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                                Icon(
-                                  role['icon'] as IconData,
-                                  size: 24,
-                                  color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade600,
-                                ),
-                                const SizedBox(height: 6),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                                  child: Text(
-                                    role['label'] as String,
-                                    textAlign: TextAlign.center,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                                      color: isSelected ? const Color(0xFF3D3D7B) : const Color(0xFF121A2C),
-                                    ),
-                                  ),
-                                ),
-                  ],
-                ),
-              ),
-                        );
-                      },
+                          );
+                          if (res != null && mounted) {
+                            setState(() {
+                              _selectedJobRole = res.categoryId;
+                              _selectedSkills
+                                ..clear()
+                                ..addAll(res.compoundSkillIds);
+                              if (_selectedJobRole != 'other') {
+                                _selectedOtherCategory = null;
+                              }
+                            });
+                          }
+                        },
+                        icon: const Icon(Icons.category_outlined),
+                        label: Text(
+                          widget.selectedLanguage == Language.hindi ? 'श्रेणी व कौशल चुनें' : 'Choose category & skills',
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                      ),
                     ),
-                    
-                    // Other category (if "other" selected)
                     if (_selectedJobRole == 'other') ...[
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 16),
                       Text(
-                        _localizations.selectCategory,
+                        _localizations.roleNameOptional,
                         style: const TextStyle(
                           fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                           color: Color(0xFF121A2C),
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: _otherCategories.map((category) {
-                          final isSelected = _selectedOtherCategory == category['id'];
-                          return GestureDetector(
-                            onTap: () => setState(() => _selectedOtherCategory = category['id']),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                                color: isSelected ? const Color(0xFF3D3D7B).withOpacity(0.1) : Colors.grey.shade50,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade300,
-                                  width: isSelected ? 2 : 1,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    category['icon'] as IconData,
-                                    size: 18,
-                                    color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade600,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    category['label'] as String,
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                                      color: isSelected ? const Color(0xFF3D3D7B) : const Color(0xFF121A2C),
-                                    ),
-                  ),
-                ],
-              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 8),
                       TextField(
                         controller: _customRoleNameController,
                         maxLength: 30,
@@ -9490,70 +10329,18 @@ class _JobEditScreenState extends State<JobEditScreen> {
                           filled: true,
                           fillColor: Colors.grey.shade50,
                           border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide(color: Colors.grey.shade300),
                           ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: Color(0xFF3D3D7B)),
+                          ),
                         ),
-                      ),
-                    ],
-                    
-                    // Skills (for core service roles)
-                    if (_shouldShowSkills && _skillBundlesPerRole.containsKey(_selectedJobRole)) ...[
-                      const SizedBox(height: 20),
-                      Text(
-                        _localizations.selectSkills,
-                    style: const TextStyle(
-                          fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                          color: Color(0xFF121A2C),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: _skillBundlesPerRole[_selectedJobRole]!.map((skill) {
-                          final isSelected = _selectedSkills.contains(skill['id']);
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                if (isSelected) {
-                                  _selectedSkills.remove(skill['id']);
-                                } else {
-                                  _selectedSkills.add(skill['id']!);
-                                }
-                              });
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                              decoration: BoxDecoration(
-                                color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade50,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade300,
-                                  width: 1,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  if (isSelected) ...[
-                                    const Icon(Icons.check, size: 16, color: Colors.white),
-                                    const SizedBox(width: 6),
-                                  ],
-                                  Text(
-                                    skill['label']!,
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                                      color: isSelected ? Colors.white : const Color(0xFF121A2C),
-                                    ),
-                                  ),
-                                ],
-        ),
-      ),
-    );
-                        }).toList(),
                       ),
                     ],
                     
@@ -9570,7 +10357,7 @@ class _JobEditScreenState extends State<JobEditScreen> {
                     ),
                     const SizedBox(height: 12),
                     GestureDetector(
-                      onTap: _showLocationPicker,
+                      onTap: () => _showLocationPicker(),
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
@@ -10417,11 +11204,69 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
         bottomNavigationBar: _buildBottomNav(),
       );
     }
-    
+
+    if (_selectedBottomNavIndex == 1) {
+      return Scaffold(
+        backgroundColor: Colors.grey.shade50,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: Text(
+            _localizations.candidates,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF121A2C),
+            ),
+          ),
+          centerTitle: true,
+          iconTheme: const IconThemeData(color: Color(0xFF121A2C)),
+        ),
+        body: SafeArea(
+          child: ResponsiveContent(
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : RefreshIndicator(
+                    onRefresh: _loadData,
+                    child: _buildOwnerCandidatesTab(),
+                  ),
+          ),
+        ),
+        bottomNavigationBar: _buildBottomNav(),
+      );
+    }
+
+    if (_selectedBottomNavIndex == 2) {
+      return Scaffold(
+        backgroundColor: Colors.grey.shade50,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: Text(
+            _localizations.chat,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF121A2C),
+            ),
+          ),
+          centerTitle: true,
+          iconTheme: const IconThemeData(color: Color(0xFF121A2C)),
+        ),
+        body: SafeArea(
+          child: ResponsiveContent(
+            child: _OwnerChatHub(selectedLanguage: _currentLanguage),
+          ),
+        ),
+        bottomNavigationBar: _buildBottomNav(),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       body: SafeArea(
-        child: Column(
+        child: ResponsiveContent(
+          child: Column(
           children: [
             // 1. TOP APP BAR
             _buildTopAppBar(),
@@ -10445,6 +11290,7 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
                     ),
             ),
           ],
+        ),
         ),
       ),
       // 6. FLOATING ACTION BUTTON
@@ -10494,15 +11340,24 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  _salonProfile?.salonName ?? 
-                  _salonProfile?.ownerName ?? 
-                  'Salon',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF121A2C),
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _salonProfile?.salonName ??
+                            _salonProfile?.ownerName ??
+                            'Salon',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF121A2C),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (_salonProfile?.isSalonVerified == true)
+                      const Icon(Icons.verified, color: Color(0xFF1565C0), size: 20),
+                  ],
                 ),
                 if (_salonProfile?.city != null)
                   Text(
@@ -10541,7 +11396,7 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
     final percent = _profileCompletion?.completionPercent ?? 0;
     
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -10555,37 +11410,50 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
           ),
         ],
       ),
-      child: Row(
-        children: [
-          // Circular progress indicator
-          SizedBox(
-            width: 48,
-            height: 48,
-            child: CircularProgressIndicator(
-              value: percent / 100,
-              strokeWidth: 4,
-              backgroundColor: Colors.grey.shade200,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                percent >= 70 ? const Color(0xFF4CAF50) : const Color(0xFFF9A825),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          
-          // Text content
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final narrow = AppResponsive.stackProfileBanner(constraints.maxWidth);
+          if (narrow) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  _localizations.profileIncomplete.replaceAll('%', '$percent'),
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF121A2C),
-                  ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 48,
+                      height: 48,
+                      child: CircularProgressIndicator(
+                        value: percent / 100,
+                        strokeWidth: 4,
+                        backgroundColor: Colors.grey.shade200,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          percent >= 70 ? const Color(0xFF4CAF50) : const Color(0xFFF9A825),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        _localizations.profileIncomplete.replaceAll('%', '$percent'),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF121A2C),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, size: 20),
+                      color: Colors.grey.shade600,
+                      onPressed: () {
+                        setState(() {
+                          _profileBannerDismissed = true;
+                        });
+                      },
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Text(
                   _localizations.addMissingDetails,
                   style: TextStyle(
@@ -10593,52 +11461,123 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
                     color: Colors.grey.shade600,
                   ),
                 ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedBottomNavIndex = 3;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF3D3D7B),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: Text(
+                      _localizations.completeNow,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
               ],
-            ),
-          ),
-          
-          // CTA Button
-          ElevatedButton(
-            onPressed: () {
-              // Navigate to profile completion flow
-              // TODO: Implement profile completion navigation
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF3D3D7B),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+            );
+          }
+          return Row(
+            children: [
+              // Circular progress indicator
+              SizedBox(
+                width: 48,
+                height: 48,
+                child: CircularProgressIndicator(
+                  value: percent / 100,
+                  strokeWidth: 4,
+                  backgroundColor: Colors.grey.shade200,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    percent >= 70 ? const Color(0xFF4CAF50) : const Color(0xFFF9A825),
+                  ),
+                ),
               ),
-              elevation: 0,
-            ),
-            child: Text(
-              _localizations.completeNow,
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+              const SizedBox(width: 16),
+
+              // Text content
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _localizations.profileIncomplete.replaceAll('%', '$percent'),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF121A2C),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      _localizations.addMissingDetails,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ),
-          
-          // Close icon
-          IconButton(
-            icon: const Icon(Icons.close, size: 20),
-            color: Colors.grey.shade600,
-            onPressed: () {
-              setState(() {
-                _profileBannerDismissed = true;
-              });
-            },
-          ),
-        ],
+
+              // CTA Button
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _selectedBottomNavIndex = 3;
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF3D3D7B),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  elevation: 0,
+                ),
+                child: Text(
+                  _localizations.completeNow,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+
+              // Close icon
+              IconButton(
+                icon: const Icon(Icons.close, size: 20),
+                color: Colors.grey.shade600,
+                onPressed: () {
+                  setState(() {
+                    _profileBannerDismissed = true;
+                  });
+                },
+              ),
+            ],
+          );
+        },
       ),
     );
   }
   
   Widget _buildSearchBar() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -10666,7 +11605,7 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
   
   Widget _buildFilterTabs() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
       child: Row(
         children: [
           _buildFilterTab(0, _localizations.all),
@@ -10729,7 +11668,7 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
     // Show all job cards (newest first; backend already sorted by created_at DESC)
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(), // Enable pull-to-refresh
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
       child: Column(
         children: _jobs.map((job) => Padding(
           padding: const EdgeInsets.only(bottom: 16),
@@ -11082,10 +12021,108 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
       child: const Icon(Icons.add, color: Colors.white),
     );
   }
-  
+
+  /// Owner "Candidates" tab: jobs that have at least one application, or empty state.
+  Widget _buildOwnerCandidatesTab() {
+    final withApps = _jobs.where((j) => j.applicationsCount > 0).toList()
+      ..sort((a, b) => b.applicationsCount.compareTo(a.applicationsCount));
+
+    if (withApps.isEmpty) {
+      return ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 48),
+        children: [
+          Icon(Icons.people_outline, size: 72, color: Colors.grey.shade300),
+          const SizedBox(height: 20),
+          Text(
+            _localizations.noApplicationsYet,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF121A2C),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            _currentLanguage == Language.hindi
+                ? 'जॉब कार्ड पर \"जॉब देखें\" से आवेदन देखें, या होम पर नई जॉब पोस्ट करें।'
+                : 'Open a job card and tap "View Job" to see applicants, or post a new job from Home.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade600, height: 1.4),
+          ),
+        ],
+      );
+    }
+
+    return ListView.separated(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
+      itemCount: withApps.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 10),
+      itemBuilder: (context, i) {
+        final job = withApps[i];
+        return Material(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(14),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => CandidateListScreen(
+                    selectedLanguage: _currentLanguage,
+                    jobId: job.id,
+                    jobTitle: _displayRoleForJob(job),
+                    jobLocation: job.location,
+                  ),
+                ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _displayRoleForJob(job),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF121A2C),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          job.location,
+                          style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          '${job.applicationsCount} ${_localizations.applicantsCountLabel}',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF3D3D7B),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(Icons.chevron_right, color: Colors.grey.shade400),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildBottomNav() {
-    final hasCandidates = _jobs.any((job) => job.applicationsCount > 0);
-    
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -11109,21 +12146,8 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
           setState(() {
             _selectedBottomNavIndex = index;
           });
-          
           if (index == 0) {
-            // Home - refresh data
             _loadData();
-          } else if (index == 1 || index == 2) {
-            // Candidates or Chat - disabled if no candidates
-            if (!hasCandidates) {
-              setState(() {
-                _selectedBottomNavIndex = 0; // Reset to home
-              });
-              return;
-            }
-            // TODO: Navigate to candidates/chat
-          } else if (index == 3) {
-            // Profile - always enabled, already handled by build method
           }
         },
         items: [
@@ -11132,11 +12156,11 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
             label: _localizations.home,
           ),
           BottomNavigationBarItem(
-            icon: Icon(hasCandidates ? Icons.people : Icons.people_outline),
+            icon: const Icon(Icons.people),
             label: _localizations.candidates,
           ),
           BottomNavigationBarItem(
-            icon: Icon(hasCandidates ? Icons.chat_bubble : Icons.chat_bubble_outline),
+            icon: const Icon(Icons.chat_bubble_outline),
             label: _localizations.chat,
           ),
           BottomNavigationBarItem(
@@ -11145,6 +12169,234 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Salon owner Chat tab: application threads + WebSocket chat + support link.
+class _OwnerChatHub extends StatefulWidget {
+  final Language selectedLanguage;
+
+  const _OwnerChatHub({required this.selectedLanguage});
+
+  @override
+  State<_OwnerChatHub> createState() => _OwnerChatHubState();
+}
+
+class _OwnerChatHubState extends State<_OwnerChatHub> {
+  final ApiService _api = ApiService();
+  bool _loading = true;
+  String? _error;
+  List<Map<String, dynamic>> _threads = [];
+
+  bool get _hi => widget.selectedLanguage == Language.hindi;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    final r = await _api.getChatThreads();
+    if (!mounted) return;
+    if (r.success && r.data != null) {
+      setState(() {
+        _threads = r.data!;
+        _loading = false;
+      });
+    } else {
+      setState(() {
+        _error = r.message ?? (_hi ? 'लोड नहीं हो सका' : 'Could not load');
+        _loading = false;
+      });
+    }
+  }
+
+  String _roleTitle(Map<String, dynamic> t) {
+    final custom = t['customRoleName']?.toString();
+    if (custom != null && custom.isNotEmpty) return custom;
+    final role = t['jobRole']?.toString() ?? '';
+    return role.replaceAll('_', ' ');
+  }
+
+  String _subtitle(Map<String, dynamic> t) {
+    final body = t['lastBody']?.toString();
+    if (body != null && body.isNotEmpty) return body;
+    return _hi ? 'अभी तक कोई संदेश नहीं' : 'No messages yet';
+  }
+
+  String _timeLabel(dynamic raw) {
+    if (raw == null) return '';
+    try {
+      final dt = DateTime.parse(raw.toString()).toLocal();
+      final now = DateTime.now();
+      if (now.difference(dt).inDays < 1) {
+        final h = dt.hour.toString().padLeft(2, '0');
+        final m = dt.minute.toString().padLeft(2, '0');
+        return '$h:$m';
+      }
+      return '${dt.day}/${dt.month}';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  void _openThread(Map<String, dynamic> t) {
+    final appId = t['applicationId']?.toString();
+    if (appId == null || appId.isEmpty) return;
+    final seeker = t['seekerName']?.toString() ?? '';
+    final title = '${_roleTitle(t)} · $seeker'.trim();
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => ApplicationChatScreen(
+          applicationId: appId,
+          languageCode: _hi ? 'hi' : 'en',
+          title: title,
+          isSalonOwner: true,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: _load,
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+              children: [
+                if (_loading)
+                  const Padding(
+                    padding: EdgeInsets.only(top: 48),
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                else if (_error != null)
+                  Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Text(_error!, textAlign: TextAlign.center, style: TextStyle(color: Colors.grey.shade700)),
+                  )
+                else if (_threads.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 48),
+                    child: Column(
+                      children: [
+                        Icon(Icons.chat_bubble_outline, size: 56, color: Colors.grey.shade300),
+                        const SizedBox(height: 12),
+                        Text(
+                          _hi ? 'अभी कोई बातचीत नहीं' : 'No conversations yet',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.grey.shade600),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          _hi
+                              ? 'उम्मीदवार कार्ड से संदेश भेजें या यहाँ रिफ्रेश करें।'
+                              : 'Message a candidate from their card, or pull to refresh.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  ..._threads.map((t) {
+                    final at = t['lastMessageAt'];
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        side: BorderSide(color: Colors.grey.shade200),
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        onTap: () => _openThread(t),
+                        leading: CircleAvatar(
+                          backgroundColor: const Color(0xFFEEEEF8),
+                          child: Text(
+                            (t['seekerName']?.toString().isNotEmpty == true)
+                                ? t['seekerName'].toString()[0].toUpperCase()
+                                : '?',
+                            style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF3D3D7B)),
+                          ),
+                        ),
+                        title: Text(
+                          t['seekerName']?.toString() ?? (_hi ? 'उम्मीदवार' : 'Candidate'),
+                          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Color(0xFF121A2C)),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _roleTitle(t),
+                                style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                _subtitle(t),
+                                style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                        trailing: Text(
+                          _timeLabel(at),
+                          style: TextStyle(fontSize: 12, color: Colors.grey.shade400),
+                        ),
+                      ),
+                    );
+                  }),
+                const SizedBox(height: 16),
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  tileColor: Colors.white,
+                  leading: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF3D3D7B).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(Icons.support_agent, color: Color(0xFF3D3D7B)),
+                  ),
+                  title: Text(
+                    _hi ? 'सहायता और सपोर्ट' : 'Help & support',
+                    style: const TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF121A2C)),
+                  ),
+                  subtitle: Text(
+                    _hi ? 'टिकट, FAQ, संपर्क' : 'Tickets, FAQ, contact',
+                    style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (context) => HelpSupportScreen(selectedLanguage: widget.selectedLanguage),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -11785,6 +13037,35 @@ class _CandidateListScreenState extends State<CandidateListScreen> {
             ],
           ),
 
+          if (applicationId.toString().isNotEmpty && status != 'rejected') ...[
+            const SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => ApplicationChatScreen(
+                        applicationId: applicationId.toString(),
+                        languageCode: widget.selectedLanguage == Language.hindi ? 'hi' : 'en',
+                        title: fullName.toString(),
+                        isSalonOwner: true,
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.chat_bubble_outline, size: 18),
+                label: Text(widget.selectedLanguage == Language.hindi ? 'संदेश' : 'Message'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFF3D3D7B),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  side: const BorderSide(color: Color(0xFF3D3D7B)),
+                ),
+              ),
+            ),
+          ],
+
           // Call (Secure) button — only for shortlisted / interview
           if (status == 'shortlisted' || status == 'interview') ...[
             const SizedBox(height: 10),
@@ -12424,6 +13705,224 @@ class _CandidateListScreenState extends State<CandidateListScreen> {
   }
 }
 
+/// Full-screen edit for salon name, owner, city, address (owner profile tab).
+class SalonEditProfileScreen extends StatefulWidget {
+  final Language selectedLanguage;
+  final SalonProfile profile;
+
+  const SalonEditProfileScreen({
+    super.key,
+    required this.selectedLanguage,
+    required this.profile,
+  });
+
+  @override
+  State<SalonEditProfileScreen> createState() => _SalonEditProfileScreenState();
+}
+
+class _SalonEditProfileScreenState extends State<SalonEditProfileScreen> {
+  late AppLocalizations _localizations;
+  final ApiService _apiService = ApiService();
+  late final TextEditingController _salonName;
+  late final TextEditingController _ownerName;
+  late final TextEditingController _area;
+  late final TextEditingController _address;
+  String? _city;
+  List<String> _cities = [];
+  bool _loadingCities = false;
+  bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _localizations = AppLocalizations(widget.selectedLanguage);
+    final p = widget.profile;
+    _salonName = TextEditingController(text: p.salonName ?? '');
+    _ownerName = TextEditingController(text: p.ownerName ?? '');
+    _area = TextEditingController(text: p.area ?? '');
+    _address = TextEditingController(text: p.fullAddress ?? '');
+    _city = p.city;
+    _loadCities();
+  }
+
+  Future<void> _loadCities() async {
+    setState(() => _loadingCities = true);
+    try {
+      final list = await IndiaCityService.instance.loadCities();
+      if (mounted) setState(() => _cities = list);
+    } finally {
+      if (mounted) setState(() => _loadingCities = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    _salonName.dispose();
+    _ownerName.dispose();
+    _area.dispose();
+    _address.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickCity() async {
+    final picked = await showIndiaCityPickerSheet(
+      context,
+      cities: _cities,
+      isLoading: _loadingCities,
+      selected: _city,
+      title: _localizations.city,
+      searchHint: _localizations.searchLocation,
+    );
+    if (picked != null && mounted) setState(() => _city = picked);
+  }
+
+  Future<void> _save() async {
+    if (_saving) return;
+    setState(() => _saving = true);
+    try {
+      final updates = <String, dynamic>{
+        if (_salonName.text.trim().isNotEmpty) 'salonName': _salonName.text.trim(),
+        if (_ownerName.text.trim().isNotEmpty) 'ownerName': _ownerName.text.trim(),
+        if (_city != null && _city!.trim().isNotEmpty) 'city': _city!.trim(),
+        if (_area.text.trim().isNotEmpty) 'area': _area.text.trim(),
+        if (_address.text.trim().isNotEmpty) 'fullAddress': _address.text.trim(),
+      };
+      if (updates.isEmpty) {
+        if (mounted) Navigator.pop(context, false);
+        return;
+      }
+      final res = await _apiService.updateSalonProfile(updates);
+      if (!mounted) return;
+      if (res.success) {
+        Navigator.pop(context, true);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(res.message ?? 'Update failed'), backgroundColor: Colors.redAccent),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$e'), backgroundColor: Colors.redAccent),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final saveLabel = widget.selectedLanguage == Language.hindi ? 'सेव' : 'Save';
+    final bottomSave = widget.selectedLanguage == Language.hindi ? 'सेव करें' : 'Save changes';
+    final areaLabel = widget.selectedLanguage == Language.hindi ? 'इलाका (वैकल्पिक)' : 'Area (optional)';
+    final addrLabel = widget.selectedLanguage == Language.hindi ? 'पूरा पता (वैकल्पिक)' : 'Full address (optional)';
+
+    return Scaffold(
+      backgroundColor: Colors.grey.shade50,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF121A2C),
+        title: Text(_localizations.editProfile, style: const TextStyle(fontWeight: FontWeight.w600)),
+        actions: [
+          TextButton(
+            onPressed: _saving ? null : _save,
+            child: _saving
+                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                : Text(saveLabel, style: const TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF3D3D7B))),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(_localizations.salonName, style: const TextStyle(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _salonName,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(_localizations.ownerManagerName, style: const TextStyle(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _ownerName,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(_localizations.city, style: const TextStyle(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            InkWell(
+              onTap: _pickCity,
+              borderRadius: BorderRadius.circular(12),
+              child: InputDecorator(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  suffixIcon: const Icon(Icons.arrow_drop_down),
+                ),
+                child: Text(
+                  _city?.isNotEmpty == true ? _city! : (_loadingCities ? '...' : _localizations.notAdded),
+                  style: TextStyle(color: _city == null ? Colors.grey.shade600 : const Color(0xFF121A2C)),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(areaLabel, style: const TextStyle(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _area,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(addrLabel, style: const TextStyle(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _address,
+              maxLines: 3,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+            const SizedBox(height: 32),
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: ElevatedButton(
+                onPressed: _saving ? null : _save,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF3D3D7B),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: Text(bottomSave, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 // ============== PROFILE SCREEN ==============
 class ProfileScreen extends StatefulWidget {
   final Language selectedLanguage;
@@ -12457,7 +13956,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _completionCardDismissed = false;
   bool _salonDetailsExpanded = false;
   bool _verificationExpanded = false;
-  
+  bool _uploadingExtraPhoto = false;
+  bool _uploadingVerification = false;
+
   // Local language state (can be different from widget.selectedLanguage)
   late Language _currentLanguage = widget.selectedLanguage;
   
@@ -12552,16 +14053,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
   
-  Future<void> _loadProfileData() async {
-    setState(() {
-      _isLoading = true;
-    });
+  Future<void> _loadProfileData({bool quiet = false}) async {
+    if (!quiet) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
     
     try {
       final profileResponse = await _apiService.getSalonProfile();
       if (profileResponse.success && profileResponse.data != null) {
         setState(() {
           _salonProfile = profileResponse.data;
+          _syncAvatarFromMedia();
         });
       }
       
@@ -12582,6 +14086,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  void _syncAvatarFromMedia() {
+    final list = _salonProfile?.media ?? [];
+    SalonMediaItem? chosen;
+    for (final x in list) {
+      if (x.isImage && x.isPrimary) {
+        chosen = x;
+        break;
+      }
+    }
+    chosen ??= () {
+      for (final x in list) {
+        if (x.isImage) return x;
+      }
+      return null;
+    }();
+    _profilePhotoUrl = chosen?.mediaUrl;
+  }
+
   Future<void> _uploadProfilePhoto() async {
     if (_isLoading) return;
     try {
@@ -12594,58 +14116,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (picked == null) return;
 
       final file = File(picked.path);
-      final lower = picked.path.toLowerCase();
-      String contentType = 'image/jpeg';
-      if (lower.endsWith('.png')) contentType = 'image/png';
-      if (lower.endsWith('.webp')) contentType = 'image/webp';
+      final contentType = jobtreeInferImageContentType(picked.path, picked.mimeType);
 
-      final presignRes = await _apiService.getMediaPresignedUrl(
-        mediaType: 'photo',
+      final bytes = await file.readAsBytes();
+      final uploadRes = await _apiService.uploadSalonMediaDirect(
+        bodyBytes: bytes,
         contentType: contentType,
+        mediaType: 'photo',
+        isPrimary: true,
         filename: picked.name,
       );
-      if (!presignRes.success || presignRes.data == null) {
+      if (!uploadRes.success) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(_currentLanguage == Language.hindi ? 'फोटो अपलोड लिंक नहीं मिला' : 'Could not get upload link'),
+            content: Text(
+              _currentLanguage == Language.hindi
+                  ? 'फोटो अपलोड असफल: ${uploadRes.message ?? uploadRes.errorCode ?? ''}'
+                  : 'Photo upload failed: ${uploadRes.message ?? uploadRes.errorCode ?? ''}',
+            ),
             backgroundColor: Colors.redAccent,
           ),
         );
         return;
       }
-
-      final presign = presignRes.data!;
-      final bytes = await file.readAsBytes();
-      final uploadResp = await http.put(
-        Uri.parse(presign.uploadUrl),
-        headers: {
-          'Content-Type': contentType,
-        },
-        body: bytes,
-      );
-      if (uploadResp.statusCode < 200 || uploadResp.statusCode >= 300) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(_currentLanguage == Language.hindi ? 'फोटो अपलोड असफल रहा' : 'Photo upload failed'),
-            backgroundColor: Colors.redAccent,
-          ),
-        );
-        return;
-      }
-
-      // Save media record as primary photo
-      await _apiService.saveMediaRecord(
-        mediaType: 'photo',
-        mediaUrl: presign.fileUrl,
-        isPrimary: true,
-      );
 
       if (!mounted) return;
-      setState(() {
-        _profilePhotoUrl = presign.fileUrl;
-      });
+      await _loadProfileData(quiet: true);
+      widget.onProfileUpdated();
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_currentLanguage == Language.hindi ? 'फोटो अपडेट हो गया' : 'Profile photo updated'),
@@ -12662,7 +14161,109 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
   }
-  
+
+  static const int _maxSalonGalleryPhotos = 12;
+
+  int get _salonImageCount => (_salonProfile?.media ?? []).where((m) => m.isImage).length;
+
+  Future<void> _openEditSalonProfile() async {
+    if (_salonProfile == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_currentLanguage == Language.hindi ? 'प्रोफ़ाइल लोड हो रही है' : 'Profile is still loading'),
+        ),
+      );
+      return;
+    }
+    final changed = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (ctx) => SalonEditProfileScreen(
+          selectedLanguage: _currentLanguage,
+          profile: _salonProfile!,
+        ),
+      ),
+    );
+    if (changed == true && mounted) {
+      await _loadProfileData(quiet: true);
+      widget.onProfileUpdated();
+    }
+  }
+
+  Future<void> _addSalonPhotoFromGallery() async {
+    if (_uploadingExtraPhoto || _isLoading) return;
+    if (_salonImageCount >= _maxSalonGalleryPhotos) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            _currentLanguage == Language.hindi
+                ? 'अधिकतम $_maxSalonGalleryPhotos फ़ोटो'
+                : 'Maximum $_maxSalonGalleryPhotos photos',
+          ),
+        ),
+      );
+      return;
+    }
+    setState(() => _uploadingExtraPhoto = true);
+    try {
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1600,
+        imageQuality: 85,
+      );
+      if (picked == null) return;
+
+      final file = File(picked.path);
+      final contentType = jobtreeInferImageContentType(picked.path, picked.mimeType);
+
+      final bytes = await file.readAsBytes();
+      final hasPrimary = (_salonProfile?.media ?? []).any((m) => m.isImage && m.isPrimary);
+      final uploadRes = await _apiService.uploadSalonMediaDirect(
+        bodyBytes: bytes,
+        contentType: contentType,
+        mediaType: 'photo',
+        isPrimary: !hasPrimary,
+        filename: picked.name,
+      );
+      if (!uploadRes.success) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              _currentLanguage == Language.hindi
+                  ? 'फोटो अपलोड असफल: ${uploadRes.message ?? uploadRes.errorCode ?? ''}'
+                  : 'Photo upload failed: ${uploadRes.message ?? uploadRes.errorCode ?? ''}',
+            ),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+        return;
+      }
+
+      if (!mounted) return;
+      await _loadProfileData(quiet: true);
+      widget.onProfileUpdated();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_currentLanguage == Language.hindi ? 'फोटो जोड़ा गया' : 'Photo added'),
+          backgroundColor: const Color(0xFF3D3D7B),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_currentLanguage == Language.hindi ? 'फोटो अपलोड में समस्या' : 'Photo upload failed'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _uploadingExtraPhoto = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -12670,12 +14271,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
     
     return RefreshIndicator(
-      onRefresh: _loadProfileData,
+      onRefresh: () => _loadProfileData(quiet: true),
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.only(bottom: 80, top: 8),
+        child: ResponsiveContent(
+          child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // 1. PROFILE HEADER
             _buildProfileHeader(),
@@ -12708,6 +14310,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             
             const SizedBox(height: 80), // Space for bottom nav
           ],
+        ),
         ),
       ),
     );
@@ -12785,13 +14388,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      salonName,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF121A2C),
-                      ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            salonName,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF121A2C),
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (_salonProfile?.isSalonVerified == true)
+                          const Padding(
+                            padding: EdgeInsets.only(left: 4),
+                            child: Icon(Icons.verified, color: Color(0xFF1565C0), size: 22),
+                          ),
+                      ],
                     ),
                     if (city.isNotEmpty) ...[
                       const SizedBox(height: 4),
@@ -12811,10 +14427,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                     if (phone.isNotEmpty) ...[
                       const SizedBox(height: 4),
-                      Row(
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 4,
+                        runSpacing: 4,
                         children: [
                           Icon(Icons.phone, size: 16, color: Colors.grey.shade600),
-                          const SizedBox(width: 4),
                           Text(
                             phone,
                             style: TextStyle(
@@ -12822,7 +14440,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               color: Colors.grey.shade600,
                             ),
                           ),
-                          const SizedBox(width: 6),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
@@ -12852,9 +14469,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           SizedBox(
             width: double.infinity,
             child: TextButton(
-              onPressed: () {
-                // TODO: Navigate to edit profile flow
-              },
+              onPressed: _openEditSalonProfile,
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
@@ -12909,38 +14524,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       child: Stack(
         children: [
-          Row(
-            children: [
-              SizedBox(
-                width: 60,
-                height: 60,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    CircularProgressIndicator(
-                      value: percent / 100,
-                      strokeWidth: 6,
-                      backgroundColor: Colors.grey.shade300,
-                      valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFF9A825)),
-                    ),
-                    Text(
-                      '$percent%',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF5D4037),
+          Padding(
+            padding: const EdgeInsets.only(top: 4, right: 28),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final narrow = AppResponsive.stackCompletionCard(constraints.maxWidth);
+                final ring = SizedBox(
+                  width: 60,
+                  height: 60,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      CircularProgressIndicator(
+                        value: percent / 100,
+                        strokeWidth: 6,
+                        backgroundColor: Colors.grey.shade300,
+                        valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFF9A825)),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                      Text(
+                        '$percent%',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF5D4037),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+                final copy = Column(
+                  crossAxisAlignment: narrow ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
                   children: [
                     Text(
                       percentText,
+                      textAlign: narrow ? TextAlign.center : TextAlign.start,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -12950,6 +14567,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(height: 4),
                     Text(
                       _localizations.completeProfileToGetBetterCandidates,
+                      textAlign: narrow ? TextAlign.center : TextAlign.start,
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey.shade700,
@@ -12959,9 +14577,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
-                          // TODO: Navigate to progressive edit flow
-                        },
+                        onPressed: _openEditSalonProfile,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFF9A825),
                           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -12980,9 +14596,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ],
-                ),
-              ),
-            ],
+                );
+                if (narrow) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Center(child: ring),
+                      const SizedBox(height: 12),
+                      copy,
+                    ],
+                  );
+                }
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ring,
+                    const SizedBox(width: 16),
+                    Expanded(child: copy),
+                  ],
+                );
+              },
+            ),
           ),
           Positioned(
             top: 0,
@@ -13013,38 +14647,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       child: Stack(
         children: [
-          Row(
-            children: [
-              SizedBox(
-                width: 60,
-                height: 60,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    CircularProgressIndicator(
-                      value: percent / 100,
-                      strokeWidth: 6,
-                      backgroundColor: Colors.grey.shade300,
-                      valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFF9A825)),
-                    ),
-                    Text(
-                      '$percent%',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF5D4037),
+          Padding(
+            padding: const EdgeInsets.only(top: 4, right: 28),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final narrow = AppResponsive.stackCompletionCard(constraints.maxWidth);
+                final ring = SizedBox(
+                  width: 60,
+                  height: 60,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      CircularProgressIndicator(
+                        value: percent / 100,
+                        strokeWidth: 6,
+                        backgroundColor: Colors.grey.shade300,
+                        valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFF9A825)),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                      Text(
+                        '$percent%',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF5D4037),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+                final copy = Column(
+                  crossAxisAlignment: narrow ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
                   children: [
                     Text(
                       percentText,
+                      textAlign: narrow ? TextAlign.center : TextAlign.start,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -13056,6 +14692,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       widget.selectedLanguage == Language.hindi
                           ? 'फोटो वाली प्रोफ़ाइल को 2× ज़्यादा एप्लिकेशन मिलते हैं'
                           : 'Profiles with photos get 2× more applications',
+                      textAlign: narrow ? TextAlign.center : TextAlign.start,
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey.shade700,
@@ -13066,9 +14703,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
-                          // TODO: Navigate to photo upload
-                        },
+                        onPressed: _addSalonPhotoFromGallery,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFF9A825),
                           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -13087,9 +14722,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ],
-                ),
-              ),
-            ],
+                );
+                if (narrow) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Center(child: ring),
+                      const SizedBox(height: 12),
+                      copy,
+                    ],
+                  );
+                }
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ring,
+                    const SizedBox(width: 16),
+                    Expanded(child: copy),
+                  ],
+                );
+              },
+            ),
           ),
           Positioned(
             top: 0,
@@ -13182,9 +14835,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
-                  onPressed: () {
-                    // TODO: Navigate to verification flow (NO pricing shown)
-                  },
+                  onPressed: _showVerifiedSalonLearnMore,
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Color(0xFF2196F3)),
                     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -13393,6 +15044,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildDetailRow(
                     _localizations.salonName,
                     _salonProfile?.salonName ?? _localizations.notAdded,
+                    valueTrailing: _salonProfile?.isSalonVerified == true
+                        ? const Icon(Icons.verified, color: Color(0xFF1565C0), size: 18)
+                        : null,
                   ),
                   const SizedBox(height: 16),
                   _buildDetailRow(
@@ -13413,9 +15067,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: TextButton(
-                      onPressed: () {
-                        // TODO: Navigate to edit salon details
-                      },
+                      onPressed: _openEditSalonProfile,
                       child: Text(
                         _localizations.editProfile,
                         style: const TextStyle(
@@ -13434,7 +15086,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
   
-  Widget _buildDetailRow(String label, String value) {
+  Widget _buildDetailRow(String label, String value, {Widget? valueTrailing}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -13449,19 +15101,156 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Color(0xFF121A2C),
-            ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF121A2C),
+                  ),
+                ),
+              ),
+              if (valueTrailing != null) valueTrailing,
+            ],
           ),
         ),
       ],
     );
   }
-  
+
+  Widget _verificationStatusTag() {
+    final st = _salonProfile?.verificationStatus ?? 'unverified';
+    String t;
+    Color bg;
+    Color fg;
+    switch (st) {
+      case 'verified':
+        t = _currentLanguage == Language.hindi ? 'सत्यापित' : 'Verified';
+        bg = Colors.green.shade50;
+        fg = Colors.green.shade800;
+        break;
+      case 'pending':
+        t = _currentLanguage == Language.hindi ? 'सत्यापन जारी' : 'In review';
+        bg = Colors.orange.shade50;
+        fg = Colors.orange.shade900;
+        break;
+      case 'rejected':
+        t = _currentLanguage == Language.hindi ? 'अस्वीकृत' : 'Rejected';
+        bg = Colors.red.shade50;
+        fg = Colors.red.shade900;
+        break;
+      default:
+        t = _localizations.optional;
+        bg = Colors.grey.shade200;
+        fg = Colors.grey.shade700;
+    }
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        t,
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+          color: fg,
+        ),
+      ),
+    );
+  }
+
+  void _showVerifiedSalonLearnMore() {
+    final hi = _currentLanguage == Language.hindi;
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(hi ? 'Verified Salon बैज' : 'Verified Salon badge'),
+        content: SingleChildScrollView(
+          child: Text(
+            hi
+                ? 'जब आप आधार और व्यापार प्रमाण जमा करके हमारी टीम से मंजूरी लेते हैं, तो आपके सैलून के नाम के बगल में नीला सत्यापन चिह्न दिखाई देता है। उम्मीदवारों को भरोसा बढ़ता है।\n\nसमीक्षा अभी टीम द्वारा की जाती है; एडमिन पोर्टल जल्द उपलब्ध होगा।'
+                : 'After you submit ID and business proof and our team approves your salon, a blue verified badge appears next to your salon name so job seekers trust your listings more.\n\nReviews are handled by our team for now; an admin portal will follow.',
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(hi ? 'ठीक' : 'OK')),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openVerificationDocUrl(String? url) async {
+    if (url == null || url.isEmpty || !mounted) return;
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(_currentLanguage == Language.hindi ? 'लिंक नहीं खुल सका' : 'Could not open link')),
+      );
+    }
+  }
+
+  Future<void> _pickAndUploadVerificationDoc(String docType) async {
+    if (_uploadingVerification) return;
+    setState(() => _uploadingVerification = true);
+    try {
+      final res = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'webp', 'pdf', 'heic'],
+        withData: true,
+      );
+      if (res == null || res.files.isEmpty) return;
+      final f = res.files.first;
+      final bytes = f.bytes;
+      if (bytes == null || bytes.isEmpty) return;
+      final name = f.name;
+      final ct = jobtreeInferDocContentType(name, f.extension);
+      final upload = await _apiService.uploadSalonVerificationDocument(
+        bodyBytes: bytes,
+        contentType: ct,
+        docType: docType,
+        filename: name,
+      );
+      if (!mounted) return;
+      if (upload.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              _currentLanguage == Language.hindi
+                  ? 'दस्तावेज़ जमा हो गया। सत्यापन लंबित है।'
+                  : 'Document submitted. Verification is pending.',
+            ),
+            backgroundColor: const Color(0xFF3D3D7B),
+          ),
+        );
+        await _loadProfileData(quiet: true);
+        widget.onProfileUpdated();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(upload.message ?? upload.errorCode ?? 'Upload failed'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString()), backgroundColor: Colors.redAccent),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _uploadingVerification = false);
+    }
+  }
+
   // 4. VERIFICATION & DOCUMENTS
   Widget _buildVerificationCard() {
     return Container(
@@ -13500,21 +15289,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      _localizations.optional,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.grey.shade700,
-                      ),
-                    ),
-                  ),
+                  _verificationStatusTag(),
                   const SizedBox(width: 8),
                   Icon(
                     _verificationExpanded ? Icons.expand_less : Icons.expand_more,
@@ -13524,21 +15299,86 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           ),
-          
           if (_verificationExpanded)
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildDetailRow(
-                    _localizations.aadhaarKycStatus,
-                    _localizations.notAdded, // TODO: Check actual status
+                  if ((_salonProfile?.verificationStatus ?? '') == 'rejected')
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Text(
+                        _currentLanguage == Language.hindi
+                            ? 'पिछला सत्यापन अस्वीकार हो गया। स्पष्ट दस्तावेज़ फिर से अपलोड करें।'
+                            : 'Your last verification was not approved. Please upload clear documents again.',
+                        style: TextStyle(fontSize: 13, color: Colors.red.shade800),
+                      ),
+                    ),
+                  if ((_salonProfile?.verificationStatus ?? '') == 'pending')
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Text(
+                        _currentLanguage == Language.hindi
+                            ? 'आपके दस्तावेज़ समीक्षा में हैं।'
+                            : 'Your documents are under review.',
+                        style: TextStyle(fontSize: 13, color: Colors.blueGrey.shade800),
+                      ),
+                    ),
+                  if ((_salonProfile?.verificationDocs ?? []).isNotEmpty) ...[
+                    Text(
+                      _currentLanguage == Language.hindi ? 'जमा दस्तावेज़' : 'Submitted documents',
+                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                    ),
+                    const SizedBox(height: 8),
+                    for (final d in _salonProfile!.verificationDocs.take(8))
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                '${d.docType} · ${d.status}',
+                                style: TextStyle(fontSize: 13, color: Colors.grey.shade800),
+                              ),
+                            ),
+                            if (d.docFileUrl != null && d.docFileUrl!.isNotEmpty)
+                              TextButton(
+                                onPressed: () => _openVerificationDocUrl(d.docFileUrl),
+                                child: Text(_currentLanguage == Language.hindi ? 'खोलें' : 'Open'),
+                              ),
+                          ],
+                        ),
+                      ),
+                    const SizedBox(height: 12),
+                  ],
+                  Text(
+                    _currentLanguage == Language.hindi
+                        ? 'आधार / पहचान और व्यापार प्रमाण (GST, लाइसेंस, फोटो या PDF) अपलोड करें।'
+                        : 'Upload ID (Aadhaar) and business proof (GST, license — photo or PDF).',
+                    style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
                   ),
-                  const SizedBox(height: 16),
-                  _buildDetailRow(
-                    _localizations.businessProof,
-                    _localizations.optional,
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: _uploadingVerification ? null : () => _pickAndUploadVerificationDoc('aadhaar'),
+                        icon: const Icon(Icons.badge_outlined, size: 18),
+                        label: Text(_currentLanguage == Language.hindi ? 'KYC / आधार' : 'KYC / Aadhaar'),
+                      ),
+                      OutlinedButton.icon(
+                        onPressed: _uploadingVerification ? null : () => _pickAndUploadVerificationDoc('gst'),
+                        icon: const Icon(Icons.receipt_long_outlined, size: 18),
+                        label: Text(_currentLanguage == Language.hindi ? 'GST' : 'GST'),
+                      ),
+                      OutlinedButton.icon(
+                        onPressed: _uploadingVerification ? null : () => _pickAndUploadVerificationDoc('shop_license'),
+                        icon: const Icon(Icons.store_outlined, size: 18),
+                        label: Text(_currentLanguage == Language.hindi ? 'दुकान लाइसेंस' : 'Shop license'),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -13547,9 +15387,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-  
+
   // 5. MEDIA & PHOTOS
   Widget _buildMediaSection() {
+    final images = (_salonProfile?.media ?? []).where((m) => m.isImage).toList();
+    final canAddMore = images.length < _maxSalonGalleryPhotos;
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -13570,58 +15413,130 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               const Icon(Icons.photo_library, color: Color(0xFF3D3D7B)),
               const SizedBox(width: 12),
-              Text(
-                _localizations.mediaPhotos,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF121A2C),
+              Expanded(
+                child: Text(
+                  _localizations.mediaPhotos,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF121A2C),
+                  ),
                 ),
+              ),
+              Text(
+                '${images.length}/$_maxSalonGalleryPhotos',
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          
-          // Photo grid (max 3 visible)
-          Row(
-            children: [
-              // Placeholder for photos (TODO: Load actual photos from S3)
-              for (int i = 0; i < 3; i++)
-                Expanded(
-                  child: Container(
-                    margin: EdgeInsets.only(right: i < 2 ? 8 : 0),
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(8),
+          SizedBox(
+            height: 104,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                for (final m in images)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => showJobtreeImagePreview(context, m.mediaUrl),
+                        borderRadius: BorderRadius.circular(10),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                Image.network(
+                                  m.mediaUrl,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => ColoredBox(
+                                    color: Colors.grey.shade300,
+                                    child: Icon(Icons.broken_image_outlined, color: Colors.grey.shade600),
+                                  ),
+                                  loadingBuilder: (context, child, loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return Center(
+                                      child: SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          value: loadingProgress.expectedTotalBytes != null
+                                              ? loadingProgress.cumulativeBytesLoaded /
+                                                  loadingProgress.expectedTotalBytes!
+                                              : null,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                if (m.isPrimary)
+                                  Positioned(
+                                    left: 6,
+                                    top: 6,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black54,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        _currentLanguage == Language.hindi ? 'मुख्य' : 'Main',
+                                        style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    child: i == 0
-                        ? Center(
-                            child: Column(
+                  ),
+                if (canAddMore)
+                  InkWell(
+                    onTap: _uploadingExtraPhoto ? null : _addSalonPhotoFromGallery,
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey.shade400),
+                      ),
+                      child: _uploadingExtraPhoto
+                          ? const Center(child: SizedBox(width: 28, height: 28, child: CircularProgressIndicator(strokeWidth: 2)))
+                          : Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(Icons.add_photo_alternate, size: 32, color: Colors.grey),
+                                Icon(Icons.add_photo_alternate_outlined, size: 32, color: Colors.grey.shade700),
                                 const SizedBox(height: 4),
-                                Text(
-                                  _localizations.addPhoto,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey.shade600,
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                                  child: Text(
+                                    _localizations.addPhoto,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 11, color: Colors.grey.shade700, fontWeight: FontWeight.w500),
                                   ),
                                 ),
                               ],
                             ),
-                          )
-                        : null,
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
     );
   }
-  
+
   // 6. SETTINGS
   Widget _buildSettingsSection() {
     return Container(

@@ -1,3 +1,12 @@
+name: jobtree
+description: Jobtree mobile app
+publish_to: "none"
+
+version: 1.0.4+5
+
+environment:
+  sdk: '^3.9.0'
+
 dependencies:
   flutter:
     sdk: flutter
@@ -8,6 +17,7 @@ dependencies:
   flutter_svg: ^2.0.9
   sms_autofill: ^2.3.0
   http: ^1.1.0
+  web_socket_channel: ^3.0.1
   flutter_secure_storage: ^9.0.0
   shared_preferences: ^2.2.2
   url_launcher: ^6.2.5
@@ -18,6 +28,7 @@ dependencies:
 
   # Image picking for profile photos
   image_picker: ^1.1.2
+  file_picker: ^8.1.6
 
 
 dev_dependencies:
@@ -48,6 +59,7 @@ flutter:
     - assets/images/screen 2/
     - assets/images/onboarding/
     - assets/images/
+    - assets/data/job_taxonomy.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

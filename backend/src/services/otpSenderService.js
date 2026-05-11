@@ -53,18 +53,19 @@ class OTPSenderService {
    * @param {string} phoneNumber - digits without country code
    * @param {string} otp
    * @param {string} countryCode - default '91'
+   * @param {string|null} [smsAppHash] - Android SMS Retriever 11-char hash (optional)
    */
-  async sendOtp(phoneNumber, otp, countryCode = '91') {
+  async sendOtp(phoneNumber, otp, countryCode = '91', smsAppHash = null) {
     const sanitizedPhone = phoneNumber.replace(/\D/g, '').replace(/^0+/, '');
     const cc = countryCode.replace('+', '').replace(/\D/g, '');
 
     switch (this.provider) {
       case SMS_PROVIDER.TWILIO:
-        await this.sendViaTwilio(sanitizedPhone, otp, cc);
+        await this.sendViaTwilio(sanitizedPhone, otp, cc, smsAppHash);
         break;
       case SMS_PROVIDER.CONSOLE:
       default:
-        this.logToConsole(sanitizedPhone, otp, cc);
+        this.logToConsole(sanitizedPhone, otp, cc, smsAppHash);
         break;
     }
   }
@@ -76,7 +77,15 @@ class OTPSenderService {
     return `+${countryDigits}${sanitizedLocalDigits}`;
   }
 
-  async sendViaTwilio(sanitizedPhone, otp, countryDigits) {
+  _buildSmsBody(otp, smsAppHash) {
+    const line1 = `<#> Your Jobtree code is ${otp}. Valid ${config.otp.expiryMinutes} min. Do not share.`;
+    if (smsAppHash && /^[A-Za-z0-9+/=-]{11}$/.test(smsAppHash)) {
+      return `${line1}\n${smsAppHash}`;
+    }
+    return `Your Jobtree verification code is ${otp}. Valid for ${config.otp.expiryMinutes} minutes. Do not share this code.`;
+  }
+
+  async sendViaTwilio(sanitizedPhone, otp, countryDigits, smsAppHash = null) {
     const client = this._getTwilioClient();
     const from = this._smsFromNumber();
     if (!client || !from) {
@@ -84,7 +93,7 @@ class OTPSenderService {
     }
 
     const to = this._toE164(sanitizedPhone, countryDigits);
-    const body = `Your Jobtree verification code is ${otp}. Valid for ${config.otp.expiryMinutes} minutes. Do not share this code.`;
+    const body = this._buildSmsBody(otp, smsAppHash);
 
     try {
       await client.messages.create({
@@ -103,13 +112,14 @@ class OTPSenderService {
     }
   }
 
-  logToConsole(sanitizedPhone, otp, countryDigits) {
+  logToConsole(sanitizedPhone, otp, countryDigits, smsAppHash = null) {
     if (config.env === 'production') {
       logger.error('SECURITY: Production OTP with console provider — SMS not delivered');
       return;
     }
 
     const formattedNumber = this._toE164(sanitizedPhone, countryDigits);
+    const previewBody = this._buildSmsBody(otp, smsAppHash);
 
     logger.warn(`[DEV MODE] OTP for ${formattedNumber}: ${otp}`);
 
@@ -119,6 +129,8 @@ class OTPSenderService {
 ╠══════════════════════════════════════════════════════════════╣
 ║  Phone: ${formattedNumber.padEnd(52)}║
 ║  OTP:   ${otp.padEnd(52)}║
+║  SMS body (use for Android SMS Retriever tests):            ║
+${previewBody.split('\n').map((l) => `║  ${l.padEnd(58)}║`).join('\n')}
 ║  Expires in: ${config.otp.expiryMinutes} minutes                                      ║
 ╚══════════════════════════════════════════════════════════════╝
     `);

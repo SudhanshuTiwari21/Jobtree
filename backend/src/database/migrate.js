@@ -706,6 +706,42 @@ const migrations = [
       ALTER TABLE applications ADD COLUMN IF NOT EXISTS interview_reminder_sent BOOLEAN DEFAULT false;
     `,
   },
+  {
+    name: 'create_chat_messages_table',
+    sql: `
+      CREATE TABLE IF NOT EXISTS chat_messages (
+        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        application_id UUID NOT NULL REFERENCES applications(id) ON DELETE CASCADE,
+        sender_role VARCHAR(20) NOT NULL CHECK (sender_role IN ('owner', 'seeker')),
+        body TEXT NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_chat_messages_application_created
+        ON chat_messages(application_id, created_at DESC);
+    `,
+  },
+  {
+    name: 'alter_seeker_profiles_extended_fields',
+    sql: `
+      ALTER TABLE seeker_profiles ADD COLUMN IF NOT EXISTS current_salary DECIMAL(10, 2);
+      ALTER TABLE seeker_profiles ADD COLUMN IF NOT EXISTS expected_salary_max DECIMAL(10, 2);
+      ALTER TABLE seeker_profiles ADD COLUMN IF NOT EXISTS experience_years INTEGER;
+      ALTER TABLE seeker_profiles ADD COLUMN IF NOT EXISTS marital_status VARCHAR(30);
+      ALTER TABLE seeker_profiles ADD COLUMN IF NOT EXISTS email VARCHAR(255);
+      ALTER TABLE seeker_profiles ADD COLUMN IF NOT EXISTS has_professional_course BOOLEAN;
+      ALTER TABLE seeker_profiles ADD COLUMN IF NOT EXISTS professional_course_certificate_url TEXT;
+      ALTER TABLE seeker_profiles ADD COLUMN IF NOT EXISTS work_portfolio_urls JSONB DEFAULT '[]'::jsonb;
+    `,
+  },
+  {
+    name: 'relax_jobs_job_role_and_seeker_preferred_role',
+    sql: `
+      ALTER TABLE jobs DROP CONSTRAINT IF EXISTS jobs_job_role_check;
+      ALTER TABLE jobs ALTER COLUMN job_role TYPE VARCHAR(100);
+      ALTER TABLE seeker_profiles ALTER COLUMN preferred_role TYPE VARCHAR(100);
+    `,
+  },
 ];
 
 /**

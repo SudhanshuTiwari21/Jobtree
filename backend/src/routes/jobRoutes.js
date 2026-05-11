@@ -25,10 +25,22 @@ const handleValidationErrors = (req, res, next) => {
 /**
  * Validators
  */
+const JOB_ROLE_RE = /^[a-z][a-z0-9_]{0,99}$/;
+
 const createJobValidation = [
   body('jobRole')
-    .isIn(['hair_stylist', 'beautician', 'makeup_artist', 'massage_therapist', 'receptionist', 'helper', 'manager', 'other'])
-    .withMessage('Invalid job role'),
+    .trim()
+    .matches(JOB_ROLE_RE)
+    .withMessage('Invalid job role id'),
+  body('skills')
+    .optional()
+    .isArray({ max: 200 })
+    .withMessage('Skills must be an array'),
+  body('skills.*')
+    .optional()
+    .isString()
+    .isLength({ max: 160 })
+    .withMessage('Invalid skill entry'),
   body('location')
     .trim()
     .notEmpty()
@@ -64,8 +76,9 @@ const updateJobValidation = [
   param('id').isUUID().withMessage('Invalid job ID'),
   body('jobRole')
     .optional()
-    .isIn(['hair_stylist', 'beautician', 'makeup_artist', 'massage_therapist', 'receptionist', 'helper', 'manager', 'other'])
-    .withMessage('Invalid job role'),
+    .trim()
+    .matches(JOB_ROLE_RE)
+    .withMessage('Invalid job role id'),
   body('salaryMin')
     .optional()
     .isFloat({ min: 0 })

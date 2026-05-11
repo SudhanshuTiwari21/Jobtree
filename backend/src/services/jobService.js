@@ -1,5 +1,6 @@
 import db from '../database/connection.js';
 import logger from '../utils/logger.js';
+import s3Service from './s3Service.js';
 
 /**
  * Job Service
@@ -187,7 +188,7 @@ class JobService {
 
     try {
       let query = `
-        SELECT j.*, s.salon_name, s.owner_name, s.city as salon_city
+        SELECT j.*, s.salon_name, s.owner_name, s.city as salon_city, s.verification_status as salon_verification_status
         FROM jobs j
         LEFT JOIN salons s ON j.salon_id = s.id
         WHERE j.status = 'active'
@@ -238,12 +239,43 @@ class JobService {
 
       const result = await db.query(query, params);
 
+      const salonIds = [...new Set(result.rows.map((r) => r.salon_id).filter(Boolean))];
+      /** @type {Map<string, string[]>} */
+      const photosBySalon = new Map();
+      const maxPhotosPerSalon = 12;
+
+      if (salonIds.length > 0) {
+        const mediaRes = await db.query(
+          `SELECT salon_id, media_url, is_primary, display_order
+           FROM salon_media
+           WHERE salon_id = ANY($1::uuid[])
+             AND media_type IN ('photo', 'logo')
+           ORDER BY salon_id, is_primary DESC, display_order ASC NULLS LAST`,
+          [salonIds]
+        );
+
+        for (const m of mediaRes.rows) {
+          const sid = m.salon_id;
+          if (!photosBySalon.has(sid)) photosBySalon.set(sid, []);
+          const arr = photosBySalon.get(sid);
+          if (arr.length < maxPhotosPerSalon && m.media_url) {
+            arr.push(m.media_url);
+          }
+        }
+
+        for (const [sid, urls] of photosBySalon.entries()) {
+          photosBySalon.set(sid, await s3Service.presignGetUrls(urls));
+        }
+      }
+
       return {
         success: true,
         jobs: result.rows.map((row) => ({
           ...this._formatJob(row),
           salonName: row.salon_name,
           ownerName: row.owner_name,
+          salonVerificationStatus: row.salon_verification_status || 'unverified',
+          salonPhotoUrls: photosBySalon.get(row.salon_id) || [],
         })),
         limit,
         offset,

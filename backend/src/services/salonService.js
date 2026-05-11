@@ -1,5 +1,6 @@
 import db from '../database/connection.js';
 import logger from '../utils/logger.js';
+import s3Service from './s3Service.js';
 
 class SalonService {
   /**
@@ -408,9 +409,9 @@ class SalonService {
       [salonId]
     );
 
-    // Get verification docs (masked info only)
+    // Get verification docs (owner sees presigned file URLs from getFullProfile)
     const verificationDocs = await db.query(
-      `SELECT id, doc_type, doc_last_4, verification_status, created_at
+      `SELECT id, doc_type, doc_last_4, doc_file_url, verification_status, rejection_reason, created_at, reviewed_at
        FROM salon_verification_docs
        WHERE salon_id = $1
        ORDER BY created_at DESC`,
@@ -433,18 +434,35 @@ class SalonService {
       photoCount
     );
 
-    return {
-      ...this.formatSalonResponse(salon),
-      profileCompletionPercent: completionPercent,
-      media: media.rows,
-      policies: policies.rows[0] || null,
-      verificationDocs: verificationDocs.rows.map(doc => ({
+    const mediaRows = await Promise.all(
+      media.rows.map(async (row) => ({
+        ...row,
+        media_url: await s3Service.presignGetUrl(row.media_url),
+        thumbnail_url: row.thumbnail_url
+          ? await s3Service.presignGetUrl(row.thumbnail_url)
+          : null,
+      }))
+    );
+
+    const verificationDocsOut = await Promise.all(
+      verificationDocs.rows.map(async (doc) => ({
         id: doc.id,
         docType: doc.doc_type,
         docLast4: doc.doc_last_4,
         status: doc.verification_status,
+        rejectionReason: doc.rejection_reason,
         createdAt: doc.created_at,
-      })),
+        reviewedAt: doc.reviewed_at,
+        docFileUrl: await s3Service.presignGetUrl(doc.doc_file_url),
+      }))
+    );
+
+    return {
+      ...this.formatSalonResponse(salon),
+      profileCompletionPercent: completionPercent,
+      media: mediaRows,
+      policies: policies.rows[0] || null,
+      verificationDocs: verificationDocsOut,
     };
   }
 
@@ -482,6 +500,68 @@ class SalonService {
    */
   camelToSnake(str) {
     return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+  }
+
+  /**
+   * Record a KYC / business document and mark salon pending when applicable.
+   */
+  async submitVerificationDocument(salonId, docType, docLast4, docFileUrl) {
+    const allowed = ['aadhaar', 'gst', 'shop_license', 'pan', 'other'];
+    if (!allowed.includes(docType)) {
+      const err = new Error('Invalid document type');
+      err.statusCode = 400;
+      throw err;
+    }
+    const last4 = docLast4 && String(docLast4).trim().length > 0 ? String(docLast4).trim().slice(-4) : null;
+
+    const result = await db.query(
+      `INSERT INTO salon_verification_docs (salon_id, doc_type, doc_last_4, doc_file_url, verification_status)
+       VALUES ($1, $2, $3, $4, 'pending')
+       RETURNING id, doc_type, doc_last_4, doc_file_url, verification_status, created_at`,
+      [salonId, docType, last4, docFileUrl]
+    );
+
+    await db.query(
+      `UPDATE salons SET verification_status = 'pending', updated_at = CURRENT_TIMESTAMP
+       WHERE id = $1 AND verification_status IN ('unverified', 'rejected')`,
+      [salonId]
+    );
+
+    return result.rows[0];
+  }
+
+  /**
+   * Admin: set salon verification outcome and sync pending document rows.
+   */
+  async applyAdminSalonVerificationDecision(salonId, status, rejectionReason = null) {
+    if (!['verified', 'rejected'].includes(status)) {
+      const err = new Error('status must be "verified" or "rejected"');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    await db.transaction(async (client) => {
+      await client.query(
+        `UPDATE salons SET verification_status = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $1`,
+        [salonId, status]
+      );
+      if (status === 'verified') {
+        await client.query(
+          `UPDATE salon_verification_docs
+           SET verification_status = 'approved', reviewed_at = CURRENT_TIMESTAMP, rejection_reason = NULL
+           WHERE salon_id = $1 AND verification_status = 'pending'`,
+          [salonId]
+        );
+      } else {
+        await client.query(
+          `UPDATE salon_verification_docs
+           SET verification_status = 'rejected', reviewed_at = CURRENT_TIMESTAMP,
+               rejection_reason = COALESCE($2, 'Rejected')
+           WHERE salon_id = $1 AND verification_status = 'pending'`,
+          [salonId, rejectionReason]
+        );
+      }
+    });
   }
 }
 

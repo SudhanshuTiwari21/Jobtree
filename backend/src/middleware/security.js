@@ -43,7 +43,15 @@ export const securityMiddleware = [
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Media-Type',
+      'X-Is-Primary',
+      'X-Filename',
+      'X-Doc-Type',
+      'X-Doc-Last-4',
+    ],
   }),
 ];
 

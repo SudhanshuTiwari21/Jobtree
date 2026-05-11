@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1006000596140",
+    "project_id": "jobtree-a3b22",
+    "storage_bucket": "jobtree-a3b22.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1006000596140:android:8ca3b98ac8791ef4f1ab09",
+        "android_client_info": {
+          "package_name": "com.jobtree.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFmvqUdPgFE8f97FZBxqwoxJZh9vpB_44"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

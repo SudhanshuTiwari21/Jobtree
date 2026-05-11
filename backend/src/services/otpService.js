@@ -80,7 +80,7 @@ class OTPService {
    * @param {string} countryCode - Country code (default: +91)
    * @returns {Promise<object>} Request result
    */
-  async sendOTP(phoneNumber, countryCode = '+91') {
+  async sendOTP(phoneNumber, countryCode = '+91', smsAppHash = null) {
     // Sanitize phone number
     const sanitizedPhone = phoneNumber.replace(/\D/g, '').replace(/^0+/, '');
     const sanitizedCountryCode = countryCode.replace('+', '');
@@ -144,7 +144,7 @@ class OTPService {
     }
 
     // Send OTP via SMS provider (Twilio in production, console in dev)
-    await otpSender.sendOtp(sanitizedPhone, otp, sanitizedCountryCode);
+    await otpSender.sendOtp(sanitizedPhone, otp, sanitizedCountryCode, smsAppHash);
 
     // Clean up old expired OTPs periodically (async, non-blocking)
     this.cleanupExpiredOTPs().catch(() => {});
@@ -162,8 +162,8 @@ class OTPService {
    * @param {string} countryCode - Country code
    * @returns {Promise<object>} Request result
    */
-  async resendOTP(phoneNumber, countryCode = '+91') {
-    return this.sendOTP(phoneNumber, countryCode);
+  async resendOTP(phoneNumber, countryCode = '+91', smsAppHash = null) {
+    return this.sendOTP(phoneNumber, countryCode, smsAppHash);
   }
 
   /**

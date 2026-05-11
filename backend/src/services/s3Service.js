@@ -18,6 +18,9 @@ class S3Service {
           accessKeyId: config.aws.accessKeyId,
           secretAccessKey: config.aws.secretAccessKey,
         },
+        // Default WHEN_SUPPORTED adds checksum headers to PutObject; presigned URLs
+        // then require the uploader to send those headers — plain HTTP PUT from mobile does not.
+        requestChecksumCalculation: 'WHEN_REQUIRED',
       });
       logger.info('S3 client initialized');
     } else {
@@ -60,16 +63,13 @@ class S3Service {
       };
     }
 
-    // Create PUT command
+    // Presigned PUT must not require headers the mobile client does not send.
+    // (Metadata becomes x-amz-meta-* and is part of the signature — missing → 403.)
+    // Salon id is already in the object key: salons/{salonId}/...
     const command = new PutObjectCommand({
       Bucket: this.bucket,
       Key: fileKey,
       ContentType: contentType,
-      Metadata: {
-        'salon-id': salonId,
-        'media-type': mediaType,
-        'original-filename': originalFilename,
-      },
     });
 
     // Generate presigned URL
@@ -92,6 +92,142 @@ class S3Service {
   }
 
   /**
+   * Presigned upload for seeker profile photo (stored on seeker_profiles.profile_photo_url).
+   */
+  async generateSeekerUploadUrl(seekerId, mediaType, contentType, originalFilename = '') {
+    if (!['photo', 'video'].includes(mediaType)) {
+      throw new Error('Invalid media type. Must be "photo" or "video".');
+    }
+
+    const extension = this.getExtension(contentType, originalFilename);
+    const fileKey = `seekers/${seekerId}/${mediaType}s/${uuidv4()}${extension}`;
+
+    if (!this.client) {
+      const mockUrl = `https://${this.bucket}.s3.${config.aws.region}.amazonaws.com/${fileKey}`;
+      logger.warn(`[DEV MODE] Mock presigned URL generated (seeker): ${mockUrl}`);
+      return {
+        uploadUrl: mockUrl,
+        fileUrl: mockUrl,
+        fileKey,
+        expiresIn: config.aws.presignedUrlExpiry,
+        method: 'PUT',
+        contentType,
+      };
+    }
+
+    const command = new PutObjectCommand({
+      Bucket: this.bucket,
+      Key: fileKey,
+      ContentType: contentType,
+    });
+
+    const uploadUrl = await getSignedUrl(this.client, command, {
+      expiresIn: config.aws.presignedUrlExpiry,
+    });
+
+    const fileUrl = `https://${this.bucket}.s3.${config.aws.region}.amazonaws.com/${fileKey}`;
+    logger.info(`Presigned upload URL generated for seeker ${seekerId}: ${fileKey}`);
+
+    return {
+      uploadUrl,
+      fileUrl,
+      fileKey,
+      expiresIn: config.aws.presignedUrlExpiry,
+      method: 'PUT',
+      contentType,
+    };
+  }
+
+  /**
+   * Upload salon media from API process (avoids mobile presigned PUT / S3 policy mismatches).
+   * @param {string} salonId
+   * @param {string} mediaType - 'photo' | 'video'
+   * @param {string} contentType
+   * @param {Buffer} buffer
+   * @param {{ filename?: string }} opts
+   * @returns {Promise<string>} Public file URL
+   */
+  async uploadSalonBuffer(salonId, mediaType, contentType, buffer, opts = {}) {
+    if (!['photo', 'video'].includes(mediaType)) {
+      throw new Error('Invalid media type. Must be "photo" or "video".');
+    }
+    const { filename = '' } = opts;
+    const extension = this.getExtension(contentType, filename);
+    const fileKey = `salons/${salonId}/${mediaType}s/${uuidv4()}${extension}`;
+    const fileUrl = `https://${this.bucket}.s3.${config.aws.region}.amazonaws.com/${fileKey}`;
+
+    if (!this.client) {
+      logger.warn(`[DEV MODE] Mock salon buffer upload (no S3): ${fileKey}`);
+      return fileUrl;
+    }
+
+    const command = new PutObjectCommand({
+      Bucket: this.bucket,
+      Key: fileKey,
+      Body: buffer,
+      ContentType: contentType,
+    });
+    await this.client.send(command);
+    logger.info(`Salon buffer uploaded to S3: ${fileKey}`);
+    return fileUrl;
+  }
+
+  /**
+   * Upload seeker media from API process (same credentials as presign path).
+   * @returns {Promise<string>} Public file URL
+   */
+  async uploadSeekerBuffer(seekerId, mediaType, contentType, buffer, opts = {}) {
+    if (!['photo', 'video'].includes(mediaType)) {
+      throw new Error('Invalid media type. Must be "photo" or "video".');
+    }
+    const { filename = '' } = opts;
+    const extension = this.getExtension(contentType, filename);
+    const fileKey = `seekers/${seekerId}/${mediaType}s/${uuidv4()}${extension}`;
+    const fileUrl = `https://${this.bucket}.s3.${config.aws.region}.amazonaws.com/${fileKey}`;
+
+    if (!this.client) {
+      logger.warn(`[DEV MODE] Mock seeker buffer upload (no S3): ${fileKey}`);
+      return fileUrl;
+    }
+
+    const command = new PutObjectCommand({
+      Bucket: this.bucket,
+      Key: fileKey,
+      Body: buffer,
+      ContentType: contentType,
+    });
+    await this.client.send(command);
+    logger.info(`Seeker buffer uploaded to S3: ${fileKey}`);
+    return fileUrl;
+  }
+
+  /**
+   * KYC / business proof upload (private objects; served via presigned GET).
+   * @returns {Promise<string>} Canonical S3 HTTPS URL stored in DB
+   */
+  async uploadSalonVerificationBuffer(salonId, contentType, buffer, opts = {}) {
+    const { filename = '' } = opts;
+    const extension = this.getExtension(contentType, filename);
+    const fileKey = `salons/${salonId}/verification/${uuidv4()}${extension}`;
+    const fileUrl = `https://${this.bucket}.s3.${config.aws.region}.amazonaws.com/${fileKey}`;
+
+    if (!this.client) {
+      logger.warn(`[DEV MODE] Mock verification buffer upload (no S3): ${fileKey}`);
+      return fileUrl;
+    }
+
+    const command = new PutObjectCommand({
+      Bucket: this.bucket,
+      Key: fileKey,
+      Body: buffer,
+      ContentType: contentType,
+    });
+    await this.client.send(command);
+    logger.info(`Salon verification doc uploaded to S3: ${fileKey}`);
+    return fileUrl;
+  }
+
+  /**
    * Generate presigned URL for file download
    * @param {string} fileKey - S3 file key
    * @returns {Promise<string>} Presigned download URL
@@ -109,6 +245,30 @@ class S3Service {
     return getSignedUrl(this.client, command, {
       expiresIn: config.aws.presignedUrlExpiry,
     });
+  }
+
+  /**
+   * Presigned GET for URLs stored in DB (Image.network cannot use IAM on private buckets).
+   * @param {string|null|undefined} url
+   * @returns {Promise<string>}
+   */
+  async presignGetUrl(url) {
+    if (!url || typeof url !== 'string' || url.length === 0) return '';
+    if (!this.client) return url;
+    try {
+      const key = this.extractFileKey(url);
+      if (!key || key === url) return url;
+      return await this.generateDownloadUrl(key);
+    } catch (e) {
+      logger.warn(`presignGetUrl failed: ${e.message}`);
+      return url;
+    }
+  }
+
+  /** @param {string[]} urls */
+  async presignGetUrls(urls) {
+    if (!Array.isArray(urls)) return [];
+    return Promise.all(urls.map((u) => this.presignGetUrl(u)));
   }
 
   /**
@@ -214,6 +374,9 @@ class S3Service {
       'image/png': '.png',
       'image/gif': '.gif',
       'image/webp': '.webp',
+      'image/heic': '.heic',
+      'image/heif': '.heif',
+      'application/pdf': '.pdf',
       'video/mp4': '.mp4',
       'video/quicktime': '.mov',
       'video/webm': '.webm',

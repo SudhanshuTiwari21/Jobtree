@@ -8,6 +8,8 @@ import notificationRoutes from './notificationRoutes.js';
 import supportRoutes from './supportRoutes.js';
 import seekerRoutes from './seekerRoutes.js';
 import deviceRoutes from './deviceRoutes.js';
+import chatRoutes from './chatRoutes.js';
+import adminRoutes from './adminRoutes.js';
 import db from '../database/connection.js';
 
 const router = express.Router();
@@ -57,5 +59,7 @@ router.use('/notifications', notificationRoutes);
 router.use('/support', supportRoutes);
 router.use('/seeker', seekerRoutes);
 router.use('/device', deviceRoutes);
+router.use('/chat', chatRoutes);
+router.use('/admin', adminRoutes);
 
 export default router;
