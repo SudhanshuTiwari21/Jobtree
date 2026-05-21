@@ -1,5 +1,6 @@
 import db from '../database/connection.js';
 import logger from '../utils/logger.js';
+import s3Service from './s3Service.js';
 
 class SeekerService {
   /**
@@ -97,6 +98,28 @@ class SeekerService {
     return !!(seeker.full_name && seeker.city && seeker.preferred_role);
   }
 
+  /** Strip presigned query params; keep stable S3 object URL for DB storage. */
+  _canonicalMediaUrl(url) {
+    if (!url || typeof url !== 'string') return url;
+    return url.split('?')[0].trim();
+  }
+
+  _canonicalPortfolioForStorage(items) {
+    if (!Array.isArray(items)) return items;
+    return items.map((item) => {
+      if (typeof item === 'string') {
+        return { url: this._canonicalMediaUrl(item), kind: 'image' };
+      }
+      if (item && typeof item === 'object') {
+        return {
+          ...item,
+          url: this._canonicalMediaUrl(String(item.url || '')),
+        };
+      }
+      return item;
+    });
+  }
+
   /**
    * Create / update seeker profile
    */
@@ -121,11 +144,18 @@ class SeekerService {
       const value = data[camelKey] !== undefined ? data[camelKey] : data[field];
       if (value === undefined) continue;
 
+      let stored = value;
+      if (field === 'profile_photo_url' || field === 'professional_course_certificate_url') {
+        stored = this._canonicalMediaUrl(value);
+      } else if (field === 'work_portfolio_urls') {
+        stored = this._canonicalPortfolioForStorage(value);
+      }
+
       updates.push(`${field} = $${paramIndex}`);
       if (jsonFields.has(field)) {
-        values.push(typeof value === 'string' ? value : JSON.stringify(value));
+        values.push(typeof stored === 'string' ? stored : JSON.stringify(stored));
       } else {
-        values.push(value);
+        values.push(stored);
       }
       paramIndex++;
     }
@@ -320,10 +350,11 @@ class SeekerService {
 
   /**
    * Format seeker for API response (snake_case → camelCase).
+   * Presigns S3 media URLs so mobile Image.network can load private bucket objects.
    * @param {object} seeker - seeker_profiles row
    * @param {object|null} prefs - seeker_preferences row (optional; loaded if omitted in callers that merge)
    */
-  formatSeekerResponse(seeker, prefs = null) {
+  async formatSeekerResponse(seeker, prefs = null) {
     if (!seeker) return null;
 
     let skills = [];
@@ -333,6 +364,13 @@ class SeekerService {
 
     const preferredCities = this._parsePreferredCities(prefs);
     const workPortfolioUrls = this._parseWorkPortfolio(seeker);
+
+    const presignedPortfolio = await Promise.all(
+      workPortfolioUrls.map(async (item) => ({
+        ...item,
+        url: await s3Service.presignGetUrl(item.url),
+      }))
+    );
 
     const out = {
       id: seeker.id,
@@ -350,10 +388,12 @@ class SeekerService {
       maritalStatus: seeker.marital_status,
       email: seeker.email,
       hasProfessionalCourse: seeker.has_professional_course,
-      professionalCourseCertificateUrl: seeker.professional_course_certificate_url,
-      workPortfolioUrls,
+      professionalCourseCertificateUrl: await s3Service.presignGetUrl(
+        seeker.professional_course_certificate_url
+      ),
+      workPortfolioUrls: presignedPortfolio,
       skills,
-      profilePhotoUrl: seeker.profile_photo_url,
+      profilePhotoUrl: await s3Service.presignGetUrl(seeker.profile_photo_url),
       profileCompletionPercent: seeker.profile_completion_percent || 0,
       createdAt: seeker.created_at,
       updatedAt: seeker.updated_at,

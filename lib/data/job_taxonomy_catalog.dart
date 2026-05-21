@@ -12,7 +12,8 @@ class JobTaxonomySub {
 
   const JobTaxonomySub({required this.id, required this.labelEn, required this.labelHi});
 
-  String labelFor(bool hindi) => hindi && labelHi.isNotEmpty ? labelHi : labelEn;
+  String labelFor(bool hindi) =>
+      hindi && labelHi.isNotEmpty ? labelHi : JobTaxonomyCatalog.toTitleCase(labelEn);
 }
 
 /// Job category (maps to `job_role` / seeker `preferred_role`).
@@ -30,7 +31,8 @@ class JobTaxonomyCategory {
     required this.subcategories,
   });
 
-  String labelFor(bool hindi) => hindi && labelHi.isNotEmpty ? labelHi : labelEn;
+  String labelFor(bool hindi) =>
+      hindi && labelHi.isNotEmpty ? labelHi : JobTaxonomyCatalog.toTitleCase(labelEn);
 
   /// Stored in API `skills` JSON array.
   String compoundId(JobTaxonomySub sub) => '$id/${sub.id}';
@@ -57,7 +59,8 @@ class JobTaxonomySection {
     required this.categories,
   });
 
-  String labelFor(bool hindi) => hindi && labelHi.isNotEmpty ? labelHi : labelEn;
+  String labelFor(bool hindi) =>
+      hindi && labelHi.isNotEmpty ? labelHi : JobTaxonomyCatalog.toTitleCase(labelEn);
 }
 
 @immutable
@@ -130,7 +133,7 @@ class JobTaxonomyCatalog {
       final sub = cat?.subByLocalId(parts[1]);
       if (sub != null) return sub.labelFor(hindi);
     }
-    return compound;
+    return hindi ? compound : toTitleCase(compound.replaceAll('/', ' / '));
   }
 
   List<JobTaxonomyCategory> allCategories() {
@@ -139,5 +142,35 @@ class JobTaxonomyCatalog {
       out.addAll(s.categories);
     }
     return out;
+  }
+
+  /// English display: title-case each word (e.g. "hair spa" → "Hair Spa").
+  static String toTitleCase(String input) {
+    if (input.isEmpty) return input;
+    return input
+        .split(RegExp(r'\s+'))
+        .where((w) => w.isNotEmpty)
+        .map((word) {
+          if (word.contains('/')) {
+            return word
+                .split('/')
+                .map((p) => _titleCaseToken(p))
+                .join('/');
+          }
+          if (word.contains('-')) {
+            return word
+                .split('-')
+                .map((p) => _titleCaseToken(p))
+                .join('-');
+          }
+          return _titleCaseToken(word);
+        })
+        .join(' ');
+  }
+
+  static String _titleCaseToken(String token) {
+    if (token.isEmpty) return token;
+    if (token.length == 1) return token.toUpperCase();
+    return '${token[0].toUpperCase()}${token.substring(1).toLowerCase()}';
   }
 }

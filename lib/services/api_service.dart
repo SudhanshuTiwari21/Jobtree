@@ -759,7 +759,7 @@ class ApiService {
     return get<Job>(
       '/jobs/$jobId',
       requireAuth: true,
-      fromJson: Job.fromJson,
+      fromJson: Job.fromApiEnvelope,
     );
   }
 
@@ -772,7 +772,7 @@ class ApiService {
       '/jobs/$jobId',
       body: updates,
       requireAuth: true,
-      fromJson: Job.fromJson,
+      fromJson: Job.fromApiEnvelope,
     );
   }
 
@@ -984,11 +984,30 @@ class ApiService {
       }
 
       if (httpResponse.statusCode >= 200 && httpResponse.statusCode < 300) {
-        final result = SeekerAuthResult.fromJson(responseBody);
-        // Save tokens
-        await _authService.saveTokens(result.accessToken, result.refreshToken);
-        await _authService.saveSeekerData(result.seeker);
-        return ApiResponse(success: true, data: result, message: responseBody['message']);
+        // New API: role=seeker returns seeker JWT + profile directly.
+        if (responseBody['seeker'] != null) {
+          final result = SeekerAuthResult.fromJson(responseBody);
+          await _authService.saveTokens(result.accessToken, result.refreshToken);
+          await _authService.saveSeekerData(result.seeker);
+          return ApiResponse(success: true, data: result, message: responseBody['message']);
+        }
+
+        // Legacy API: salon JWT from unified login → exchange for seeker JWT.
+        final unified = AuthResult.fromJson(responseBody);
+        await _authService.saveTokens(unified.accessToken, unified.refreshToken);
+        await _authService.saveSalonData(unified.salon);
+
+        final switchRes = await switchToSeeker();
+        if (switchRes.success && switchRes.data != null) {
+          return ApiResponse(
+            success: true,
+            data: switchRes.data,
+            message: responseBody['message'],
+          );
+        }
+        return ApiResponse.error(
+          switchRes.message ?? 'Failed to start seeker session',
+        );
       } else {
         return ApiResponse(
           success: false,
@@ -1015,7 +1034,9 @@ class ApiService {
       if (httpResponse.statusCode >= 200 && httpResponse.statusCode < 300) {
         final seekerData = responseBody['seeker'] as Map<String, dynamic>?;
         if (seekerData != null) {
-          return ApiResponse(success: true, data: SeekerProfile.fromJson(seekerData));
+          final profile = SeekerProfile.fromJson(seekerData);
+          await _authService.saveSeekerData(profile);
+          return ApiResponse(success: true, data: profile);
         }
         return ApiResponse.error('No seeker data');
       }
@@ -1041,7 +1062,9 @@ class ApiService {
       if (httpResponse.statusCode >= 200 && httpResponse.statusCode < 300) {
         final seekerData = responseBody['seeker'] as Map<String, dynamic>?;
         if (seekerData != null) {
-          return ApiResponse(success: true, data: SeekerProfile.fromJson(seekerData), message: responseBody['message']);
+          final profile = SeekerProfile.fromJson(seekerData);
+          await _authService.saveSeekerData(profile);
+          return ApiResponse(success: true, data: profile, message: responseBody['message']);
         }
         return ApiResponse.error('No seeker data in response');
       }
@@ -1067,7 +1090,9 @@ class ApiService {
       if (httpResponse.statusCode >= 200 && httpResponse.statusCode < 300) {
         final seekerData = responseBody['seeker'] as Map<String, dynamic>?;
         if (seekerData != null) {
-          return ApiResponse(success: true, data: SeekerProfile.fromJson(seekerData));
+          final profile = SeekerProfile.fromJson(seekerData);
+          await _authService.saveSeekerData(profile);
+          return ApiResponse(success: true, data: profile, message: responseBody['message']);
         }
         return ApiResponse.error('No seeker data in response');
       }
@@ -1475,6 +1500,27 @@ class SalonProfile {
 
   bool get isSalonVerified => verificationStatus == 'verified';
 
+  /// Primary salon photo/logo for header avatar (primary image, else first image).
+  String? get displayAvatarUrl {
+    SalonMediaItem? chosen;
+    for (final x in media) {
+      if (x.isImage && x.isPrimary && x.mediaUrl.trim().isNotEmpty) {
+        chosen = x;
+        break;
+      }
+    }
+    chosen ??= () {
+      for (final x in media) {
+        if (x.isImage && x.mediaUrl.trim().isNotEmpty) return x;
+      }
+      return null;
+    }();
+    if (chosen == null) return null;
+    final thumb = chosen.thumbnailUrl?.trim();
+    if (thumb != null && thumb.isNotEmpty) return thumb;
+    return chosen.mediaUrl.trim();
+  }
+
   factory SalonProfile.fromJson(Map<String, dynamic> json) {
     final mediaList = (json['media'] as List<dynamic>?)
             ?.map((e) => SalonMediaItem.fromJson(e as Map<String, dynamic>))
@@ -1682,6 +1728,19 @@ class Job {
     required this.updatedAt,
   });
 
+  /// Parses a job from either a raw job map or API envelopes `{ job: {...} }` / `{ data: {...} }`.
+  factory Job.fromApiEnvelope(Map<String, dynamic> json) {
+    final nested = json['job'];
+    if (nested is Map<String, dynamic>) {
+      return Job.fromJson(nested);
+    }
+    final data = json['data'];
+    if (data is Map<String, dynamic>) {
+      return Job.fromJson(data);
+    }
+    return Job.fromJson(json);
+  }
+
   factory Job.fromJson(Map<String, dynamic> json) {
     return Job(
       id: json['id'] ?? '',
@@ -1845,7 +1904,8 @@ class SeekerAuthResult {
   factory SeekerAuthResult.fromJson(Map<String, dynamic> json) {
     return SeekerAuthResult(
       isNewUser: json['isNewUser'] ?? false,
-      seekerProfileExists: json['seekerProfileExists'] ?? false,
+      seekerProfileExists:
+          json['seekerProfileExists'] ?? json['seekerExists'] ?? false,
       accessToken: json['accessToken'] ?? '',
       refreshToken: json['refreshToken'] ?? '',
       expiresIn: json['expiresIn'] ?? '7d',

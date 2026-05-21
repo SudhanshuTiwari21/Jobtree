@@ -27,7 +27,7 @@ router.get(
     const prefs = await seekerService.getPreferences(req.seekerId);
     res.json({
       success: true,
-      seeker: seekerService.formatSeekerResponse(seeker, prefs),
+      seeker: await seekerService.formatSeekerResponse(seeker, prefs),
     });
   })
 );
@@ -98,10 +98,12 @@ router.post(
       filename,
     });
 
+    const displayUrl = await s3Service.presignGetUrl(fileUrl);
+
     res.status(201).json({
       success: true,
       message: 'Media uploaded successfully',
-      data: { fileUrl },
+      data: { fileUrl, displayUrl: displayUrl || fileUrl },
     });
   })
 );
@@ -143,7 +145,7 @@ router.post(
     res.json({
       success: true,
       message: 'Profile updated successfully',
-      seeker: seekerService.formatSeekerResponse(seeker, prefs),
+      seeker: await seekerService.formatSeekerResponse(seeker, prefs),
     });
   })
 );
@@ -164,7 +166,7 @@ router.patch(
     res.json({
       success: true,
       message: 'Profile updated',
-      seeker: seekerService.formatSeekerResponse(seeker, prefs),
+      seeker: await seekerService.formatSeekerResponse(seeker, prefs),
     });
   })
 );

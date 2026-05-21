@@ -393,7 +393,7 @@ class S3Service {
   extractFileKey(url) {
     const regex = new RegExp(`https://${this.bucket}.s3.[^/]+.amazonaws.com/(.+)`);
     const match = url.match(regex);
-    return match ? match[1] : url;
+    return match ? match[1].split('?')[0] : url.split('?')[0];
   }
 }
 

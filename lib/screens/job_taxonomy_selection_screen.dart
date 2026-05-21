@@ -116,7 +116,6 @@ class _JobTaxonomySelectionScreenState extends State<JobTaxonomySelectionScreen>
                     .map(
                       (c) => ListTile(
                         title: Text(c.labelFor(hi), maxLines: 2, overflow: TextOverflow.ellipsis),
-                        subtitle: Text(c.id, style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () {
                           setState(() {
@@ -138,7 +137,7 @@ class _JobTaxonomySelectionScreenState extends State<JobTaxonomySelectionScreen>
   Widget _buildSubStep(bool hi) {
     final c = _cat!;
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
       children: [
         Text(
           c.labelFor(hi),
@@ -146,7 +145,7 @@ class _JobTaxonomySelectionScreenState extends State<JobTaxonomySelectionScreen>
         ),
         const SizedBox(height: 4),
         Text(
-          hi ? 'ज़रूरी कौशल चुनें (एक से ज़्यादा)' : 'Pick one or more required skills',
+          hi ? 'उम्मीदवार को क्या क्या आना चाहिए' : 'What should the applicant know',
           style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
         ),
         const SizedBox(height: 16),

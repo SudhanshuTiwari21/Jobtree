@@ -82,9 +82,9 @@ router.post(
   '/verify-otp',
   validateOTP,
   asyncHandler(async (req, res) => {
-    const { phoneNumber, otp, countryCode = '+91' } = req.body;
+    const { phoneNumber, otp, countryCode = '+91', role } = req.body;
 
-    logger.info(`OTP verification request for: ${phoneNumber}`);
+    logger.info(`OTP verification request for: ${phoneNumber} (role: ${role || 'unified'})`);
 
     // Verify OTP first
     const verifyResult = await otpService.verifyOTP(phoneNumber, otp);
@@ -97,7 +97,23 @@ router.post(
       });
     }
 
-    // Unified login — always returns ownerExists + seekerExists
+    // Job seeker login — issue seeker JWT directly
+    if (role === 'seeker') {
+      const seekerResult = await authService.seekerLoginOrSignup(phoneNumber, countryCode);
+      return res.status(200).json({
+        success: true,
+        message: seekerResult.isNewUser ? 'Account created successfully' : 'Login successful',
+        isNewUser: seekerResult.isNewUser,
+        seekerProfileExists: seekerResult.seekerProfileExists,
+        seekerExists: seekerResult.seekerProfileExists,
+        accessToken: seekerResult.accessToken,
+        refreshToken: seekerResult.refreshToken,
+        expiresIn: seekerResult.expiresIn,
+        seeker: seekerResult.seeker,
+      });
+    }
+
+    // Unified login — always returns ownerExists + seekerExists (salon JWT)
     const authResult = await authService.unifiedLogin(phoneNumber, countryCode);
 
     res.status(200).json({

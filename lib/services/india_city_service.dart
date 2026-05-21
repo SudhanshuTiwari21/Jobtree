@@ -13,23 +13,25 @@ class IndiaCityService {
 
   /// Offline / API-failure fallback (merged from prior app lists + common hubs).
   static const List<String> kFallbackCities = [
-    'Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata',
-    'Pune', 'Ahmedabad', 'Jaipur', 'Lucknow', 'Chandigarh', 'Noida', 'Gurgaon',
-    'Indore', 'Bhopal', 'Surat', 'Nagpur', 'Patna', 'Kanpur', 'Thane',
-    'Visakhapatnam', 'Vadodara', 'Ghaziabad', 'Ludhiana', 'Agra', 'Nashik',
-    'Faridabad', 'Meerut', 'Rajkot', 'Varanasi', 'Srinagar', 'Aurangabad',
-    'Dhanbad', 'Amritsar', 'Navi Mumbai', 'Prayagraj', 'Ranchi', 'Howrah',
-    'Coimbatore', 'Jabalpur', 'Gwalior', 'Vijayawada', 'Jodhpur', 'Madurai',
-    'Raipur', 'Kota', 'Guwahati', 'Solapur', 'Hubli', 'Mysore',
-    'Tiruchirappalli', 'Bareilly', 'Moradabad', 'Mysuru', 'Warangal', 'Guntur',
-    'Bhubaneswar', 'Salem', 'Jalandhar', 'Tirunelveli', 'Malegaon',
-    'Kozhikode', 'Ajmer', 'Akola', 'Belgaum', 'Tirupati', 'Udaipur', 'Latur',
+    'Agra', 'Ahmedabad', 'Ajmer', 'Akola', 'Aligarh', 'Allahabad', 'Amravati', 'Amritsar',
+    'Asansol', 'Aurangabad', 'Bangalore', 'Bareilly', 'Belgaum', 'Bhopal', 'Bhubaneswar',
+    'Bikaner', 'Chandigarh', 'Chennai', 'Coimbatore', 'Cuttack', 'Dehradun', 'Delhi',
+    'Dhanbad', 'Faridabad', 'Gandhinagar', 'Ghaziabad', 'Goa', 'Gorakhpur', 'Guntur',
+    'Gurgaon', 'Guwahati', 'Gwalior', 'Howrah', 'Hubli', 'Hyderabad', 'Indore', 'Jabalpur',
+    'Jaipur', 'Jalandhar', 'Jammu', 'Jamshedpur', 'Jodhpur', 'Kanpur', 'Kochi', 'Kolhapur',
+    'Kolkata', 'Kota', 'Kozhikode', 'Lucknow', 'Ludhiana', 'Madurai', 'Malegaon', 'Mangalore',
+    'Meerut', 'Moradabad', 'Mumbai', 'Mysore', 'Mysuru', 'Nagpur', 'Nashik', 'Navi Mumbai',
+    'Noida', 'Patna', 'Prayagraj', 'Pune', 'Raipur', 'Rajkot', 'Ranchi', 'Salem', 'Shimla',
+    'Solapur', 'Srinagar', 'Surat', 'Thane', 'Thiruvananthapuram', 'Tiruchirappalli',
+    'Tirunelveli', 'Tirupati', 'Udaipur', 'Vadodara', 'Varanasi', 'Vijayawada',
+    'Visakhapatnam', 'Warangal',
   ];
 
   /// Clears in-memory cache (e.g. after logout — optional).
   void clearCache() => _cache = null;
 
-  Future<List<String>> loadCities({bool forceRefresh = false}) async {
+  /// [hindi] uses the same Latin city names; list is always sorted A–Z for pickers.
+  Future<List<String>> loadCities({bool forceRefresh = false, bool hindi = false}) async {
     if (!forceRefresh && _cache != null) return _cache!;
 
     List<String> result = List<String>.from(kFallbackCities);
@@ -55,11 +57,11 @@ class IndiaCityService {
       debugPrint('IndiaCityService: API failed, using fallback: $e\n$st');
     }
 
-    _cache = result;
+    _cache = _dedupeAndSort(result, hindi: hindi);
     return _cache!;
   }
 
-  List<String> _dedupeAndSort(List<String> cities) {
+  List<String> _dedupeAndSort(List<String> cities, {bool hindi = false}) {
     final seen = <String>{};
     final out = <String>[];
     for (final c in cities) {
@@ -68,7 +70,11 @@ class IndiaCityService {
       final key = t.toLowerCase();
       if (seen.add(key)) out.add(t);
     }
-    out.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+    out.sort((a, b) {
+      final ka = a.toLowerCase();
+      final kb = b.toLowerCase();
+      return ka.compareTo(kb);
+    });
     return out;
   }
 }

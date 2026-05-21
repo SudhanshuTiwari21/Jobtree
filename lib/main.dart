@@ -90,6 +90,62 @@ String jobtreeInferImageContentType(String path, [String? mimeType]) {
   return 'image/jpeg';
 }
 
+bool jobtreeIsLocalMediaPath(String path) {
+  final t = path.trim();
+  if (t.isEmpty) return false;
+  return t.startsWith('/') && !t.startsWith('//');
+}
+
+ImageProvider? jobtreeMediaImageProvider(String? urlOrPath) {
+  if (urlOrPath == null || urlOrPath.trim().isEmpty) return null;
+  final src = urlOrPath.trim();
+  if (jobtreeIsLocalMediaPath(src)) return FileImage(File(src));
+  return NetworkImage(src);
+}
+
+Widget jobtreeMediaThumbnail({
+  required String? urlOrPath,
+  double width = 88,
+  double height = 88,
+  BoxFit fit = BoxFit.cover,
+  BorderRadius? borderRadius,
+}) {
+  final src = urlOrPath?.trim() ?? '';
+  final radius = borderRadius ?? BorderRadius.circular(10);
+  Widget placeholder() => Container(
+        width: width,
+        height: height,
+        color: Colors.grey.shade200,
+        child: Icon(Icons.image_not_supported_outlined, color: Colors.grey.shade500, size: 28),
+      );
+
+  if (src.isEmpty) return placeholder();
+
+  Widget image;
+  if (jobtreeIsLocalMediaPath(src)) {
+    image = Image.file(File(src), width: width, height: height, fit: fit);
+  } else {
+    image = Image.network(
+      src,
+      width: width,
+      height: height,
+      fit: fit,
+      loadingBuilder: (context, child, progress) {
+        if (progress == null) return child;
+        return Container(
+          width: width,
+          height: height,
+          color: Colors.grey.shade200,
+          child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        );
+      },
+      errorBuilder: (_, __, ___) => placeholder(),
+    );
+  }
+
+  return ClipRRect(borderRadius: radius, child: image);
+}
+
 /// Content-Type for KYC uploads (images + PDF).
 String jobtreeInferDocContentType(String filename, [String? ext]) {
   final lower = filename.toLowerCase();
@@ -167,6 +223,134 @@ class JobtreeApp extends StatelessWidget {
   }
 }
 
+// ============== SPLIT LOGO (icon + TM + wordmark) ==============
+
+/// Design sizes from SVG viewBoxes: icon 68×73, wordmark 162×35.
+class JobtreeSplashLogoMetrics {
+  JobtreeSplashLogoMetrics._();
+
+  static const double iconViewW = 68;
+  static const double iconViewH = 73;
+  static const double textViewW = 162;
+  static const double textViewH = 35;
+
+  static const double baseIconW = 88;
+  static double get baseIconH => baseIconW * iconViewH / iconViewW;
+  static double get baseTextW => baseIconW * textViewW / iconViewW;
+  static double get baseTextH => baseTextW * textViewH / textViewW;
+  static const double baseGap = 14;
+
+  /// TM anchor on icon (matches former badge at ~62.7, 3.8 in 68×73 viewBox).
+  static double tmRight(double iconW) => iconW * (68 - 60.5) / iconViewW;
+  static double tmTop(double iconH) => iconH * 1.5 / iconViewH;
+  static double tmFontSize(double iconW) => iconW * 0.115;
+}
+
+/// Purple split-tree icon with small black **TM** at the upper-right (no badge circle).
+class JobtreeSplitLogoIcon extends StatelessWidget {
+  final double width;
+  final double height;
+
+  JobtreeSplitLogoIcon({
+    super.key,
+    double? width,
+    double? height,
+  })  : width = width ?? JobtreeSplashLogoMetrics.baseIconW,
+        height = height ??
+            (JobtreeSplashLogoMetrics.baseIconW *
+                JobtreeSplashLogoMetrics.iconViewH /
+                JobtreeSplashLogoMetrics.iconViewW);
+
+  @override
+  Widget build(BuildContext context) {
+    final tmStyle = TextStyle(
+      color: Colors.black,
+      fontSize: JobtreeSplashLogoMetrics.tmFontSize(width),
+      fontWeight: FontWeight.w700,
+      height: 1,
+      letterSpacing: -0.4,
+    );
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(
+        textScaler: TextScaler.noScaling,
+      ),
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.topLeft,
+          children: [
+            SvgPicture.asset(
+              'assets/images/logo_tm_icon.svg',
+              width: width,
+              height: height,
+              fit: BoxFit.contain,
+            ),
+            Positioned(
+              right: JobtreeSplashLogoMetrics.tmRight(width),
+              top: JobtreeSplashLogoMetrics.tmTop(height),
+              child: Text('TM', style: tmStyle),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Icon + TM + Jobtree wordmark — scales proportionally on all screen widths.
+class JobtreeSplashLogo extends StatelessWidget {
+  /// Optional vertical offsets for splash merge animation (icon up, text down).
+  final double iconOffsetY;
+  final double textOffsetY;
+
+  const JobtreeSplashLogo({
+    super.key,
+    this.iconOffsetY = 0,
+    this.textOffsetY = 0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final screenW = MediaQuery.sizeOf(context).width;
+    final maxBlockW = screenW * 0.78;
+    final scale = maxBlockW >= JobtreeSplashLogoMetrics.baseTextW
+        ? 1.0
+        : maxBlockW / JobtreeSplashLogoMetrics.baseTextW;
+
+    final iconW = JobtreeSplashLogoMetrics.baseIconW * scale;
+    final iconH = JobtreeSplashLogoMetrics.baseIconH * scale;
+    final textW = JobtreeSplashLogoMetrics.baseTextW * scale;
+    final textH = JobtreeSplashLogoMetrics.baseTextH * scale;
+    final gap = JobtreeSplashLogoMetrics.baseGap * scale;
+
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Transform.translate(
+            offset: Offset(0, iconOffsetY),
+            child: JobtreeSplitLogoIcon(width: iconW, height: iconH),
+          ),
+          SizedBox(height: gap),
+          Transform.translate(
+            offset: Offset(0, textOffsetY),
+            child: SvgPicture.asset(
+              'assets/images/logo_tm_text.svg',
+              width: textW,
+              height: textH,
+              fit: BoxFit.contain,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 // ============== SPLASH SCREEN ==============
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -221,7 +405,9 @@ class _SplashScreenState extends State<SplashScreen>
         final role = await authService.getUserRole();
 
         if (role == 'seeker') {
-          // Seeker returning → go to seeker dashboard
+          // Ensure seeker JWT (stored token may be salon JWT from older builds)
+          final api = ApiService();
+          await api.switchToSeeker();
           if (mounted) {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => SeekerHomeScreen(selectedLanguage: savedLang)),
@@ -261,47 +447,20 @@ class _SplashScreenState extends State<SplashScreen>
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: Container(
+      backgroundColor: Colors.white,
+      body: SizedBox(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF4A3D8F),
-              Color(0xFF3D3478),
-              Color(0xFF342B65),
-            ],
-          ),
-        ),
         child: AnimatedBuilder(
           animation: _controller,
           builder: (context, child) {
             final iconOffset = -screenHeight * 0.5 * _iconAnimation.value;
             final textOffset = screenHeight * 0.5 * _textAnimation.value;
 
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Transform.translate(
-                  offset: Offset(0, iconOffset),
-                  child: SvgPicture.asset(
-                    'assets/images/logo_icon.svg',
-                    width: 100,
-                    height: 100,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Transform.translate(
-                  offset: Offset(0, textOffset),
-                  child: SvgPicture.asset(
-                    'assets/images/logo_text.svg',
-                    width: 160,
-                  ),
-                ),
-              ],
-    );
+            return JobtreeSplashLogo(
+              iconOffsetY: iconOffset,
+              textOffsetY: textOffset,
+            );
           },
         ),
       ),
@@ -360,31 +519,9 @@ class DiagonalSplitPageRoute extends PageRouteBuilder {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF4A3D8F),
-            Color(0xFF3D3478),
-            Color(0xFF342B65),
-          ],
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            'assets/images/logo_icon.svg',
-            width: 100,
-            height: 100,
-          ),
-          const SizedBox(height: 20),
-          SvgPicture.asset(
-            'assets/images/logo_text.svg',
-            width: 160,
-          ),
-        ],
+      color: Colors.white,
+      child: const Center(
+        child: JobtreeSplashLogo(),
       ),
     );
   }
@@ -732,7 +869,7 @@ class AppLocalizations {
 
   // Onboarding Page 2
   String get page2Title => language == Language.hindi
-      ? 'एक टैप में अप्लाई करें'
+      ? 'एक टैप में आवेदन करें'
       : 'Apply in One Tap';
 
   String get page2Subtitle => language == Language.hindi
@@ -765,13 +902,13 @@ class AppLocalizations {
 
   // OTP Verification Screen
   String get verifyNumberTitle => language == Language.hindi ? 'अपना नंबर सत्यापित करें 2 / 2' : 'Verify your number 2 / 2';
-  String get otpSentMessage => language == Language.hindi ? 'हमने आपके नंबर पर OTP भेजा है' : 'We have sent an OTP to your number';
+  String get otpSentMessage => language == Language.hindi ? 'हमने आपके नंबर पर ओटीपी भेजा है' : 'We have sent an OTP to your number';
   String get secureLoginText => language == Language.hindi ? '🔒 यह एक सुरक्षित लॉगिन है' : '🔒 This is a secure login';
-  String get otpAutoFillText => language == Language.hindi ? 'OTP अपने आप भर जाएगा' : 'OTP will be auto-filled';
+  String get otpAutoFillText => language == Language.hindi ? 'ओटीपी अपने आप भर जाएगा' : 'OTP will be auto-filled';
   String get codeLabel => language == Language.hindi ? 'कोड' : 'Code';
   String get didNotReceiveOtp => language == Language.hindi ? 'ओटीपी प्राप्त नहीं हुआ?' : 'Did not receive OTP?';
   String get otpTermsText => language == Language.hindi 
-      ? 'Jobtree का उपयोग करके, आप हमारी शर्तों और गोपनीयता नीति से सहमत होते हैं'
+      ? 'जॉबट्री का उपयोग करके, आप हमारी शर्तों और गोपनीयता नीति से सहमत होते हैं'
       : 'By using Jobtree, you agree to the Terms and Privacy Policy';
   String get terms => language == Language.hindi ? 'शर्तें' : 'Terms';
   String get privacyPolicy => language == Language.hindi ? 'गोपनीयता नीति' : 'Privacy Policy';
@@ -799,10 +936,14 @@ class AppLocalizations {
   String get selectJobRole => language == Language.hindi ? 'नौकरी की भूमिका चुनें' : 'Select Job Role';
   String get location => language == Language.hindi ? 'स्थान / क्षेत्र' : 'Location / Area';
   String get selectLocation => language == Language.hindi ? 'स्थान चुनें' : 'Select location';
-  String get numberOfStaff => language == Language.hindi ? 'कितने स्टाफ चाहिए?' : 'Number of staff required';
+  String get numberOfStaff => language == Language.hindi ? 'कितनी वैकेंसी हैं?' : 'No. of vacancies';
   String get salaryRange => language == Language.hindi ? 'वेतन सीमा (प्रति माह)' : 'Salary range (per month)';
-  String get salonNameOptional => language == Language.hindi ? 'सैलून का नाम (वैकल्पिक)' : 'Salon name (optional)';
-  String get salonNamePlaceholder => language == Language.hindi ? 'उदाहरण: Royal Salon' : 'e.g. Royal Salon';
+  String get salonNameOptional => language == Language.hindi
+      ? 'सैलून/स्पा/ब्यूटी क्लिनिक का नाम (वैकल्पिक)'
+      : 'Salon/Spa/Beauty clinic name (optional)';
+  String get salonNamePlaceholder => language == Language.hindi
+      ? 'उदाहरण: रॉयल ब्यूटी क्लिनिक'
+      : 'e.g. Royal Beauty Clinic';
   String get ownerNameOptional => language == Language.hindi ? 'मालिक / मैनेजर का नाम (वैकल्पिक)' : 'Owner / Manager name (optional)';
   String get ownerNamePlaceholder => language == Language.hindi ? 'अपना नाम दर्ज करें' : 'Enter your name';
   String get contactVerified => language == Language.hindi ? 'संपर्क नंबर: सत्यापित ✓' : 'Contact number: Verified ✓';
@@ -829,7 +970,7 @@ class AppLocalizations {
   
   // Custom role input
   String get roleNameOptional => language == Language.hindi ? 'काम का नाम (वैकल्पिक)' : 'Role name (optional)';
-  String get roleNamePlaceholder => language == Language.hindi ? 'उदाहरण: Academy Trainer' : 'e.g. Academy Trainer';
+  String get roleNamePlaceholder => language == Language.hindi ? 'उदाहरण: अकादमी प्रशिक्षक' : 'e.g. Academy Trainer';
   String get selectCategory => language == Language.hindi ? 'श्रेणी चुनें' : 'Select category';
   
   // Skill bundles
@@ -850,7 +991,7 @@ class AppLocalizations {
   // Makeup Artist skill bundles
   String get bridalMakeup => language == Language.hindi ? 'ब्राइडल मेकअप' : 'Bridal Makeup';
   String get partyMakeup => language == Language.hindi ? 'पार्टी मेकअप' : 'Party Makeup';
-  String get hdAirbrush => language == Language.hindi ? 'HD और एयरब्रश' : 'HD & Airbrush';
+  String get hdAirbrush => language == Language.hindi ? 'एचडी और एयरब्रश' : 'HD & Airbrush';
   String get eyeMakeup => language == Language.hindi ? 'आई मेकअप' : 'Eye Makeup';
   
   // Therapist skill bundles
@@ -882,27 +1023,31 @@ class AppLocalizations {
   String get no => language == Language.hindi ? 'नहीं' : 'No';
   
   // Gender preference (optional)
-  String get genderPreferenceOptional => language == Language.hindi ? 'पसंदीदा जेंडर (वैकल्पिक)' : 'Preferred gender (optional)';
+  String get genderPreferenceOptional => language == Language.hindi
+      ? 'उम्मीदवार का जेंडर चुनें'
+      : 'Select applicant gender';
   String get male => language == Language.hindi ? 'पुरुष' : 'Male';
   String get female => language == Language.hindi ? 'महिला' : 'Female';
   String get anyGender => language == Language.hindi ? 'कोई भी' : 'Any';
   
   // Post Job Step 3 Screen
-  String get postJob => language == Language.hindi ? 'Job पोस्ट करें' : 'Post job';
+  String get postJob => language == Language.hindi ? 'जॉब पोस्ट करें' : 'Post job';
   String get reviewOnce => language == Language.hindi ? 'बस एक बार जांच लें' : 'Review once before posting';
   String get jobSummary => language == Language.hindi ? 'जॉब का विवरण' : 'Job summary';
   String get edit => language == Language.hindi ? 'बदलें' : 'Edit';
-  String get postJobButton => language == Language.hindi ? 'Job पोस्ट करें →' : 'Post Job →';
+  String get postJobButton => language == Language.hindi ? 'जॉब पोस्ट करें →' : 'Post Job →';
   String get posting => language == Language.hindi ? 'पोस्ट हो रहा है...' : 'Posting...';
   
   // Job Posted Success
-  String get jobLive => language == Language.hindi ? '🎉 आपकी job live हो गई है' : '🎉 Your job is live';
+  String get jobLive => language == Language.hindi ? '🎉 आपकी जॉब लाइव हो गई है' : '🎉 Your job is live';
   String get jobPostedSuccess => language == Language.hindi ? 'जॉब सफलतापूर्वक पोस्ट हो गई!' : 'Job posted successfully!';
-  String get improveJobNudge => language == Language.hindi ? 'ज़्यादा कॉल पाने के लिए job की जानकारी पूरी करें' : 'Complete your job details to get more calls';
-  String get improveJob => language == Language.hindi ? 'जानकारी जोड़ें' : 'Improve job';
-  String get viewJob => language == Language.hindi ? 'जॉब देखें' : 'View Job';
+  String get improveJobNudge => language == Language.hindi
+      ? 'ज़्यादा उम्मीदवार पाने के लिए और जॉब डिटेल्स डालें'
+      : 'Add more job details to get more applicants';
+  String get improveJob => language == Language.hindi ? 'और जॉब डिटेल्स डालें' : 'Add more job details';
+  String get viewJob => language == Language.hindi ? 'किसने आवेदन किया – देखें' : 'See applicants';
   String get goToDashboard => language == Language.hindi ? 'डैशबोर्ड पर जाएं' : 'Go to Dashboard';
-  String get jobProfileComplete => language == Language.hindi ? 'जॉब प्रोफाइल' : 'Job profile';
+  String get jobProfileComplete => language == Language.hindi ? 'जॉब प्रोफ़ाइल' : 'Job profile';
   
   // Home Screen
   String get searchCandidates => language == Language.hindi ? 'उम्मीदवार खोजें' : 'Search candidates';
@@ -914,14 +1059,16 @@ class AppLocalizations {
   String get postYourFirstJob => language == Language.hindi ? 'अपनी पहली जॉब पोस्ट करें' : 'Post Your First Job';
   String get jobStatusLive => language == Language.hindi ? 'लाइव' : 'Live';
   String get jobComplete => language == Language.hindi ? 'जॉब % पूरी' : 'Job % complete';
-  String get improveJobCTA => language == Language.hindi ? 'जॉब सुधारें' : 'Improve Job';
-  String get viewJobCTA => language == Language.hindi ? 'जॉब देखें' : 'View Job';
+  String get improveJobCTA => language == Language.hindi ? 'और जॉब डिटेल्स डालें' : 'Add more job details';
+  String get viewJobCTA => language == Language.hindi ? 'किसने आवेदन किया – देखें' : 'See applicants';
+  String get jobDetailsCheck => language == Language.hindi ? 'विवरण देखें' : 'Check details';
+  String get tapAgainToExit => language == Language.hindi ? 'बाहर निकलने के लिए फिर दबाएं' : 'Tap again to exit';
 
   // ========== OWNER CANDIDATE MANAGEMENT ==========
-  String get candidateListTitle => language == Language.hindi ? 'आवेदक' : 'Applicants';
+  String get candidateListTitle => language == Language.hindi ? 'किसने आवेदन किया' : 'See applicants';
   String get totalApplications => language == Language.hindi ? 'कुल आवेदन' : 'Total Applications';
   String get noApplicationsYet => language == Language.hindi ? 'अभी तक कोई आवेदन नहीं आया' : 'No applications received yet';
-  String get noApplicationsSubtext => language == Language.hindi ? 'जब कोई इस जॉब के लिए अप्लाई करेगा, तो यहां दिखेगा' : 'When someone applies for this job, they will appear here';
+  String get noApplicationsSubtext => language == Language.hindi ? 'जब कोई इस जॉब के लिए आवेदन करेगा, तो यहाँ दिखेगा' : 'When someone applies for this job, they will appear here';
   String get statusApplied => language == Language.hindi ? 'आवेदित' : 'Applied';
   String get statusShortlisted => language == Language.hindi ? 'शॉर्टलिस्ट' : 'Shortlisted';
   String get statusInterview => language == Language.hindi ? 'इंटरव्यू' : 'Interview';
@@ -935,7 +1082,7 @@ class AppLocalizations {
   String get statusUpdateFailed => language == Language.hindi ? 'स्टेटस अपडेट नहीं हो सका' : 'Failed to update status';
   String get experienceLabel2 => language == Language.hindi ? 'अनुभव' : 'Experience';
   String get expectedSalaryLabel => language == Language.hindi ? 'अपेक्षित वेतन' : 'Expected Salary';
-  String get profileCompletionLabel => language == Language.hindi ? 'प्रोफाइल' : 'Profile';
+  String get profileCompletionLabel => language == Language.hindi ? 'प्रोफ़ाइल' : 'Profile';
   String get allFilter => language == Language.hindi ? 'सभी' : 'All';
   String get appliedAgo => language == Language.hindi ? 'पहले आवेदन किया' : 'ago';
   String get loadingCandidates => language == Language.hindi ? 'उम्मीदवार लोड हो रहे हैं...' : 'Loading candidates...';
@@ -988,13 +1135,15 @@ class AppLocalizations {
   String get interviewDetails => language == Language.hindi ? 'इंटरव्यू विवरण' : 'Interview Details';
 
   String get editJobTitle => language == Language.hindi ? 'जॉब सुधारें' : 'Edit Job';
-  String get saveChanges => language == Language.hindi ? 'बदलाव सेव करें' : 'Save Changes';
+  String get saveChanges => language == Language.hindi ? 'परिवर्तन सहेजें' : 'Save your changes';
   String get completeJobHelper => language == Language.hindi ? 'जॉब को 70% तक पूरा करें ताकि ज़्यादा कॉल मिलें' : 'Complete job to 70% to get more calls';
-  String get profileIncomplete => language == Language.hindi ? 'आपकी प्रोफ़ाइल % पूरी है' : 'Your profile is % complete';
+  String get profileIncomplete => language == Language.hindi
+      ? 'आपकी प्रोफ़ाइल {p}% पूरी है'
+      : 'Your profile is {p}% complete';
   String get addMissingDetails => language == Language.hindi ? 'बेहतर उम्मीदवार पाने के लिए गायब जानकारी जोड़ें' : 'Add missing details to get better candidates';
-  String get completeNow => language == Language.hindi ? 'अभी पूरा करें' : 'Complete Now';
+  String get completeNow => language == Language.hindi ? 'प्रोफ़ाइल विवरण पूरी करें' : 'Complete profile details';
   String get home => language == Language.hindi ? 'होम' : 'Home';
-  String get candidates => language == Language.hindi ? 'उम्मीदवार' : 'Candidates';
+  String get candidates => language == Language.hindi ? 'किसने आवेदन किया' : 'See applicants';
   String get chat => language == Language.hindi ? 'चैट' : 'Chat';
   String get profile => language == Language.hindi ? 'प्रोफ़ाइल' : 'Profile';
   
@@ -1004,15 +1153,15 @@ class AppLocalizations {
   String get salaryLabel => language == Language.hindi ? 'वेतन' : 'Salary';
   String get workTypeLabel => language == Language.hindi ? 'काम का प्रकार' : 'Work Type';
   String get experienceLabel => language == Language.hindi ? 'अनुभव' : 'Experience';
-  String get genderLabel => language == Language.hindi ? 'जेंडर' : 'Gender';
-  String get salonLabel => language == Language.hindi ? 'सैलून' : 'Salon';
-  String get staffNeeded => language == Language.hindi ? 'स्टाफ चाहिए' : 'Staff needed';
+  String get genderLabel => language == Language.hindi ? 'लिंग' : 'Gender';
+  String get salonLabel => language == Language.hindi ? 'सैलून/स्पा/ब्यूटी क्लिनिक' : 'Salon/Spa/Beauty clinic';
+  String get staffNeeded => language == Language.hindi ? 'वैकेंसी' : 'Vacancies';
   String get perMonth => language == Language.hindi ? 'प्रति माह' : 'per month';
   
   // Improve Job Screen
-  String get improveJobTitle => language == Language.hindi ? 'Job की जानकारी बढ़ाएं' : 'Improve your job post';
+  String get improveJobTitle => language == Language.hindi ? 'जॉब की जानकारी बढ़ाएं' : 'Improve your job post';
   String get improveJobSubtext => language == Language.hindi ? 'पूरी जानकारी = ज़्यादा कॉल' : 'More details = more responses';
-  String get jobProfileProgress => language == Language.hindi ? 'Job प्रोफ़ाइल' : 'Job profile';
+  String get jobProfileProgress => language == Language.hindi ? 'जॉब प्रोफ़ाइल' : 'Job profile';
   String get complete => language == Language.hindi ? 'पूरी' : 'complete';
   String get doneGoBack => language == Language.hindi ? 'हो गया, वापस जाएं' : 'Done, go back';
   String get saved => language == Language.hindi ? '✓ सेव हो गया' : '✓ Saved';
@@ -1026,12 +1175,13 @@ class AppLocalizations {
   
   // Section 2: Work Timings
   String get workTimings => language == Language.hindi ? 'काम का समय' : 'Work Timings';
-  String get shiftType => language == Language.hindi ? 'शिफ्ट का प्रकार' : 'Shift type';
+  String get shiftType => language == Language.hindi ? 'शिफ्ट का समय' : 'Shift timing';
+  String get shiftTiming => language == Language.hindi ? 'शिफ्ट का समय' : 'Shift timing';
   String get fullDay => language == Language.hindi ? 'पूरा दिन' : 'Full day';
   String get shiftBased => language == Language.hindi ? 'शिफ्ट के अनुसार' : 'Shift based';
   String get openingTime => language == Language.hindi ? 'खुलने का समय' : 'Opening time';
   String get closingTime => language == Language.hindi ? 'बंद होने का समय' : 'Closing time';
-  String get weeklyOff => language == Language.hindi ? 'साप्ताहिक छुट्टी' : 'Weekly off';
+  String get weeklyOff => language == Language.hindi ? 'साप्ताहिक अवकाश' : 'weekly off';
   
   // Section 3: Facilities & Benefits
   String get facilitiesBenefits => language == Language.hindi ? 'सुविधाएं और लाभ' : 'Facilities & Benefits';
@@ -1041,10 +1191,14 @@ class AppLocalizations {
   String get training => language == Language.hindi ? 'ट्रेनिंग' : 'Training';
   
   // Section 4: Salon Details
-  String get salonDetails => language == Language.hindi ? 'सैलून का विवरण' : 'Salon Details';
+  String get salonDetails => language == Language.hindi
+      ? 'सैलून/स्पा/ब्यूटी क्लिनिक विवरण'
+      : 'Salon/Spa/Beauty clinic details';
   String get addPhotos => language == Language.hindi ? 'फोटो जोड़ें' : 'Add photos';
   String get shortDescription => language == Language.hindi ? 'संक्षिप्त विवरण' : 'Short description';
-  String get descriptionPlaceholder => language == Language.hindi ? 'सैलून के बारे में कुछ लिखें...' : 'Write something about your salon...';
+  String get descriptionPlaceholder => language == Language.hindi
+      ? 'सैलून/स्पा/ब्यूटी क्लिनिक के बारे में कुछ जानकारी दें'
+      : 'Share information about your salon/spa/beauty clinic...';
   
   // Days of week
   String get sunday => language == Language.hindi ? 'रवि' : 'Sun';
@@ -1056,19 +1210,29 @@ class AppLocalizations {
   String get saturday => language == Language.hindi ? 'शनि' : 'Sat';
 
   // Profile Tab
-  String get editProfile => language == Language.hindi ? 'प्रोफ़ाइल संपादित करें' : 'Edit Profile';
+  String get editProfile => language == Language.hindi ? 'प्रोफ़ाइल अपडेट करें' : 'Update profile';
   String get uploadPhoto => language == Language.hindi ? 'फोटो अपलोड करें' : 'Upload Photo';
   String get verified => language == Language.hindi ? 'सत्यापित' : 'Verified';
-  String get yourProfileIsComplete => language == Language.hindi ? 'आपकी प्रोफ़ाइल % पूरी है' : 'Your profile is % complete';
+  String get yourProfileIsComplete => language == Language.hindi
+      ? 'आपकी प्रोफ़ाइल {p}% पूरी है'
+      : 'Your profile is {p}% complete';
+  String get loginPhoneLabel => language == Language.hindi ? 'लॉगिन नंबर (ओटीपी)' : 'Login number (OTP)';
+  String get contactNumberHint => language == Language.hindi
+      ? 'सभी कॉल/संदेश इसी नंबर पर जाएंगे। अगर जॉब पोस्ट करने वाला और संपर्क व्यक्ति अलग हैं तो मालिक/मैनेजर का नाम सही भरें।'
+      : 'Calls and messages use this number. If the contact person differs from whoever posts jobs, enter the owner/manager name correctly.';
   String get completeProfileToGetBetterCandidates => language == Language.hindi ? 'अपनी प्रोफ़ाइल पूरी करें ताकि बेहतर उम्मीदवार मिलें' : 'Complete your profile to get better candidates';
-  String get salonDetailsProfile => language == Language.hindi ? 'सैलून विवरण' : 'Salon Details';
-  String get salonName => language == Language.hindi ? 'सैलून का नाम' : 'Salon Name';
+  String get salonDetailsProfile => language == Language.hindi
+      ? 'सैलून/स्पा/ब्यूटी क्लिनिक विवरण'
+      : 'Salon/Spa/Beauty clinic details';
+  String get salonName => language == Language.hindi
+      ? 'सैलून/स्पा/ब्यूटी क्लिनिक का नाम'
+      : 'Salon/Spa/Beauty clinic name';
   String get city => language == Language.hindi ? 'शहर' : 'City';
   String get ownerManagerName => language == Language.hindi ? 'मालिक / मैनेजर का नाम' : 'Owner / Manager Name';
   String get contactNumber => language == Language.hindi ? 'संपर्क नंबर' : 'Contact Number';
   String get notAdded => language == Language.hindi ? 'जोड़ा नहीं गया' : 'Not added';
   String get verificationDocuments => language == Language.hindi ? 'सत्यापन और दस्तावेज़' : 'Verification & Documents';
-  String get aadhaarKycStatus => language == Language.hindi ? 'आधार / KYC स्थिति' : 'Aadhaar / KYC Status';
+  String get aadhaarKycStatus => language == Language.hindi ? 'आधार / केवाईसी स्थिति' : 'Aadhaar / KYC Status';
   String get businessProof => language == Language.hindi ? 'व्यापार प्रमाण' : 'Business Proof';
   String get added => language == Language.hindi ? 'जोड़ा गया' : 'Added';
   String get mediaPhotos => language == Language.hindi ? 'मीडिया और फोटो' : 'Media & Photos';
@@ -1102,7 +1266,7 @@ class AppLocalizations {
   String get helpSupportTitle => language == Language.hindi ? 'मदद और सहायता' : 'Help & Support';
   String get helpSupportSubtext => language == Language.hindi ? 'हम यहां मदद के लिए हैं' : "We're here to help";
   String get callSupport => language == Language.hindi ? 'सपोर्ट पर कॉल करें' : 'Call Support';
-  String get chatWhatsApp => language == Language.hindi ? 'WhatsApp पर चैट करें' : 'Chat on WhatsApp';
+  String get chatWhatsApp => language == Language.hindi ? 'व्हाट्सऐप पर चैट करें' : 'Chat on WhatsApp';
   String get frequentlyAskedQuestions => language == Language.hindi ? 'अक्सर पूछे जाने वाले प्रश्न' : 'Frequently Asked Questions';
   String get reportProblem => language == Language.hindi ? 'समस्या रिपोर्ट करें' : 'Report a Problem';
   String get reportProblemDesc => language == Language.hindi ? 'बताएं कि क्या गलत हुआ' : 'Tell us what went wrong';
@@ -1119,10 +1283,10 @@ class AppLocalizations {
   String get faqA2 => language == Language.hindi ? 'सैलरी, लोकेशन और फोटो जोड़ने से ज़्यादा कैंडिडेट मिलते हैं।' : 'Adding salary, location, and photos helps you get more responses.';
   String get faqQ3 => language == Language.hindi ? 'मैं अपनी जॉब को कैसे एडिट करूं?' : 'How can I edit my job?';
   String get faqA3 => language == Language.hindi ? 'डैशबोर्ड में जाकर अपनी जॉब पर "जानकारी जोड़ें" पर क्लिक करें।' : 'Go to Dashboard and tap "Add details" on your job card.';
-  String get faqQ4 => language == Language.hindi ? 'क्या JobTree इस्तेमाल करने के पैसे लगते हैं?' : 'Is JobTree paid?';
-  String get faqA4 => language == Language.hindi ? 'अभी JobTree पर जॉब पोस्ट करना आसान और किफायती है। प्लान की जानकारी बाद में मिलेगी।' : 'JobTree is affordable and easy to use. Plan details will be shown later.';
+  String get faqQ4 => language == Language.hindi ? 'क्या जॉबट्री इस्तेमाल करने के पैसे लगते हैं?' : 'Is JobTree paid?';
+  String get faqA4 => language == Language.hindi ? 'अभी जॉबट्री पर जॉब पोस्ट करना आसान और किफायती है। प्लान की जानकारी बाद में मिलेगी।' : 'JobTree is affordable and easy to use. Plan details will be shown later.';
   String get faqQ5 => language == Language.hindi ? 'भाषा कैसे बदलें?' : 'How do I change language?';
-  String get faqA5 => language == Language.hindi ? 'प्रोफाइल में जाकर "Language" पर क्लिक करें।' : 'Go to Profile → Language.';
+  String get faqA5 => language == Language.hindi ? 'प्रोफ़ाइल में जाकर "भाषा" पर क्लिक करें।' : 'Go to Profile → Language.';
   
   // Issue Types
   String get issueTypeJobPosting => language == Language.hindi ? 'जॉब पोस्टिंग समस्या' : 'Job posting issue';
@@ -1134,43 +1298,43 @@ class AppLocalizations {
   String get cancel => language == Language.hindi ? 'रद्द करें' : 'Cancel';
 
   // About JobTree Screen
-  String get aboutJobTreeTitle => language == Language.hindi ? 'About JobTree' : 'About JobTree';
-  String get aboutJobTreeSubtext => language == Language.hindi ? 'Salons ke liye simple hiring app' : 'A simple hiring app for salons';
-  String get whatIsJobTree => language == Language.hindi ? 'JobTree kya hai?' : 'What is JobTree?';
+  String get aboutJobTreeTitle => language == Language.hindi ? 'जॉबट्री के बारे में' : 'About JobTree';
+  String get aboutJobTreeSubtext => language == Language.hindi ? 'सैलून के लिए सरल भर्ती ऐप' : 'A simple hiring app for salons';
+  String get whatIsJobTree => language == Language.hindi ? 'जॉबट्री क्या है?' : 'What is JobTree?';
   String get whatIsJobTreeContent => language == Language.hindi 
-      ? 'JobTree ek simple hiring app hai,\njo salons ko sahi kaamgar\njaldi dhundhne mein madad karta hai.'
+      ? 'जॉबट्री एक सरल भर्ती ऐप है,\nजो सैलून को सही कामगार\nजल्दी ढूँढने में मदद करता है।'
       : 'JobTree is a simple hiring app\nthat helps salons find\nthe right staff quickly.';
-  String get whyJobTreeExists => language == Language.hindi ? 'JobTree kyu bana?' : 'Why JobTree exists';
+  String get whyJobTreeExists => language == Language.hindi ? 'जॉबट्री क्यों बना?' : 'Why JobTree exists';
   String get whyJobTreeBullet1 => language == Language.hindi 
-      ? 'WhatsApp par hiring mushkil hoti hai'
+      ? 'व्हाट्सऐप पर भर्ती मुश्किल होती है'
       : 'Hiring on WhatsApp is unorganised';
   String get whyJobTreeBullet2 => language == Language.hindi 
-      ? 'Sahi kaamgar milna time leta hai'
+      ? 'सही कामगार मिलने में समय लगता है'
       : 'Finding reliable staff takes time';
   String get whyJobTreeBullet3 => language == Language.hindi 
-      ? 'JobTree hiring ko easy banata hai'
+      ? 'जॉबट्री भर्ती को आसान बनाता है'
       : 'JobTree makes hiring simple';
-  String get howJobTreeHelps => language == Language.hindi ? 'JobTree kaise madad karta hai' : 'How JobTree helps';
+  String get howJobTreeHelps => language == Language.hindi ? 'जॉबट्री कैसे मदद करता है' : 'How JobTree helps';
   String get howJobTreeBullet1 => language == Language.hindi 
-      ? '2 minute mein job post karein'
+      ? '2 मिनट में जॉब पोस्ट करें'
       : 'Post a job in under 2 minutes';
   String get howJobTreeBullet2 => language == Language.hindi 
-      ? 'Verified profiles dekhein'
+      ? 'सत्यापित प्रोफ़ाइल देखें'
       : 'View verified profiles';
   String get howJobTreeBullet3 => language == Language.hindi 
-      ? 'App ke andar safely baat karein'
+      ? 'ऐप के अंदर सुरक्षित बात करें'
       : 'Talk safely inside the app';
-  String get trustSafety => language == Language.hindi ? 'Suraksha aur bharosa' : 'Trust & Safety';
+  String get trustSafety => language == Language.hindi ? 'सुरक्षा और भरोसा' : 'Trust & Safety';
   String get trustBullet1 => language == Language.hindi 
-      ? 'Phone number verification'
+      ? 'फ़ोन नंबर सत्यापन'
       : 'Phone number verification';
   String get trustBullet2 => language == Language.hindi 
-      ? 'App ke andar chat'
+      ? 'ऐप के अंदर चैट'
       : 'In-app communication';
   String get trustBullet3 => language == Language.hindi 
-      ? 'Personal number safe rehta hai'
+      ? 'आपका निजी नंबर सुरक्षित रहता है'
       : 'Your personal number stays private';
-  String get companyDetails => language == Language.hindi ? 'Company Details' : 'Company Details';
+  String get companyDetails => language == Language.hindi ? 'कंपनी विवरण' : 'Company Details';
   String get madeInIndia => 'Made in India 🇮🇳';
 
   // Language names
@@ -1180,13 +1344,13 @@ class AppLocalizations {
   // Seeker auth flow shared strings
   String get enterPhone => language == Language.hindi ? 'अपना फोन नंबर दर्ज करें' : 'Enter your Phone Number';
   String get phoneNumber => language == Language.hindi ? 'फोन नंबर' : 'Phone Number';
-  String get verifyOtp => language == Language.hindi ? 'OTP सत्यापित करें' : 'Verify OTP';
-  String get otpSentTo => language == Language.hindi ? 'OTP भेजा गया' : 'OTP sent to';
+  String get verifyOtp => language == Language.hindi ? 'ओटीपी सत्यापित करें' : 'Verify OTP';
+  String get otpSentTo => language == Language.hindi ? 'ओटीपी भेजा गया' : 'OTP sent to';
   String get resendIn => language == Language.hindi ? 'पुनः भेजें' : 'Resend in';
   String get verify => language == Language.hindi ? 'सत्यापित करें' : 'Verify';
 
   // ========== SEEKER FLOW STRINGS ==========
-  String get createYourProfile => language == Language.hindi ? 'अपनी प्रोफाइल बनाएं' : 'Create your Profile';
+  String get createYourProfile => language == Language.hindi ? 'अपनी प्रोफ़ाइल बनाएं' : 'Create your Profile';
   String get createProfileSubtext => language == Language.hindi ? 'तेज़ ऑनबोर्डिंग — सिर्फ ज़रूरी जानकारी' : 'Quick onboarding — only essentials';
   String get yourFullName => language == Language.hindi ? 'पूरा नाम *' : 'Full Name *';
   String get enterFullName => language == Language.hindi ? 'अपना पूरा नाम दर्ज करें' : 'Enter your full name';
@@ -1203,12 +1367,12 @@ class AppLocalizations {
   String get applicationSuccess => language == Language.hindi ? 'आवेदन सफल' : 'Application submitted';
   String get alreadyApplied => language == Language.hindi ? 'आपने पहले ही आवेदन कर दिया है' : 'You have already applied';
   String get seekerProfileCompletion => language == Language.hindi
-      ? 'आपकी प्रोफाइल %% पूरी है'
-      : 'Your profile is %% complete';
+      ? 'आपकी प्रोफ़ाइल {p}% पूरी है'
+      : 'Your profile is {p}% complete';
   String get seekerProfileNudge => language == Language.hindi
       ? 'बेहतर जॉब पाने के लिए जानकारी जोड़ें'
       : 'Add details to get better job matches';
-  String get enhanceProfile => language == Language.hindi ? 'प्रोफाइल सुधारें' : 'Enhance Profile';
+  String get enhanceProfile => language == Language.hindi ? 'प्रोफ़ाइल सुधारें' : 'Enhance Profile';
   String get experienceField => language == Language.hindi ? 'अनुभव' : 'Experience';
   String get expectedSalaryField => language == Language.hindi ? 'अपेक्षित वेतन' : 'Expected Salary';
   String get seekerSkills => language == Language.hindi ? 'कौशल' : 'Skills';
@@ -1217,7 +1381,7 @@ class AppLocalizations {
   String get seniorSeeker => language == Language.hindi ? 'सीनियर (3+ वर्ष)' : 'Senior (3+ years)';
   String get seekerHome => language == Language.hindi ? 'होम' : 'Home';
   String get seekerApplications => language == Language.hindi ? 'आवेदन' : 'Applications';
-  String get seekerProfileTab => language == Language.hindi ? 'प्रोफाइल' : 'Profile';
+  String get seekerProfileTab => language == Language.hindi ? 'प्रोफ़ाइल' : 'Profile';
   String get salary => language == Language.hindi ? 'वेतन' : 'Salary';
   String get postedBy => language == Language.hindi ? 'पोस्ट किया' : 'Posted by';
 }
@@ -1989,7 +2153,7 @@ class _AddPhoneNumberScreenState extends State<AddPhoneNumberScreen> {
           } else {
             _errorMessage = response.message ?? 
               (widget.selectedLanguage == Language.hindi 
-                ? 'OTP भेजने में समस्या हुई' 
+                ? 'ओटीपी भेजने में समस्या हुई' 
                 : 'Failed to send OTP');
           }
         });
@@ -2430,13 +2594,19 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> with Code
             (route) => false,
           );
         }
-        // CASE 2: Existing seeker → Seeker Dashboard
+        // CASE 2: Existing seeker → exchange salon JWT for seeker JWT, then dashboard
         else if (result.seekerExists) {
-          await AuthService().saveUserRole('seeker');
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (_) => SeekerHomeScreen(selectedLanguage: widget.selectedLanguage)),
-            (route) => false,
-          );
+          final switchResult = await _apiService.switchToSeeker();
+          if (!mounted) return;
+          if (switchResult.success) {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (_) => SeekerHomeScreen(selectedLanguage: widget.selectedLanguage)),
+              (route) => false,
+            );
+          } else {
+            setState(() => _errorMessage = switchResult.message ?? 'Failed to open seeker account');
+          }
+          return;
         }
         // CASE 3: New user → Account Created → Role Selection
         else {
@@ -2454,7 +2624,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> with Code
           _attemptsRemaining = response.attemptsRemaining;
           if (_attemptsRemaining != null && _attemptsRemaining! <= 0) {
             _errorMessage = widget.selectedLanguage == Language.hindi
-                ? 'बहुत अधिक प्रयास। कृपया नया OTP प्राप्त करें।'
+                ? 'बहुत अधिक प्रयास। कृपया नया ओटीपी प्राप्त करें।'
                 : 'Too many attempts. Please request a new OTP.';
             // Clear OTP fields
             for (var controller in _otpControllers) {
@@ -2464,7 +2634,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> with Code
           } else {
             _errorMessage = response.message ?? 
               (widget.selectedLanguage == Language.hindi 
-                ? 'गलत OTP। पुनः प्रयास करें।' 
+                ? 'गलत ओटीपी। पुनः प्रयास करें।' 
                 : 'Invalid OTP. Please try again.');
           }
         });
@@ -2518,7 +2688,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> with Code
           SnackBar(
             content: Text(
               widget.selectedLanguage == Language.hindi
-                  ? 'OTP पुनः भेजा गया'
+                  ? 'ओटीपी पुनः भेजा गया'
                   : 'OTP sent again',
             ),
             backgroundColor: Colors.green,
@@ -2533,7 +2703,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> with Code
           }
           _errorMessage = response.message ?? 
             (widget.selectedLanguage == Language.hindi 
-              ? 'OTP भेजने में समस्या हुई' 
+              ? 'ओटीपी भेजने में समस्या हुई' 
               : 'Failed to resend OTP');
         });
       }
@@ -4062,7 +4232,7 @@ class _SeekerPhoneScreenState extends State<SeekerPhoneScreen> {
               const SizedBox(height: 8),
               Text(
                 widget.selectedLanguage == Language.hindi
-                    ? 'OTP से लॉगिन करें'
+                    ? 'ओटीपी से लॉगिन करें'
                     : 'Login with OTP',
                 style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
               ),
@@ -4189,7 +4359,7 @@ class _SeekerOtpScreenState extends State<SeekerOtpScreen> with CodeAutoFill {
     if (_isLoading) return;
     final otp = _otpController.text.trim();
     if (otp.length != 6) {
-      setState(() => _errorMessage = widget.selectedLanguage == Language.hindi ? '6 अंकों का OTP दर्ज करें' : 'Enter 6-digit OTP');
+      setState(() => _errorMessage = widget.selectedLanguage == Language.hindi ? '6 अंकों का ओटीपी दर्ज करें' : 'Enter 6-digit OTP');
       return;
     }
     setState(() { _isLoading = true; _errorMessage = null; });
@@ -4677,8 +4847,14 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
     if (!mounted) return;
     setState(() => _isLoading = true);
     try {
-      // Load profile
-      final profileRes = await _apiService.getSeekerProfile();
+      // Load profile (retry after role switch if token was salon JWT)
+      var profileRes = await _apiService.getSeekerProfile();
+      if (!profileRes.success) {
+        final switchRes = await _apiService.switchToSeeker();
+        if (switchRes.success) {
+          profileRes = await _apiService.getSeekerProfile();
+        }
+      }
       if (mounted && profileRes.success && profileRes.data != null) {
         setState(() => _seekerProfile = profileRes.data);
       }
@@ -4871,19 +5047,11 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
         ),
         child: Row(
           children: [
-            SizedBox(
-              width: 44, height: 44,
-              child: Stack(
-                children: [
-                  CircularProgressIndicator(
-                    value: percent / 100,
-                    strokeWidth: 4,
-                    backgroundColor: Colors.grey.shade200,
-                    valueColor: const AlwaysStoppedAnimation(Color(0xFFF9A825)),
-                  ),
-                  Center(child: Text('$percent%', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700))),
-                ],
-              ),
+            ProfilePercentRing(
+              size: 48,
+              percent: percent,
+              strokeWidth: 4,
+              valueColor: const Color(0xFFF9A825),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -4891,7 +5059,7 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _localizations.seekerProfileCompletion.replaceAll('%%', '$percent'),
+                    _localizations.seekerProfileCompletion.replaceAll('{p}', '$percent'),
                     style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF121A2C)),
                   ),
                   const SizedBox(height: 2),
@@ -5338,9 +5506,11 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
           CircleAvatar(
             radius: 40,
             backgroundColor: const Color(0xFF3D3D7B).withOpacity(0.1),
-            backgroundImage: (p?.profilePhotoUrl != null && p!.profilePhotoUrl!.trim().isNotEmpty)
-                ? NetworkImage(p.profilePhotoUrl!.trim())
-                : null,
+            backgroundImage: jobtreeMediaImageProvider(
+              (p?.profilePhotoUrl != null && p!.profilePhotoUrl!.trim().isNotEmpty)
+                  ? p.profilePhotoUrl!.trim()
+                  : null,
+            ),
             child: (p?.profilePhotoUrl == null || p!.profilePhotoUrl!.trim().isEmpty)
                 ? Text(
                     (p?.fullName?.isNotEmpty == true) ? p!.fullName![0].toUpperCase() : '?',
@@ -5528,7 +5698,10 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
   bool _citiesLoading = true;
   Set<String> _selectedSkills = {};
   JobTaxonomyCatalog? _jobTaxonomy;
-  String? _profilePhotoUrl;
+  /// Canonical S3 URL saved to the server (no presigned query string).
+  String? _profilePhotoStorageUrl;
+  /// Local file path or presigned URL for on-screen preview.
+  String? _profilePhotoPreview;
   late Map<String, List<Map<String, String>>> _skillBundlesPerRole;
 
   String? _jobType;
@@ -5570,7 +5743,7 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
     _selectedRole = p.preferredRole;
     _experience = p.experience;
     _selectedSkills = p.skills.toSet();
-    _profilePhotoUrl = p.profilePhotoUrl;
+    _profilePhotoPreview = p.profilePhotoUrl;
     if (p.expectedSalary != null) _salaryController.text = p.expectedSalary!.toStringAsFixed(0);
     _jobType = p.jobType ?? 'any';
     _immediateJoin = p.immediateJoin;
@@ -5596,7 +5769,10 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
     _certificateUrl = p.professionalCourseCertificateUrl;
     _workPortfolio.clear();
     for (final item in p.workPortfolioUrls) {
-      _workPortfolio.add({'url': item.url, 'kind': item.kind});
+      _workPortfolio.add({
+        'displayUrl': item.url,
+        'kind': item.kind,
+      });
     }
     _initSkillBundles();
     _syncSkillsToRole(_selectedRole);
@@ -5676,6 +5852,7 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
       final picker = ImagePicker();
       final picked = await picker.pickImage(source: ImageSource.gallery, maxWidth: 1200, imageQuality: 85);
       if (picked == null || !mounted) return;
+      setState(() => _profilePhotoPreview = picked.path);
       final file = File(picked.path);
       final contentType = jobtreeInferImageContentType(picked.path, picked.mimeType);
 
@@ -5697,6 +5874,7 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
         return;
       }
       final fileUrl = uploadRes.data!['fileUrl'] as String?;
+      final displayUrl = (uploadRes.data!['displayUrl'] as String?)?.trim();
       if (fileUrl == null || fileUrl.isEmpty) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -5708,7 +5886,10 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
       final patch = await _apiService.patchSeekerProfile({'profilePhotoUrl': fileUrl});
       if (!mounted) return;
       if (patch.success) {
-        setState(() => _profilePhotoUrl = fileUrl);
+        setState(() {
+          _profilePhotoStorageUrl = fileUrl;
+          _profilePhotoPreview = patch.data?.profilePhotoUrl ?? displayUrl ?? fileUrl;
+        });
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(widget.selectedLanguage == Language.hindi ? 'फोटो सहेजा गया' : 'Photo saved'),
           backgroundColor: const Color(0xFF3D3D7B),
@@ -5774,7 +5955,7 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
     }
   }
 
-  Future<String?> _uploadSeekerFileToPresigned({
+  Future<Map<String, String>?> _uploadSeekerFileToPresigned({
     required String mediaType,
     required File file,
     required String contentType,
@@ -5790,7 +5971,11 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
     if (!uploadRes.success || uploadRes.data == null) return null;
     final url = uploadRes.data!['fileUrl'] as String?;
     if (url == null || url.isEmpty) return null;
-    return url;
+    final displayUrl = (uploadRes.data!['displayUrl'] as String?)?.trim();
+    return {
+      'url': url,
+      'displayUrl': (displayUrl != null && displayUrl.isNotEmpty) ? displayUrl : url,
+    };
   }
 
   Future<void> _pickCertificate() async {
@@ -5805,15 +5990,15 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
       String contentType = 'image/jpeg';
       if (lower.endsWith('.png')) contentType = 'image/png';
       if (lower.endsWith('.webp')) contentType = 'image/webp';
-      final url = await _uploadSeekerFileToPresigned(
+      final uploaded = await _uploadSeekerFileToPresigned(
         mediaType: 'photo',
         file: file,
         contentType: contentType,
         filename: picked.name,
       );
       if (!mounted) return;
-      if (url != null) {
-        setState(() => _certificateUrl = url);
+      if (uploaded != null) {
+        setState(() => _certificateUrl = uploaded['url']);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(widget.selectedLanguage == Language.hindi ? 'प्रमाणपत्र अपलोड हुआ' : 'Certificate uploaded'),
           backgroundColor: const Color(0xFF3D3D7B),
@@ -5855,16 +6040,45 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
         if (lower.endsWith('.png')) contentType = 'image/png';
         if (lower.endsWith('.webp')) contentType = 'image/webp';
       }
-      final url = await _uploadSeekerFileToPresigned(
+      if (!video) {
+        setState(() => _workPortfolio.add({'localPath': picked.path, 'kind': kind}));
+      }
+      final uploaded = await _uploadSeekerFileToPresigned(
         mediaType: mediaType,
         file: file,
         contentType: contentType,
         filename: picked.name,
       );
       if (!mounted) return;
-      if (url != null) {
-        setState(() => _workPortfolio.add({'url': url, 'kind': kind}));
+      if (uploaded != null) {
+        setState(() {
+          if (!video) {
+            final idx = _workPortfolio.indexWhere(
+              (e) => e['localPath'] == picked.path && (e['url'] == null || e['url']!.isEmpty),
+            );
+            final entry = {
+              'url': uploaded['url']!,
+              'displayUrl': uploaded['displayUrl']!,
+              'localPath': picked.path,
+              'kind': kind,
+            };
+            if (idx >= 0) {
+              _workPortfolio[idx] = entry;
+            } else {
+              _workPortfolio.add(entry);
+            }
+          } else {
+            _workPortfolio.add({
+              'url': uploaded['url']!,
+              'displayUrl': uploaded['displayUrl']!,
+              'kind': kind,
+            });
+          }
+        });
       } else {
+        if (!video) {
+          setState(() => _workPortfolio.removeWhere((e) => e['localPath'] == picked.path && e['url'] == null));
+        }
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(widget.selectedLanguage == Language.hindi ? 'अपलोड असफल' : 'Upload failed'),
           backgroundColor: Colors.redAccent,
@@ -5898,8 +6112,8 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
         if (v != null) data['currentSalary'] = v;
       }
       data['skills'] = _selectedSkills.toList();
-      if (_profilePhotoUrl != null && _profilePhotoUrl!.trim().isNotEmpty) {
-        data['profilePhotoUrl'] = _profilePhotoUrl!.trim();
+      if (_profilePhotoStorageUrl != null && _profilePhotoStorageUrl!.trim().isNotEmpty) {
+        data['profilePhotoUrl'] = _profilePhotoStorageUrl!.trim();
       }
       if (_maritalStatus != null) data['maritalStatus'] = _maritalStatus;
       if (_emailController.text.trim().isNotEmpty) {
@@ -5911,8 +6125,11 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
       if (_certificateUrl != null && _certificateUrl!.trim().isNotEmpty) {
         data['professionalCourseCertificateUrl'] = _certificateUrl!.trim();
       }
-      if (_workPortfolio.isNotEmpty) {
-        data['workPortfolioUrls'] = _workPortfolio.map((e) => {'url': e['url']!, 'kind': e['kind'] ?? 'image'}).toList();
+      final portfolioToSave = _workPortfolio.where((e) => e['url'] != null && e['url']!.isNotEmpty).toList();
+      if (portfolioToSave.isNotEmpty) {
+        data['workPortfolioUrls'] = portfolioToSave
+            .map((e) => {'url': e['url']!, 'kind': e['kind'] ?? 'image'})
+            .toList();
       }
 
       final patch = await _apiService.patchSeekerProfile(data);
@@ -5999,10 +6216,8 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
                     CircleAvatar(
                       radius: 44,
                       backgroundColor: const Color(0xFF3D3D7B).withOpacity(0.12),
-                      backgroundImage: (_profilePhotoUrl != null && _profilePhotoUrl!.isNotEmpty)
-                          ? NetworkImage(_profilePhotoUrl!)
-                          : null,
-                      child: (_profilePhotoUrl == null || _profilePhotoUrl!.isEmpty)
+                      backgroundImage: jobtreeMediaImageProvider(_profilePhotoPreview),
+                      child: (_profilePhotoPreview == null || _profilePhotoPreview!.isEmpty)
                           ? Text(
                               _nameController.text.trim().isNotEmpty
                                   ? _nameController.text.trim()[0].toUpperCase()
@@ -6456,20 +6671,25 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
                       final i = e.key;
                       final item = e.value;
                       final isVideo = item['kind'] == 'video';
+                      final previewSrc = item['localPath'] ?? item['displayUrl'] ?? item['url'];
                       return Padding(
                         padding: const EdgeInsets.only(right: 8),
                         child: Stack(
                           children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Container(
-                                width: 88,
-                                height: 88,
-                                color: Colors.grey.shade200,
-                                child: isVideo
-                                    ? const Center(child: Icon(Icons.videocam, size: 36, color: Color(0xFF3D3D7B)))
-                                    : Image.network(item['url']!, fit: BoxFit.cover),
-                              ),
+                            SizedBox(
+                              width: 88,
+                              height: 88,
+                              child: isVideo
+                                  ? Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: const Center(
+                                        child: Icon(Icons.videocam, size: 36, color: Color(0xFF3D3D7B)),
+                                      ),
+                                    )
+                                  : jobtreeMediaThumbnail(urlOrPath: previewSrc),
                             ),
                             Positioned(
                               top: 2,
@@ -8678,7 +8898,7 @@ class _JobPostedSuccessScreenState extends State<JobPostedSuccessScreen>
                                       onTap: () async {
                                         final result = await Navigator.of(context).push<Map<String, dynamic>>(
                                           MaterialPageRoute(
-                                            builder: (context) => ImproveJobScreen(
+                                            builder: (context) => JobEditScreen(
                                               selectedLanguage: widget.selectedLanguage,
                                               jobId: widget.jobId,
                                             ),
@@ -8699,10 +8919,15 @@ class _JobPostedSuccessScreenState extends State<JobPostedSuccessScreen>
                                         ),
                                         child: Text(
                                           _localizations.improveJob,
+                                          textAlign: TextAlign.center,
+                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
                                           style: const TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 13,
                                             fontWeight: FontWeight.w600,
                                             color: Color(0xFFF9A825),
+                                            height: 1.25,
                                           ),
                                         ),
                                       ),
@@ -8739,7 +8964,16 @@ class _JobPostedSuccessScreenState extends State<JobPostedSuccessScreen>
                           height: 56,
                           child: ElevatedButton(
                             onPressed: () {
-                              // TODO: Navigate to job details
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => CandidateListScreen(
+                                    selectedLanguage: widget.selectedLanguage,
+                                    jobId: widget.jobId,
+                                    jobTitle: widget.jobRole,
+                                    jobLocation: widget.location,
+                                  ),
+                                ),
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF3D3D7B),
@@ -8750,10 +8984,15 @@ class _JobPostedSuccessScreenState extends State<JobPostedSuccessScreen>
                             ),
                             child: Text(
                               _localizations.viewJob,
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
                               style: const TextStyle(
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
+                                height: 1.2,
                               ),
                             ),
                           ),
@@ -9498,20 +9737,31 @@ class _ImproveJobScreenState extends State<ImproveJobScreen> {
         const SizedBox(height: 12),
         
         Text(
-          _localizations.shiftType,
+          _localizations.shiftTiming,
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w500,
             color: Colors.grey.shade700,
           ),
         ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            _buildTimingChip(_localizations.fullDay, 'full_day'),
-            const SizedBox(width: 8),
-            _buildTimingChip(_localizations.shiftBased, 'shift_based'),
-          ],
+        const SizedBox(height: 4),
+        RadioListTile<String>(
+          dense: true,
+          contentPadding: EdgeInsets.zero,
+          title: Text(_localizations.fullDay, style: const TextStyle(fontSize: 14)),
+          value: 'full_day',
+          groupValue: _shiftType,
+          activeColor: const Color(0xFF3D3D7B),
+          onChanged: (v) => setState(() => _shiftType = v),
+        ),
+        RadioListTile<String>(
+          dense: true,
+          contentPadding: EdgeInsets.zero,
+          title: Text(_localizations.shiftBased, style: const TextStyle(fontSize: 14)),
+          value: 'shift_based',
+          groupValue: _shiftType,
+          activeColor: const Color(0xFF3D3D7B),
+          onChanged: (v) => setState(() => _shiftType = v),
         ),
         
         const SizedBox(height: 16),
@@ -9938,7 +10188,11 @@ class _JobEditScreenState extends State<JobEditScreen> {
           _job = job;
           
           // Populate ALL form fields with existing job data
-          _selectedJobRole = job.jobRole;
+          var role = job.jobRole;
+          if (role.isEmpty && (job.customRoleName != null && job.customRoleName!.trim().isNotEmpty)) {
+            role = 'other';
+          }
+          _selectedJobRole = role.isEmpty ? null : role;
           _selectedOtherCategory = job.otherCategory;
           if (job.customRoleName != null) {
             _customRoleNameController.text = job.customRoleName!;
@@ -10621,27 +10875,37 @@ class _JobEditScreenState extends State<JobEditScreen> {
                     
                     const SizedBox(height: 24),
                     
-                    // Shift Type
+                    // Shift timing
         Text(
-          _localizations.shiftType,
+          _localizations.shiftTiming,
           style: TextStyle(
                         fontSize: 14,
             fontWeight: FontWeight.w500,
             color: Colors.grey.shade700,
           ),
         ),
-                    const SizedBox(height: 12),
-        Row(
-          children: [
-            _buildTimingChip(_localizations.fullDay, 'full_day'),
-            const SizedBox(width: 8),
-            _buildTimingChip(_localizations.shiftBased, 'shift_based'),
-          ],
-        ),
+                    RadioListTile<String>(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(_localizations.fullDay, style: const TextStyle(fontSize: 14)),
+                      value: 'full_day',
+                      groupValue: _shiftType,
+                      activeColor: const Color(0xFF3D3D7B),
+                      onChanged: (v) => setState(() => _shiftType = v),
+                    ),
+                    RadioListTile<String>(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(_localizations.shiftBased, style: const TextStyle(fontSize: 14)),
+                      value: 'shift_based',
+                      groupValue: _shiftType,
+                      activeColor: const Color(0xFF3D3D7B),
+                      onChanged: (v) => setState(() => _shiftType = v),
+                    ),
         
                     const SizedBox(height: 24),
         
-                    // Weekly Off
+                    // Weekly off
         Text(
           _localizations.weeklyOff,
           style: TextStyle(
@@ -11031,6 +11295,8 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
   bool _profileBannerDismissed = false;
   int _selectedFilterTab = 0; // 0: All, 1: Shortlisted, 2: Interviewed
   int _selectedBottomNavIndex = 0; // 0: Home, 1: Candidates, 2: Chat, 3: Profile
+  DateTime? _lastBackPressedAt;
+  JobTaxonomyCatalog? _jobTaxonomy;
   
   // Language state (can be changed from Profile tab)
   late Language _currentLanguage;
@@ -11041,6 +11307,9 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
     super.initState();
     _currentLanguage = widget.selectedLanguage;
     _localizations = AppLocalizations(_currentLanguage);
+    JobTaxonomyCatalog.instance().then((c) {
+      if (mounted) setState(() => _jobTaxonomy = c);
+    });
     _loadData();
     PushNotificationService().registerTokenIfLoggedIn();
     _deepLinkSub = PushNotificationService.onDeepLink.listen(_handleDeepLink);
@@ -11164,6 +11433,9 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
     if (job.customRoleName != null && job.customRoleName!.isNotEmpty) {
       return job.customRoleName!;
     }
+    final hi = _currentLanguage == Language.hindi;
+    final taxCat = _jobTaxonomy?.categoryById(job.jobRole);
+    if (taxCat != null) return taxCat.labelFor(hi);
     final roleNames = {
       'hair_stylist': _localizations.hairStylist,
       'beautician': _localizations.beautician,
@@ -11262,49 +11534,129 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
       );
     }
 
-    return Scaffold(
-      backgroundColor: Colors.grey.shade50,
-      body: SafeArea(
-        child: ResponsiveContent(
-          child: Column(
-          children: [
-            // 1. TOP APP BAR
-            _buildTopAppBar(),
-            
-            // 2. PROFILE COMPLETION BANNER (Conditional - based on SALON profile, not job)
-            if (_shouldShowProfileBanner()) _buildProfileBanner(),
-            
-            // 3. SEARCH BAR (Only show if candidates exist)
-            if (hasCandidates) _buildSearchBar(),
-            
-            // 4. FILTER TABS (Only show if candidates exist)
-            if (hasCandidates) _buildFilterTabs(),
-            
-            // 5. MAIN CONTENT AREA (Job cards OR empty state)
-            Expanded(
-              child: _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : RefreshIndicator(
-                      onRefresh: _loadData,
-                      child: _buildMainContent(),
-                    ),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        final now = DateTime.now();
+        if (_lastBackPressedAt == null ||
+            now.difference(_lastBackPressedAt!) > const Duration(seconds: 2)) {
+          _lastBackPressedAt = now;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(_localizations.tapAgainToExit),
+              duration: const Duration(seconds: 2),
+              behavior: SnackBarBehavior.floating,
             ),
-          ],
+          );
+        } else {
+          SystemNavigator.pop();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.grey.shade50,
+        body: SafeArea(
+          child: ResponsiveContent(
+            child: Column(
+            children: [
+              // 1. TOP APP BAR
+              _buildTopAppBar(),
+              
+              // 2. PROFILE COMPLETION BANNER (Conditional - based on SALON profile, not job)
+              if (_shouldShowProfileBanner()) _buildProfileBanner(),
+              
+              // 3. SEARCH BAR (Only show if candidates exist)
+              if (hasCandidates) _buildSearchBar(),
+              
+              // 4. FILTER TABS (Only show if candidates exist)
+              if (hasCandidates) _buildFilterTabs(),
+              
+              // 5. MAIN CONTENT AREA (Job cards OR empty state)
+              Expanded(
+                child: _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : RefreshIndicator(
+                        onRefresh: _loadData,
+                        child: _buildMainContent(),
+                      ),
+              ),
+            ],
+          ),
+          ),
         ),
-        ),
+        // 6. FLOATING ACTION BUTTON
+        floatingActionButton: _buildFAB(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        
+        // 7. BOTTOM NAVIGATION BAR
+        bottomNavigationBar: _buildBottomNav(),
       ),
-      // 6. FLOATING ACTION BUTTON
-      floatingActionButton: _buildFAB(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      
-      // 7. BOTTOM NAVIGATION BAR
-      bottomNavigationBar: _buildBottomNav(),
     );
   }
   
+  String _salonAvatarLetter() {
+    final name = _salonProfile?.salonName ?? _salonProfile?.ownerName;
+    if (name != null && name.isNotEmpty) return name.substring(0, 1).toUpperCase();
+    return 'S';
+  }
+
+  Widget _buildSalonHeaderAvatar({double radius = 20}) {
+    final photoUrl = _salonProfile?.displayAvatarUrl;
+    final letter = _salonAvatarLetter();
+    final hasPhoto = photoUrl != null && photoUrl.isNotEmpty;
+    final size = radius * 2;
+
+    Widget fallback() => Container(
+          width: size,
+          height: size,
+          alignment: Alignment.center,
+          color: const Color(0xFF3D3D7B),
+          child: Text(
+            letter,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: radius * 0.8,
+            ),
+          ),
+        );
+
+    return ClipOval(
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: hasPhoto
+            ? Image.network(
+                photoUrl,
+                width: size,
+                height: size,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => fallback(),
+                loadingBuilder: (context, child, progress) {
+                  if (progress == null) return child;
+                  return Container(
+                    color: const Color(0xFF3D3D7B),
+                    child: Center(
+                      child: SizedBox(
+                        width: radius,
+                        height: radius,
+                        child: const CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white54,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              )
+            : fallback(),
+      ),
+    );
+  }
+
   Widget _buildTopAppBar() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -11317,21 +11669,7 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
       ),
       child: Row(
         children: [
-          // Salon Avatar
-          CircleAvatar(
-            radius: 20,
-            backgroundColor: const Color(0xFF3D3D7B),
-            child: Text(
-              _salonProfile?.salonName?.substring(0, 1).toUpperCase() ?? 
-              _salonProfile?.ownerName?.substring(0, 1).toUpperCase() ?? 
-              'S',
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-              ),
-            ),
-          ),
+          _buildSalonHeaderAvatar(),
           const SizedBox(width: 12),
           
           // Salon Name & City
@@ -11412,7 +11750,7 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
       ),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final narrow = AppResponsive.stackProfileBanner(constraints.maxWidth);
+          final narrow = AppResponsive.stackProfileBanner(context, constraints);
           if (narrow) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -11434,7 +11772,7 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        _localizations.profileIncomplete.replaceAll('%', '$percent'),
+                        _localizations.profileIncomplete.replaceAll('{p}', '$percent'),
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -11514,7 +11852,7 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _localizations.profileIncomplete.replaceAll('%', '$percent'),
+                      _localizations.profileIncomplete.replaceAll('{p}', '$percent'),
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -11665,17 +12003,46 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
       );
     }
     
-    // Show all job cards (newest first; backend already sorted by created_at DESC)
+    final compact = _jobs.length > 1;
     return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(), // Enable pull-to-refresh
-      padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
       child: Column(
         children: _jobs.map((job) => Padding(
           padding: const EdgeInsets.only(bottom: 16),
-          child: _buildJobCard(job),
+          child: _buildJobCard(job, compact: compact),
         )).toList(),
       ),
     );
+  }
+
+  void _openJobDetails(Job job) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => JobOwnerJobDetailScreen(
+          selectedLanguage: _currentLanguage,
+          jobId: job.id,
+        ),
+      ),
+    ).then((_) => _refreshData());
+  }
+
+  String _formatSalaryRange(Job job) {
+    String fmt(double v) {
+      if (v >= 1000) return '₹${(v / 1000).toStringAsFixed(0)}K';
+      return '₹${v.toStringAsFixed(0)}';
+    }
+    return '${fmt(job.salaryMin)} - ${fmt(job.salaryMax)} ${_localizations.perMonth}';
+  }
+
+  String _workTypeLabel(String workType) {
+    if (workType == 'part_time') return _localizations.partTime;
+    return _localizations.fullTime;
+  }
+
+  String _experienceLabel(String exp) {
+    if (exp == 'experience_required') return _localizations.experienceRequired;
+    return _localizations.fresherOk;
   }
   
   Widget _buildEmptyState() {
@@ -11744,9 +12111,79 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
     );
   }
   
-  Widget _buildJobCard(Job job) {
+  Widget _buildJobCard(Job job, {required bool compact}) {
+  Widget liveBadge() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE8F5E9),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: const BoxDecoration(
+              color: Color(0xFF4CAF50),
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            _localizations.jobStatusLive,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF2E7D32),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget titleBlock() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          _displayRoleForJob(job),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF121A2C),
+            height: 1.2,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          job.location,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 13,
+            color: Colors.grey.shade600,
+          ),
+        ),
+      ],
+    );
+  }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final w = AppResponsive.layoutWidth(context, constraints);
+        final cardPad = AppResponsive.cardPadding(w);
+        final stackHeader = AppResponsive.stackJobCardHeader(context, constraints);
+        final btnFont = AppResponsive.jobCardButtonFontSize(w);
+
+        return SizedBox(
+          width: double.infinity,
+          child: Container(
+      padding: EdgeInsets.all(cardPad),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -11759,92 +12196,66 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Job Role & Location
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _displayRoleForJob(job),
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF121A2C),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      job.location,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              
-              // Status badge - only show if job status is 'active'
-              if (job.status == 'active')
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE8F5E9),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF4CAF50),
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        _localizations.jobStatusLive,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF2E7D32),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+          if (stackHeader) ...[
+            titleBlock(),
+            if (job.status == 'active') ...[
+              const SizedBox(height: 8),
+              Align(alignment: Alignment.centerLeft, child: liveBadge()),
             ],
-          ),
+          ] else
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: titleBlock()),
+                if (job.status == 'active') ...[
+                  const SizedBox(width: 8),
+                  liveBadge(),
+                ],
+              ],
+            ),
+          
+          if (!compact) ...[
+            const SizedBox(height: 12),
+            _jobDetailLine(Icons.payments_outlined, _formatSalaryRange(job)),
+            _jobDetailLine(Icons.people_outline, '${job.numberOfStaff} ${_localizations.staffNeeded}'),
+            _jobDetailLine(Icons.schedule, _workTypeLabel(job.workType)),
+            _jobDetailLine(Icons.work_history_outlined, _experienceLabel(job.experience)),
+            if (job.totalApplications > 0)
+              _jobDetailLine(
+                Icons.how_to_reg_outlined,
+                '${job.totalApplications} ${_localizations.applicantsCountLabel}',
+              ),
+          ],
           
           const SizedBox(height: 16),
           
-          // Badges row: completion + applicant count
+          // Badges row: details link (multi-job) or applicants only
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: [
-              // Completion badge
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  _localizations.jobComplete.replaceAll('%', '${job.completionPercent}'),
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.blue.shade700,
+              if (compact)
+                GestureDetector(
+                  onTap: () => _openJobDetails(job),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.blue.shade200),
+                    ),
+                    child: Text(
+                      _localizations.jobDetailsCheck,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.blue.shade700,
+                      ),
+                    ),
                   ),
                 ),
-              ),
               // Applicant count badge
               if (job.totalApplications > 0)
                 Container(
@@ -11913,88 +12324,12 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
             ],
           ),
           
-          const SizedBox(height: 20),
-          
-          // Action buttons
-          Row(
-            children: [
-              // Improve Job button - only show if completion < 100
-              if (job.completionPercent < 100) ...[
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      // Navigate to Improve Job flow with jobId to fetch real data from DB
-                      final result = await Navigator.of(context).push<Map<String, dynamic>>(
-                        MaterialPageRoute(
-                          builder: (context) => JobEditScreen(
-                            selectedLanguage: _currentLanguage,
-                            jobId: job.id,
-                          ),
-                        ),
-                      );
-                      
-                      // Refresh data after returning from edit
-                      if (result != null && result['success'] == true) {
-                        _refreshData();
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF3D3D7B),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: Text(
-                      _localizations.improveJobCTA,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-              ],
-              // View Job / View Candidates button - always show
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => CandidateListScreen(
-                          selectedLanguage: _currentLanguage,
-                          jobId: job.id,
-                          jobTitle: job.customRoleName ?? job.jobRole,
-                          jobLocation: job.location,
-                        ),
-                      ),
-                    );
-                  },
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    side: const BorderSide(color: Color(0xFF3D3D7B)),
-                  ),
-                  child: Text(
-                    _localizations.viewJobCTA,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF3D3D7B),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+          const SizedBox(height: 16),
+          _buildJobCardActions(
+            job: job,
+            buttonFontSize: btnFont,
           ),
-          
-          // Helper text
-          if (job.completionPercent < 70)
+          if (!compact && job.completionPercent < 70)
             Padding(
               padding: const EdgeInsets.only(top: 12),
               child: Text(
@@ -12006,6 +12341,123 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
                 ),
               ),
             ),
+        ],
+      ),
+    ),
+        );
+      },
+    );
+  }
+
+  Widget _buildJobCardActions({
+    required Job job,
+    required double buttonFontSize,
+  }) {
+    final showImprove = job.completionPercent < 100;
+
+    final improveBtn = SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () async {
+          final result = await Navigator.of(context).push<Map<String, dynamic>>(
+            MaterialPageRoute(
+              builder: (context) => JobEditScreen(
+                selectedLanguage: _currentLanguage,
+                jobId: job.id,
+              ),
+            ),
+          );
+          if (result != null && result['success'] == true) {
+            _refreshData();
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF3D3D7B),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+          minimumSize: const Size(0, 44),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 0,
+        ),
+        child: Text(
+          _localizations.improveJobCTA,
+          textAlign: TextAlign.center,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+          softWrap: true,
+          style: TextStyle(
+            fontSize: buttonFontSize,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            height: 1.2,
+          ),
+        ),
+      ),
+    );
+
+    final viewBtn = SizedBox(
+      width: double.infinity,
+      child: OutlinedButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => CandidateListScreen(
+                selectedLanguage: _currentLanguage,
+                jobId: job.id,
+                jobTitle: job.customRoleName ?? job.jobRole,
+                jobLocation: job.location,
+              ),
+            ),
+          );
+        },
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+          minimumSize: const Size(0, 44),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          side: const BorderSide(color: Color(0xFF3D3D7B)),
+        ),
+        child: Text(
+          _localizations.viewJobCTA,
+          textAlign: TextAlign.center,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+          softWrap: true,
+          style: TextStyle(
+            fontSize: buttonFontSize,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF3D3D7B),
+            height: 1.2,
+          ),
+        ),
+      ),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (showImprove) improveBtn,
+        if (showImprove) const SizedBox(height: 10),
+        viewBtn,
+      ],
+    );
+  }
+
+  Widget _jobDetailLine(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: Colors.grey.shade600),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(fontSize: 13, color: Colors.grey.shade800),
+            ),
+          ),
         ],
       ),
     );
@@ -12046,8 +12498,8 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
           const SizedBox(height: 10),
           Text(
             _currentLanguage == Language.hindi
-                ? 'जॉब कार्ड पर \"जॉब देखें\" से आवेदन देखें, या होम पर नई जॉब पोस्ट करें।'
-                : 'Open a job card and tap "View Job" to see applicants, or post a new job from Home.',
+                ? 'जॉब कार्ड पर \"किसने आवेदन किया – देखें\" से आवेदन देखें, या होम पर नई जॉब पोस्ट करें।'
+                : 'Open a job card and tap "See applicants" to view applications, or post a new job from Home.',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 14, color: Colors.grey.shade600, height: 1.4),
           ),
@@ -12123,6 +12575,13 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
   }
 
   Widget _buildBottomNav() {
+    final items = <({IconData icon, String label})>[
+      (icon: Icons.home_outlined, label: _localizations.home),
+      (icon: Icons.people_outline, label: _localizations.candidates),
+      (icon: Icons.chat_bubble_outline, label: _localizations.chat),
+      (icon: Icons.person_outline, label: _localizations.profile),
+    ];
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -12134,40 +12593,54 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
           ),
         ],
       ),
-      child: BottomNavigationBar(
-        currentIndex: _selectedBottomNavIndex,
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedItemColor: const Color(0xFF3D3D7B),
-        unselectedItemColor: Colors.grey.shade400,
-        selectedFontSize: 12,
-        unselectedFontSize: 12,
-        onTap: (index) {
-          setState(() {
-            _selectedBottomNavIndex = index;
-          });
-          if (index == 0) {
-            _loadData();
-          }
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.home),
-            label: _localizations.home,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+          child: Row(
+            children: List.generate(items.length, (index) {
+              final item = items[index];
+              final selected = _selectedBottomNavIndex == index;
+              final color = selected ? const Color(0xFF3D3D7B) : Colors.grey.shade400;
+              return Expanded(
+                child: InkWell(
+                  onTap: () {
+                    setState(() => _selectedBottomNavIndex = index);
+                    if (index == 0) _loadData();
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          item.icon,
+                          size: 22,
+                          color: color,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          item.label,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
+                          style: TextStyle(
+                            fontSize: AppResponsive.bottomNavLabelFontSize(context),
+                            fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                            color: color,
+                            height: 1.15,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }),
           ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.people),
-            label: _localizations.candidates,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.chat_bubble_outline),
-            label: _localizations.chat,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.person),
-            label: _localizations.profile,
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -12380,7 +12853,7 @@ class _OwnerChatHubState extends State<_OwnerChatHub> {
                     style: const TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF121A2C)),
                   ),
                   subtitle: Text(
-                    _hi ? 'टिकट, FAQ, संपर्क' : 'Tickets, FAQ, contact',
+                    _hi ? 'टिकट, अक्सर पूछे प्रश्न, संपर्क' : 'Tickets, FAQ, contact',
                     style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
                   ),
                   trailing: const Icon(Icons.chevron_right),
@@ -12397,6 +12870,211 @@ class _OwnerChatHubState extends State<_OwnerChatHub> {
           ),
         ),
       ],
+    );
+  }
+}
+
+// ============== JOB DETAIL VIEW (Owner, read-only) ==============
+
+class JobOwnerJobDetailScreen extends StatefulWidget {
+  final Language selectedLanguage;
+  final String jobId;
+
+  const JobOwnerJobDetailScreen({
+    super.key,
+    required this.selectedLanguage,
+    required this.jobId,
+  });
+
+  @override
+  State<JobOwnerJobDetailScreen> createState() => _JobOwnerJobDetailScreenState();
+}
+
+class _JobOwnerJobDetailScreenState extends State<JobOwnerJobDetailScreen> {
+  late AppLocalizations _localizations;
+  final ApiService _apiService = ApiService();
+  Job? _job;
+  bool _isLoading = true;
+  JobTaxonomyCatalog? _taxonomy;
+
+  @override
+  void initState() {
+    super.initState();
+    _localizations = AppLocalizations(widget.selectedLanguage);
+    _loadJob();
+    JobTaxonomyCatalog.instance().then((c) {
+      if (mounted) setState(() => _taxonomy = c);
+    });
+  }
+
+  Future<void> _loadJob() async {
+    setState(() => _isLoading = true);
+    final res = await _apiService.getJobById(widget.jobId);
+    if (!mounted) return;
+    setState(() {
+      _job = res.success ? res.data : null;
+      _isLoading = false;
+    });
+  }
+
+  String _roleLabel(Job job) {
+    if (job.customRoleName != null && job.customRoleName!.trim().isNotEmpty) {
+      return job.customRoleName!.trim();
+    }
+    final hi = widget.selectedLanguage == Language.hindi;
+    return _taxonomy?.categoryLabel(job.jobRole, hi) ?? job.jobRole;
+  }
+
+  String _fmtSalary(double v) {
+    if (v >= 1000) return '₹${(v / 1000).toStringAsFixed(0)}K';
+    return '₹${v.toStringAsFixed(0)}';
+  }
+
+  Widget _row(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: TextStyle(fontSize: 12, color: Colors.grey.shade600, fontWeight: FontWeight.w500)),
+          const SizedBox(height: 4),
+          Text(value, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xFF121A2C))),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hi = widget.selectedLanguage == Language.hindi;
+    return Scaffold(
+      backgroundColor: Colors.grey.shade50,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF121A2C),
+        elevation: 0,
+        title: Text(
+          hi ? 'जॉब विवरण' : 'Job details',
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+        actions: [
+          if (_job != null)
+            TextButton(
+              onPressed: () async {
+                final result = await Navigator.of(context).push<Map<String, dynamic>>(
+                  MaterialPageRoute(
+                    builder: (context) => JobEditScreen(
+                      selectedLanguage: widget.selectedLanguage,
+                      jobId: widget.jobId,
+                    ),
+                  ),
+                );
+                if (result != null && result['success'] == true) {
+                  await _loadJob();
+                }
+              },
+              child: Text(
+                _localizations.edit,
+                style: const TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF3D3D7B)),
+              ),
+            ),
+        ],
+      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _job == null
+              ? Center(child: Text(hi ? 'जॉब लोड नहीं हो सकी' : 'Could not load job'))
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _row(_localizations.roleLabel, _roleLabel(_job!)),
+                        _row(_localizations.locationLabel, _job!.location),
+                        _row(
+                          _localizations.salaryLabel,
+                          '${_fmtSalary(_job!.salaryMin)} - ${_fmtSalary(_job!.salaryMax)} ${_localizations.perMonth}',
+                        ),
+                        _row(_localizations.staffNeeded, '${_job!.numberOfStaff}'),
+                        _row(
+                          _localizations.workTypeLabel,
+                          _job!.workType == 'part_time' ? _localizations.partTime : _localizations.fullTime,
+                        ),
+                        _row(
+                          _localizations.experienceLabel,
+                          _job!.experience == 'experience_required'
+                              ? _localizations.experienceRequired
+                              : _localizations.fresherOk,
+                        ),
+                        if (_job!.preferredGender != null && _job!.preferredGender != 'any')
+                          _row(
+                            _localizations.genderLabel,
+                            _job!.preferredGender == 'male' ? _localizations.male : _localizations.female,
+                          ),
+                        if (_job!.skills.isNotEmpty) ...[
+                          Text(
+                            _localizations.selectSkills,
+                            style: TextStyle(fontSize: 12, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+                          ),
+                          const SizedBox(height: 8),
+                          Wrap(
+                            spacing: 6,
+                            runSpacing: 6,
+                            children: _job!.skills.map((s) {
+                              final lab = _taxonomy?.compoundLabel(s, hi) ?? s;
+                              return Chip(label: Text(lab, style: const TextStyle(fontSize: 11)));
+                            }).toList(),
+                          ),
+                          const SizedBox(height: 14),
+                        ],
+                        if (_job!.description != null && _job!.description!.trim().isNotEmpty)
+                          _row(_localizations.shortDescription, _job!.description!.trim()),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => CandidateListScreen(
+                                    selectedLanguage: widget.selectedLanguage,
+                                    jobId: _job!.id,
+                                    jobTitle: _roleLabel(_job!),
+                                    jobLocation: _job!.location,
+                                  ),
+                                ),
+                              );
+                            },
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              side: const BorderSide(color: Color(0xFF3D3D7B)),
+                            ),
+                            child: Text(
+                              _localizations.viewJobCTA,
+                              textAlign: TextAlign.center,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF3D3D7B),
+                                height: 1.2,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
     );
   }
 }
@@ -13471,9 +14149,10 @@ class _CandidateListScreenState extends State<CandidateListScreen> {
 
     switch (status) {
       case 'applied':
-        return Row(
+        return ResponsiveDualButtons(
           children: [
-            Expanded(
+            SizedBox(
+              width: double.infinity,
               child: ElevatedButton(
                 onPressed: () => _updateStatus(applicationId, 'shortlisted'),
                 style: ElevatedButton.styleFrom(
@@ -13483,11 +14162,11 @@ class _CandidateListScreenState extends State<CandidateListScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   elevation: 0,
                 ),
-                child: Text(_localizations.shortlistAction, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                child: Text(_localizations.shortlistAction, textAlign: TextAlign.center, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
               ),
             ),
-            const SizedBox(width: 10),
-            Expanded(
+            SizedBox(
+              width: double.infinity,
               child: OutlinedButton(
                 onPressed: () => _confirmAndReject(applicationId),
                 style: OutlinedButton.styleFrom(
@@ -13496,16 +14175,17 @@ class _CandidateListScreenState extends State<CandidateListScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   side: BorderSide(color: Colors.red.shade300),
                 ),
-                child: Text(_localizations.rejectAction, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                child: Text(_localizations.rejectAction, textAlign: TextAlign.center, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
               ),
             ),
           ],
         );
 
       case 'shortlisted':
-        return Row(
+        return ResponsiveDualButtons(
           children: [
-            Expanded(
+            SizedBox(
+              width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: () => _showScheduleInterviewModal(applicationId),
                 icon: const Icon(Icons.event, size: 16),
@@ -13519,8 +14199,8 @@ class _CandidateListScreenState extends State<CandidateListScreen> {
                 ),
               ),
             ),
-            const SizedBox(width: 10),
-            Expanded(
+            SizedBox(
+              width: double.infinity,
               child: OutlinedButton(
                 onPressed: () => _confirmAndReject(applicationId),
                 style: OutlinedButton.styleFrom(
@@ -13529,7 +14209,7 @@ class _CandidateListScreenState extends State<CandidateListScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   side: BorderSide(color: Colors.red.shade300),
                 ),
-                child: Text(_localizations.rejectAction, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                child: Text(_localizations.rejectAction, textAlign: TextAlign.center, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
               ),
             ),
           ],
@@ -13583,10 +14263,11 @@ class _CandidateListScreenState extends State<CandidateListScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-              // Reschedule + Mark Completed row
-              Row(
+              ResponsiveDualButtons(
+                gap: 8,
                 children: [
-                  Expanded(
+                  SizedBox(
+                    width: double.infinity,
                     child: OutlinedButton(
                       onPressed: () => _showScheduleInterviewModal(
                         applicationId,
@@ -13600,11 +14281,11 @@ class _CandidateListScreenState extends State<CandidateListScreen> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                         side: const BorderSide(color: Color(0xFF9C27B0)),
                       ),
-                      child: Text(_localizations.rescheduleInterview, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                      child: Text(_localizations.rescheduleInterview, textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
+                  SizedBox(
+                    width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () => _completeInterview(applicationId),
                       style: ElevatedButton.styleFrom(
@@ -13614,7 +14295,7 @@ class _CandidateListScreenState extends State<CandidateListScreen> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                         elevation: 0,
                       ),
-                      child: Text(_localizations.markInterviewComplete, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                      child: Text(_localizations.markInterviewComplete, textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                     ),
                   ),
                 ],
@@ -13639,10 +14320,10 @@ class _CandidateListScreenState extends State<CandidateListScreen> {
               ),
               const SizedBox(height: 10),
             ],
-            // Hire / Reject row
-            Row(
+            ResponsiveDualButtons(
               children: [
-                Expanded(
+                SizedBox(
+                  width: double.infinity,
                   child: Tooltip(
                     message: _vacancyFull ? _localizations.allPositionsFilled : '',
                     child: ElevatedButton(
@@ -13654,12 +14335,12 @@ class _CandidateListScreenState extends State<CandidateListScreen> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                         elevation: 0,
                       ),
-                      child: Text(_localizations.markHiredAction, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                      child: Text(_localizations.markHiredAction, textAlign: TextAlign.center, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
+                SizedBox(
+                  width: double.infinity,
                   child: OutlinedButton(
                     onPressed: () => _confirmAndReject(applicationId),
                     style: OutlinedButton.styleFrom(
@@ -13859,6 +14540,27 @@ class _SalonEditProfileScreenState extends State<SalonEditProfileScreen> {
                 fillColor: Colors.white,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
+            ),
+            const SizedBox(height: 20),
+            Text(_localizations.loginPhoneLabel, style: const TextStyle(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            InputDecorator(
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.grey.shade100,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: Text(
+                widget.profile.phoneNumber.isNotEmpty
+                    ? widget.profile.phoneNumber
+                    : _localizations.notAdded,
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              _localizations.contactNumberHint,
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade600, height: 1.35),
             ),
             const SizedBox(height: 20),
             Text(_localizations.city, style: const TextStyle(fontWeight: FontWeight.w600)),
@@ -14087,21 +14789,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _syncAvatarFromMedia() {
-    final list = _salonProfile?.media ?? [];
-    SalonMediaItem? chosen;
-    for (final x in list) {
-      if (x.isImage && x.isPrimary) {
-        chosen = x;
-        break;
-      }
-    }
-    chosen ??= () {
-      for (final x in list) {
-        if (x.isImage) return x;
-      }
-      return null;
-    }();
-    _profilePhotoUrl = chosen?.mediaUrl;
+    _profilePhotoUrl = _salonProfile?.displayAvatarUrl;
   }
 
   Future<void> _uploadProfilePhoto() async {
@@ -14496,7 +15184,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildCompletionCard() {
     final percent = _profileCompletion?.completionPercent ?? 0;
     final upsellStage = _profileCompletion?.upsellStage ?? 'early';
-    final percentText = _localizations.yourProfileIsComplete.replaceAll('%', '$percent');
+    final percentText = _localizations.yourProfileIsComplete.replaceAll('{p}', '$percent');
     
     // Different UI based on upsell stage
     switch (upsellStage) {
@@ -14528,29 +15216,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             padding: const EdgeInsets.only(top: 4, right: 28),
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final narrow = AppResponsive.stackCompletionCard(constraints.maxWidth);
-                final ring = SizedBox(
-                  width: 60,
-                  height: 60,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      CircularProgressIndicator(
-                        value: percent / 100,
-                        strokeWidth: 6,
-                        backgroundColor: Colors.grey.shade300,
-                        valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFF9A825)),
-                      ),
-                      Text(
-                        '$percent%',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF5D4037),
-                        ),
-                      ),
-                    ],
-                  ),
+                final narrow = AppResponsive.stackCompletionCard(context, constraints);
+                final ring = ProfilePercentRing(
+                  size: 60,
+                  percent: percent,
+                  strokeWidth: 6,
+                  trackColor: Colors.grey.shade300,
+                  valueColor: const Color(0xFFF9A825),
+                  textColor: const Color(0xFF5D4037),
                 );
                 final copy = Column(
                   crossAxisAlignment: narrow ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
@@ -14651,29 +15324,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             padding: const EdgeInsets.only(top: 4, right: 28),
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final narrow = AppResponsive.stackCompletionCard(constraints.maxWidth);
-                final ring = SizedBox(
-                  width: 60,
-                  height: 60,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      CircularProgressIndicator(
-                        value: percent / 100,
-                        strokeWidth: 6,
-                        backgroundColor: Colors.grey.shade300,
-                        valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFF9A825)),
-                      ),
-                      Text(
-                        '$percent%',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF5D4037),
-                        ),
-                      ),
-                    ],
-                  ),
+                final narrow = AppResponsive.stackCompletionCard(context, constraints);
+                final ring = ProfilePercentRing(
+                  size: 60,
+                  percent: percent,
+                  strokeWidth: 6,
+                  trackColor: Colors.grey.shade300,
+                  valueColor: const Color(0xFFF9A825),
+                  textColor: const Color(0xFF5D4037),
                 );
                 final copy = Column(
                   crossAxisAlignment: narrow ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
@@ -14778,28 +15436,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Row(
                 children: [
-                  SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        CircularProgressIndicator(
-                          value: percent / 100,
-                          strokeWidth: 5,
-                          backgroundColor: Colors.grey.shade300,
-                          valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF2196F3)),
-                        ),
-                        Text(
-                          '$percent%',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF1565C0),
-                          ),
-                        ),
-                      ],
-                    ),
+                  ProfilePercentRing(
+                    size: 50,
+                    percent: percent,
+                    strokeWidth: 5,
+                    trackColor: Colors.grey.shade300,
+                    valueColor: const Color(0xFF2196F3),
+                    textColor: const Color(0xFF1565C0),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -14808,7 +15451,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         Text(
                           widget.selectedLanguage == Language.hindi
-                              ? 'Verified Salon बैज के साथ आगे बढ़ें'
+                              ? 'सत्यापित सैलून बैज के साथ आगे बढ़ें'
                               : 'Stand out with a Verified Salon badge',
                           style: const TextStyle(
                             fontSize: 16,
@@ -14819,7 +15462,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const SizedBox(height: 4),
                         Text(
                           widget.selectedLanguage == Language.hindi
-                              ? 'Verified salons को तेज़ responses मिलते हैं'
+                              ? 'सत्यापित सैलून को तेज़ जवाब मिलते हैं'
                               : 'Verified salons get faster responses',
                           style: TextStyle(
                             fontSize: 12,
@@ -14889,28 +15532,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Row(
                 children: [
-                  SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        CircularProgressIndicator(
-                          value: percent / 100,
-                          strokeWidth: 5,
-                          backgroundColor: Colors.grey.shade300,
-                          valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
-                        ),
-                        Text(
-                          '$percent%',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF2E7D32),
-                          ),
-                        ),
-                      ],
-                    ),
+                  ProfilePercentRing(
+                    size: 50,
+                    percent: percent,
+                    strokeWidth: 5,
+                    trackColor: Colors.grey.shade300,
+                    valueColor: const Color(0xFF4CAF50),
+                    textColor: const Color(0xFF2E7D32),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -15170,7 +15798,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(hi ? 'Verified Salon बैज' : 'Verified Salon badge'),
+        title: Text(hi ? 'सत्यापित सैलून बैज' : 'Verified Salon badge'),
         content: SingleChildScrollView(
           child: Text(
             hi

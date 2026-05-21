@@ -219,7 +219,7 @@ class AuthService {
       accessToken,
       refreshToken,
       expiresIn: config.jwt.expiresIn,
-      seeker: seekerService.formatSeekerResponse(seeker, prefs),
+      seeker: await seekerService.formatSeekerResponse(seeker, prefs),
     };
   }
 
