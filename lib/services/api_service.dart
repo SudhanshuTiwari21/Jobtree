@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:jobtree/data/job_taxonomy_catalog.dart';
 import 'auth_service.dart';
 
 /// API Configuration
@@ -1209,6 +1210,72 @@ class ApiService {
     }
   }
 
+  /// Browse all job seekers on the platform (owner talent search).
+  Future<ApiResponse<Map<String, dynamic>>> getOwnerAllSeekers({
+    String? jobRole,
+    String? location,
+    int limit = 100,
+    int offset = 0,
+  }) async {
+    try {
+      final headers = await _getHeaders(requireAuth: true);
+      final queryParams = <String, String>{
+        'limit': limit.toString(),
+        'offset': offset.toString(),
+      };
+      if (jobRole != null && jobRole.isNotEmpty) queryParams['jobRole'] = jobRole;
+      if (location != null && location.isNotEmpty) queryParams['location'] = location;
+
+      final uri = Uri.parse('${ApiConfig.baseUrl}/owner/seekers')
+          .replace(queryParameters: queryParams);
+      final httpResponse = await http.get(uri, headers: headers).timeout(ApiConfig.connectionTimeout);
+      final responseBody = json.decode(httpResponse.body);
+
+      if (httpResponse.statusCode >= 200 && httpResponse.statusCode < 300) {
+        return ApiResponse(success: true, data: Map<String, dynamic>.from(responseBody));
+      }
+      return ApiResponse.error(responseBody['message'] ?? 'Failed to load candidates');
+    } on SocketException {
+      return ApiResponse.error('No internet connection', errorCode: 'NETWORK_ERROR');
+    } catch (e) {
+      return ApiResponse.error('Something went wrong: ${e.toString()}', errorCode: 'UNKNOWN_ERROR');
+    }
+  }
+
+  /// All applicants across the owner's jobs (optional job role / city filters).
+  Future<ApiResponse<Map<String, dynamic>>> getOwnerAllApplications({
+    String? jobRole,
+    String? location,
+    String? status,
+    int limit = 100,
+    int offset = 0,
+  }) async {
+    try {
+      final headers = await _getHeaders(requireAuth: true);
+      final queryParams = <String, String>{
+        'limit': limit.toString(),
+        'offset': offset.toString(),
+      };
+      if (jobRole != null && jobRole.isNotEmpty) queryParams['jobRole'] = jobRole;
+      if (location != null && location.isNotEmpty) queryParams['location'] = location;
+      if (status != null && status.isNotEmpty) queryParams['status'] = status;
+
+      final uri = Uri.parse('${ApiConfig.baseUrl}/owner/applications')
+          .replace(queryParameters: queryParams);
+      final httpResponse = await http.get(uri, headers: headers).timeout(ApiConfig.connectionTimeout);
+      final responseBody = json.decode(httpResponse.body);
+
+      if (httpResponse.statusCode >= 200 && httpResponse.statusCode < 300) {
+        return ApiResponse(success: true, data: Map<String, dynamic>.from(responseBody));
+      }
+      return ApiResponse.error(responseBody['message'] ?? 'Failed to load applicants');
+    } on SocketException {
+      return ApiResponse.error('No internet connection', errorCode: 'NETWORK_ERROR');
+    } catch (e) {
+      return ApiResponse.error('Something went wrong: ${e.toString()}', errorCode: 'UNKNOWN_ERROR');
+    }
+  }
+
   /// Get candidates (applications) for a specific job owned by the salon owner
   Future<ApiResponse<Map<String, dynamic>>> getJobCandidates(String jobId, {String? status, int limit = 50, int offset = 0}) async {
     try {
@@ -1793,7 +1860,11 @@ class Job {
     if (customRoleName != null && customRoleName!.isNotEmpty) {
       return customRoleName!;
     }
-    return jobRole;
+    final id = JobTaxonomyCatalog.effectiveCategoryId(
+      jobRole: jobRole,
+      skills: skills,
+    );
+    return id.isNotEmpty ? id : jobRole;
   }
 }
 

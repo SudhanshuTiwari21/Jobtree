@@ -13,17 +13,3 @@ export default {
   checkConnection: (await import('./connection.js')).checkConnection,
   closePool: (await import('./connection.js')).closePool,
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-

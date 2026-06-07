@@ -8,7 +8,6 @@ import logger from '../utils/logger.js';
  * Security middleware configuration
  */
 export const securityMiddleware = [
-  // Helmet helps secure Express apps by setting various HTTP headers
   helmet({
     contentSecurityPolicy: {
       directives: {
@@ -24,10 +23,7 @@ export const securityMiddleware = [
   // CORS configuration
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
-
-      // In development, allow all localhost origins (Flutter uses dynamic ports)
       if (config.env === 'development') {
         if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
           return callback(null, true);

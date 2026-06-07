@@ -125,6 +125,56 @@ class JobTaxonomyCatalog {
 
   String categoryLabel(String? id, bool hindi) => categoryById(id)?.labelFor(hindi) ?? (id ?? '');
 
+  /// Dominant taxonomy category from `category/subId` compounds in [skills].
+  static String? categoryIdFromSkills(Iterable<String> skills) {
+    final counts = <String, int>{};
+    for (final s in skills) {
+      final slash = s.indexOf('/');
+      if (slash <= 0) continue;
+      final cat = s.substring(0, slash).trim();
+      if (cat.isEmpty) continue;
+      counts[cat] = (counts[cat] ?? 0) + 1;
+    }
+    if (counts.isEmpty) return null;
+    return counts.entries.reduce((a, b) => a.value >= b.value ? a : b).key;
+  }
+
+  /// Role id for labels/API: prefer category implied by skills when compounds exist.
+  static String effectiveCategoryId({
+    required String jobRole,
+    required List<String> skills,
+  }) {
+    final fromSkills = categoryIdFromSkills(skills);
+    if (fromSkills != null && fromSkills.isNotEmpty) return fromSkills;
+    return jobRole;
+  }
+
+  /// Localized job title for owner/seeker UI (custom name → taxonomy → legacy map → title case).
+  String displayRoleLabel({
+    required String? customRoleName,
+    required String jobRole,
+    required List<String> skills,
+    required bool hindi,
+    Map<String, String>? legacyRoleLabels,
+  }) {
+    if (customRoleName != null && customRoleName.trim().isNotEmpty) {
+      return customRoleName.trim();
+    }
+    final id = effectiveCategoryId(jobRole: jobRole, skills: skills);
+    final cat = categoryById(id);
+    if (cat != null) return cat.labelFor(hindi);
+    if (legacyRoleLabels != null) {
+      final localized = legacyRoleLabels[id];
+      if (localized != null) return localized;
+    }
+    if (id.isEmpty) return '';
+    return id
+        .split('_')
+        .where((w) => w.isNotEmpty)
+        .map((w) => w.length == 1 ? w.toUpperCase() : '${w[0].toUpperCase()}${w.substring(1).toLowerCase()}')
+        .join(' ');
+  }
+
   /// Resolve `category/subId` or plain `subId` (legacy) to a display line.
   String compoundLabel(String compound, bool hindi) {
     final parts = compound.split('/');

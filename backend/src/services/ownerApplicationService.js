@@ -202,6 +202,126 @@ class OwnerApplicationService {
     };
   }
 
+  _mapCandidateRow(row) {
+    return {
+      applicationId: row.application_id,
+      status: row.status,
+      appliedAt: row.created_at,
+      updatedAt: row.updated_at,
+      interviewStatus: row.interview_status || 'not_scheduled',
+      interviewScheduledAt: row.interview_scheduled_at,
+      interviewMode: row.interview_mode,
+      interviewNotes: row.interview_notes,
+      job: {
+        id: row.job_id,
+        jobRole: row.job_role,
+        customRoleName: row.custom_role_name,
+        location: row.job_location,
+      },
+      seeker: {
+        id: row.seeker_id,
+        fullName: row.full_name || 'Unknown',
+        city: row.city || '',
+        experience: row.experience || '',
+        expectedSalary: row.expected_salary ? parseFloat(row.expected_salary) : null,
+        profileCompletion: row.profile_completion_percent || 0,
+        profilePhoto: row.profile_photo_url || '',
+        gender: row.gender || '',
+        preferredRole: row.preferred_role || '',
+        phoneNumber: row.phone_number || '',
+      },
+    };
+  }
+
+  /**
+   * All applications across every job owned by the salon (optional job role / city filters).
+   */
+  async getAllCandidatesForSalon(salonId, { jobRole, location, status, limit = 50, offset = 0 } = {}) {
+    let query = `
+      SELECT 
+        a.id AS application_id,
+        a.status,
+        a.created_at,
+        a.updated_at,
+        a.interview_status,
+        a.interview_scheduled_at,
+        a.interview_mode,
+        a.interview_notes,
+        j.id AS job_id,
+        j.job_role,
+        j.custom_role_name,
+        j.location AS job_location,
+        sp.id AS seeker_id,
+        sp.full_name,
+        sp.city,
+        sp.experience,
+        sp.expected_salary,
+        sp.profile_completion_percent,
+        sp.profile_photo_url,
+        sp.gender,
+        sp.preferred_role,
+        sp.phone_number
+      FROM applications a
+      JOIN jobs j ON a.job_id = j.id
+      JOIN seeker_profiles sp ON a.seeker_id = sp.id
+      WHERE j.salon_id = $1
+    `;
+    const params = [salonId];
+    let paramIndex = 2;
+
+    if (jobRole && typeof jobRole === 'string' && jobRole.trim()) {
+      query += ` AND j.job_role = $${paramIndex}`;
+      params.push(jobRole.trim());
+      paramIndex++;
+    }
+    if (location && typeof location === 'string' && location.trim()) {
+      query += ` AND j.location = $${paramIndex}`;
+      params.push(location.trim());
+      paramIndex++;
+    }
+    if (status && OwnerApplicationService.VALID_STATUSES.includes(status)) {
+      query += ` AND a.status = $${paramIndex}`;
+      params.push(status);
+      paramIndex++;
+    }
+
+    query += ` ORDER BY a.created_at DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+    params.push(limit, offset);
+
+    const result = await db.query(query, params);
+
+    let countQuery = `
+      SELECT COUNT(*)
+      FROM applications a
+      JOIN jobs j ON a.job_id = j.id
+      WHERE j.salon_id = $1
+    `;
+    const countParams = [salonId];
+    let countIdx = 2;
+    if (jobRole && typeof jobRole === 'string' && jobRole.trim()) {
+      countQuery += ` AND j.job_role = $${countIdx}`;
+      countParams.push(jobRole.trim());
+      countIdx++;
+    }
+    if (location && typeof location === 'string' && location.trim()) {
+      countQuery += ` AND j.location = $${countIdx}`;
+      countParams.push(location.trim());
+      countIdx++;
+    }
+    if (status && OwnerApplicationService.VALID_STATUSES.includes(status)) {
+      countQuery += ` AND a.status = $${countIdx}`;
+      countParams.push(status);
+    }
+    const countResult = await db.query(countQuery, countParams);
+
+    const applications = result.rows.map((row) => this._mapCandidateRow(row));
+
+    return {
+      applications,
+      total: parseInt(countResult.rows[0].count, 10),
+    };
+  }
+
   /**
    * Update the status of an application.
    * Validates ownership, allowed transitions, and vacancy limits.

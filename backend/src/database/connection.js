@@ -3,12 +3,8 @@ import config from '../config/index.js';
 import logger from '../utils/logger.js';
 
 const { Pool } = pg;
-/**
- * Create PostgreSQL connection pool
- * Optimized for Neon PostgreSQL with serverless support
- */
+
 const createPool = () => {
-  // Support both DATABASE_URL and individual config params
   const poolConfig = config.database.url
     ? {
         // Neon pooled connection string
@@ -32,19 +28,13 @@ const createPool = () => {
   // Connection pool settings optimized for Neon
   return new Pool({
     ...poolConfig,
-    // Pool size (Neon handles pooling, keep this moderate)
     min: config.database.poolMin,
     max: config.database.poolMax,
-    // Connection timeout (Neon cold starts can take a moment)
     connectionTimeoutMillis: 15000,
-    // Idle timeout (release connections back to pool)
     idleTimeoutMillis: 30000,
-    // Keep connections alive (important for Neon pooler)
     keepAlive: true,
     keepAliveInitialDelayMillis: 10000,
-    // Statement timeout (prevent long-running queries)
     statement_timeout: 30000,
-    // Application name (visible in Neon dashboard)
     application_name: 'jobtree-backend',
   });
 };
@@ -67,12 +57,6 @@ pool.on('remove', () => {
   logger.debug('Database connection removed from pool');
 });
 
-/**
- * Execute a query with automatic connection handling
- * @param {string} text - SQL query
- * @param {Array} params - Query parameters
- * @returns {Promise<object>} Query result
- */
 export const query = async (text, params) => {
   const start = Date.now();
   try {

@@ -2,6 +2,7 @@ import express from 'express';
 import { param, body, query, validationResult } from 'express-validator';
 import ownerApplicationService from '../services/ownerApplicationService.js';
 import interviewService from '../services/interviewService.js';
+import seekerService from '../services/seekerService.js';
 import { authenticate } from '../middleware/auth.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import logger from '../utils/logger.js';
@@ -24,6 +25,75 @@ const handleValidationErrors = (req, res, next) => {
 };
 
 // ===================== OWNER APPLICATION MANAGEMENT =====================
+
+/**
+ * @route   GET /api/owner/seekers
+ * @desc    Browse all job seeker profiles on the platform (filter by job role / city)
+ * @query   jobRole, location, limit, offset
+ */
+router.get(
+  '/seekers',
+  authenticate,
+  [
+    query('jobRole').optional().isString().trim().isLength({ max: 100 }),
+    query('location').optional().isString().trim().isLength({ max: 120 }),
+    query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Limit must be 1-100'),
+    query('offset').optional().isInt({ min: 0 }).withMessage('Offset must be >= 0'),
+    handleValidationErrors,
+  ],
+  asyncHandler(async (req, res) => {
+    const salonId = req.salonId;
+    const { jobRole, location, limit = 50, offset = 0 } = req.query;
+
+    logger.info(`Owner ${salonId} browsing seekers (jobRole=${jobRole || 'any'}, location=${location || 'any'})`);
+
+    const result = await seekerService.browseForOwner({
+      jobRole,
+      location,
+      limit: parseInt(limit, 10),
+      offset: parseInt(offset, 10),
+    });
+
+    res.json({ success: true, ...result });
+  })
+);
+
+/**
+ * @route   GET /api/owner/applications
+ * @desc    All applicants across salon jobs (filter by job role / city)
+ * @query   jobRole, location, status, limit, offset
+ */
+router.get(
+  '/applications',
+  authenticate,
+  [
+    query('jobRole').optional().isString().trim().isLength({ max: 100 }),
+    query('location').optional().isString().trim().isLength({ max: 120 }),
+    query('status')
+      .optional()
+      .isIn(['applied', 'shortlisted', 'interview', 'rejected', 'hired'])
+      .withMessage('Invalid status filter'),
+    query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Limit must be 1-100'),
+    query('offset').optional().isInt({ min: 0 }).withMessage('Offset must be >= 0'),
+    handleValidationErrors,
+  ],
+  asyncHandler(async (req, res) => {
+    const salonId = req.salonId;
+    const { jobRole, location, status, limit = 50, offset = 0 } = req.query;
+
+    logger.info(`Owner ${salonId} fetching all applications (jobRole=${jobRole || 'any'}, location=${location || 'any'})`);
+
+    const result = await ownerApplicationService.getAllCandidatesForSalon(salonId, {
+      jobRole,
+      location,
+      status,
+      limit: parseInt(limit, 10),
+      offset: parseInt(offset, 10),
+    });
+
+    res.json({ success: true, ...result });
+  })
+);
 
 /**
  * @route   GET /api/owner/jobs/:jobId/applications

@@ -295,6 +295,7 @@ class JobService {
       const shiftMap = {
         full_day: 'flexible',
         shift_based: 'flexible',
+        part_time_freelance: 'flexible',
         morning: 'morning',
         evening: 'evening',
         night: 'night',

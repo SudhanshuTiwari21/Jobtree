@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../app_responsive.dart';
 import '../data/job_taxonomy_catalog.dart';
 
 /// Full-screen picker: choose category, then multi-select sub-skills. Returns [JobTaxonomyPickResult].
@@ -71,7 +72,7 @@ class _JobTaxonomySelectionScreenState extends State<JobTaxonomySelectionScreen>
                   JobTaxonomyPickResult(categoryId: _cat!.id, compoundSkillIds: skills),
                 );
               },
-              child: Text(hi ? 'पूर्ण' : 'Done', style: const TextStyle(fontWeight: FontWeight.w600)),
+              child: Text(hi ? 'सेव करें' : 'Save', style: const TextStyle(fontWeight: FontWeight.w600)),
             ),
         ],
       ),
@@ -83,7 +84,7 @@ class _JobTaxonomySelectionScreenState extends State<JobTaxonomySelectionScreen>
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          padding: AppResponsive.scrollScreenPadding(context, bottom: 8),
           child: TextField(
             decoration: InputDecoration(
               hintText: hi ? 'खोजें…' : 'Search roles…',
@@ -137,7 +138,7 @@ class _JobTaxonomySelectionScreenState extends State<JobTaxonomySelectionScreen>
   Widget _buildSubStep(bool hi) {
     final c = _cat!;
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+      padding: AppResponsive.scrollScreenPadding(context, top: 16, bottom: 32),
       children: [
         Text(
           c.labelFor(hi),
@@ -156,7 +157,12 @@ class _JobTaxonomySelectionScreenState extends State<JobTaxonomySelectionScreen>
             final compound = c.compoundId(s);
             final on = _picked.contains(compound);
             return FilterChip(
-              label: Text(s.labelFor(hi), style: const TextStyle(fontSize: 12)),
+              label: Text(
+                s.labelFor(hi),
+                style: const TextStyle(fontSize: 12),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
               selected: on,
               onSelected: (_) {
                 setState(() {

@@ -208,7 +208,7 @@ class _ApplicationChatScreenState extends State<ApplicationChatScreen> {
                   : _error != null
                       ? Center(
                           child: Padding(
-                            padding: const EdgeInsets.all(24),
+                            padding: AppResponsive.screenPaddingAll(context),
                             child: Text(_error!, textAlign: TextAlign.center),
                           ),
                         )

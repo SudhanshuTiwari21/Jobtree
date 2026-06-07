@@ -436,6 +436,84 @@ class SeekerService {
       updatedAt: prefs.updated_at,
     };
   }
+
+  /**
+   * Public seeker card for salon owners (no phone number).
+   */
+  async formatSeekerPublicResponse(seeker, prefs = null) {
+    const full = await this.formatSeekerResponse(seeker, prefs);
+    if (!full) return null;
+    const { phoneNumber, countryCode, email, ...rest } = full;
+    return rest;
+  }
+
+  /**
+   * Browse job seeker profiles for salon owners (filter by role / city).
+   */
+  async browseForOwner({ jobRole, location, limit = 50, offset = 0 }) {
+    const params = [];
+    const conditions = [
+      'sp.full_name IS NOT NULL',
+      "TRIM(sp.full_name) <> ''",
+      'sp.city IS NOT NULL',
+      "TRIM(sp.city) <> ''",
+      'sp.preferred_role IS NOT NULL',
+      "TRIM(sp.preferred_role) <> ''",
+    ];
+
+    if (jobRole) {
+      params.push(jobRole);
+      conditions.push(`sp.preferred_role = $${params.length}`);
+    }
+    if (location) {
+      params.push(`%${location.trim()}%`);
+      conditions.push(`sp.city ILIKE $${params.length}`);
+    }
+
+    const where = conditions.join(' AND ');
+    const countResult = await db.query(
+      `SELECT COUNT(*)::int AS total FROM seeker_profiles sp WHERE ${where}`,
+      params
+    );
+    const total = countResult.rows[0]?.total ?? 0;
+
+    params.push(limit, offset);
+    const limitIdx = params.length - 1;
+    const offsetIdx = params.length;
+
+    const listResult = await db.query(
+      `SELECT sp.*, pref.job_type, pref.preferred_cities, pref.immediate_join, pref.preferred_salary
+       FROM seeker_profiles sp
+       LEFT JOIN seeker_preferences pref ON pref.seeker_id = sp.id
+       WHERE ${where}
+       ORDER BY sp.profile_completion_percent DESC, sp.updated_at DESC
+       LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
+      params
+    );
+
+    const seekers = await Promise.all(
+      listResult.rows.map(async (row) => {
+        const prefs = row.job_type != null
+          ? {
+              job_type: row.job_type,
+              preferred_cities: row.preferred_cities,
+              immediate_join: row.immediate_join,
+              preferred_salary: row.preferred_salary,
+            }
+          : null;
+        return this.formatSeekerPublicResponse(row, prefs);
+      })
+    );
+
+    const citiesResult = await db.query(
+      `SELECT DISTINCT city FROM seeker_profiles
+       WHERE city IS NOT NULL AND TRIM(city) <> ''
+       ORDER BY city ASC`
+    );
+    const cities = citiesResult.rows.map((r) => r.city).filter(Boolean);
+
+    return { seekers, total, cities };
+  }
 }
 
 export default new SeekerService();

@@ -12,12 +12,7 @@ import interviewReminderCron from './jobs/interviewReminderCron.js';
 import { attachChatSocketServer } from './websocket/chatSocket.js';
 
 const app = express();
-
-/** Set after listen — used for graceful shutdown */
 let httpServerRef = null;
-
-
-// Trust proxy (important for rate limiting behind reverse proxy)
 app.set('trust proxy', 1);
 
 // Middleware
