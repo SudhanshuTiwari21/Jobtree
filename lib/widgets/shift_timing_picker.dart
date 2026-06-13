@@ -8,7 +8,7 @@ class ShiftTimingMeta {
 
   static String mergeIntoDescription(String userText, ShiftTimingState state) {
     final clean = stripMeta(userText);
-    final encoded = '${_tag}${state.encode()}${_tag}';
+    final encoded = '$_tag${state.encode()}$_tag';
     if (clean.isEmpty) return encoded;
     return '$encoded\n$clean';
   }
@@ -130,6 +130,7 @@ class ShiftTimingLabels {
   final bool hindi;
   final String shiftTiming;
   final String partTimeFreelance;
+  final String chooseTimeSlot;
   final String fromLabel;
   final String toLabel;
 
@@ -137,6 +138,7 @@ class ShiftTimingLabels {
     required this.hindi,
     required this.shiftTiming,
     required this.partTimeFreelance,
+    required this.chooseTimeSlot,
     required this.fromLabel,
     required this.toLabel,
   });
@@ -200,7 +202,7 @@ class ShiftTimingPicker extends StatelessWidget {
           dense: true,
           contentPadding: EdgeInsets.zero,
           title: Text(
-            labels.hindi ? 'समय सीमा चुनें' : 'Choose time slot',
+            labels.chooseTimeSlot,
             style: const TextStyle(fontSize: 14),
           ),
           value: 'hours',
@@ -310,75 +312,89 @@ class _TimeRow extends StatelessWidget {
     required this.onMeridiem,
   });
 
+  InputDecoration _boxDecoration() => InputDecoration(
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      );
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 36,
-          child: Text(
-            label,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF121A2C),
+    return Padding(
+      padding: const EdgeInsets.only(left: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 32,
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF121A2C),
+              ),
             ),
           ),
-        ),
-        Expanded(
-          child: DropdownButtonFormField<int>(
-            value: hour,
-            decoration: InputDecoration(
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          SizedBox(
+            width: 48,
+            child: DropdownButtonFormField<int>(
+              value: hour,
+              isExpanded: true,
+              decoration: _boxDecoration(),
+              style: const TextStyle(fontSize: 13, color: Color(0xFF121A2C)),
+              items: ShiftTimingPicker._hours
+                  .map((h) => DropdownMenuItem(value: h, child: Text('$h')))
+                  .toList(),
+              onChanged: (v) {
+                if (v != null) onHour(v);
+              },
             ),
-            items: ShiftTimingPicker._hours
-                .map((h) => DropdownMenuItem(value: h, child: Text('$h')))
-                .toList(),
-            onChanged: (v) {
-              if (v != null) onHour(v);
-            },
           ),
-        ),
-        const SizedBox(width: 6),
-        Expanded(
-          child: DropdownButtonFormField<int>(
-            value: minute,
-            decoration: InputDecoration(
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4),
+            child: Text(':', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          ),
+          SizedBox(
+            width: 56,
+            child: DropdownButtonFormField<int>(
+              value: minute,
+              isExpanded: true,
+              decoration: _boxDecoration(),
+              style: const TextStyle(fontSize: 13, color: Color(0xFF121A2C)),
+              items: ShiftTimingPicker._minutes
+                  .map((m) => DropdownMenuItem(
+                        value: m,
+                        child: Text(m.toString().padLeft(2, '0')),
+                      ))
+                  .toList(),
+              onChanged: (v) {
+                if (v != null) onMinute(v);
+              },
             ),
-            items: ShiftTimingPicker._minutes
-                .map((m) => DropdownMenuItem(
-                      value: m,
-                      child: Text(m.toString().padLeft(2, '0')),
-                    ))
-                .toList(),
-            onChanged: (v) {
-              if (v != null) onMinute(v);
-            },
           ),
-        ),
-        const SizedBox(width: 6),
-        Expanded(
-          child: DropdownButtonFormField<String>(
-            value: meridiem,
-            decoration: InputDecoration(
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          const SizedBox(width: 6),
+          SizedBox(
+            width: 56,
+            child: DropdownButtonFormField<String>(
+              value: meridiem,
+              isExpanded: true,
+              decoration: InputDecoration(
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+              style: const TextStyle(fontSize: 12, color: Color(0xFF121A2C)),
+              items: ShiftTimingPicker._meridiems
+                  .map((m) => DropdownMenuItem(value: m, child: Text(m)))
+                  .toList(),
+              onChanged: (v) {
+                if (v != null) onMeridiem(v);
+              },
             ),
-            items: ShiftTimingPicker._meridiems
-                .map((m) => DropdownMenuItem(value: m, child: Text(m)))
-                .toList(),
-            onChanged: (v) {
-              if (v != null) onMeridiem(v);
-            },
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

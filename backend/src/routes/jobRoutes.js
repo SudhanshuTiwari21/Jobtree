@@ -69,6 +69,19 @@ const createJobValidation = [
     .optional()
     .isIn(['male', 'female', 'any'])
     .withMessage('Preferred gender must be male, female, or any'),
+  body('weeklyOff')
+    .optional()
+    .isArray({ max: 7 })
+    .withMessage('Weekly off must be an array'),
+  body('facilities')
+    .optional()
+    .isArray({ max: 20 })
+    .withMessage('Facilities must be an array'),
+  body('description')
+    .optional()
+    .isString()
+    .isLength({ max: 5000 })
+    .withMessage('Description too long'),
   handleValidationErrors,
 ];
 

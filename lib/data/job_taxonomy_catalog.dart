@@ -139,15 +139,26 @@ class JobTaxonomyCatalog {
     return counts.entries.reduce((a, b) => a.value >= b.value ? a : b).key;
   }
 
-  /// Role id for labels/API: prefer category implied by skills when compounds exist.
+  /// Role id for labels/API: explicit [jobRole] wins when set (avoids wrong title from stale skills).
   static String effectiveCategoryId({
     required String jobRole,
     required List<String> skills,
   }) {
+    if (jobRole.isNotEmpty && jobRole != 'other') return jobRole;
     final fromSkills = categoryIdFromSkills(skills);
     if (fromSkills != null && fromSkills.isNotEmpty) return fromSkills;
     return jobRole;
   }
+
+  /// Keep only skills that belong to [jobRole] (fixes stale skills from prior job type).
+  static List<String> skillsMatchingRole(String jobRole, Iterable<String> skills) {
+    if (jobRole.isEmpty || jobRole == 'other') return List<String>.from(skills);
+    final prefix = '$jobRole/';
+    final matched = skills.where((s) => s.startsWith(prefix)).toList();
+    return matched.isNotEmpty ? matched : List<String>.from(skills);
+  }
+
+  static void invalidateCache() => _cached = null;
 
   /// Localized job title for owner/seeker UI (custom name → taxonomy → legacy map → title case).
   String displayRoleLabel({

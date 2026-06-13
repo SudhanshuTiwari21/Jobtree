@@ -9,6 +9,7 @@ class JobTaxonomySelectionScreen extends StatefulWidget {
   final JobTaxonomyCatalog catalog;
   final String? initialCategoryId;
   final List<String> initialCompoundSkills;
+  final bool forSeekerProfile;
 
   const JobTaxonomySelectionScreen({
     super.key,
@@ -16,6 +17,7 @@ class JobTaxonomySelectionScreen extends StatefulWidget {
     required this.catalog,
     this.initialCategoryId,
     this.initialCompoundSkills = const [],
+    this.forSeekerProfile = false,
   });
 
   @override
@@ -31,8 +33,7 @@ class _JobTaxonomySelectionScreenState extends State<JobTaxonomySelectionScreen>
   @override
   void initState() {
     super.initState();
-    _cat = widget.catalog.categoryById(widget.initialCategoryId) ??
-        (widget.catalog.allCategories().isNotEmpty ? widget.catalog.allCategories().first : null);
+    _cat = widget.catalog.categoryById(widget.initialCategoryId);
     for (final x in widget.initialCompoundSkills) {
       _picked.add(x);
     }
@@ -48,8 +49,8 @@ class _JobTaxonomySelectionScreenState extends State<JobTaxonomySelectionScreen>
         elevation: 0,
         title: Text(
           _step == 0
-              ? (hi ? 'भूमिका चुनें' : 'Choose role')
-              : (hi ? 'कौशल चुनें' : 'Select skills'),
+              ? (hi ? 'जॉब टाइप चुनें' : 'Choose job type')
+              : (hi ? 'स्किल सेट चुनें' : 'Choose skill set'),
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         leading: IconButton(
@@ -97,9 +98,9 @@ class _JobTaxonomySelectionScreenState extends State<JobTaxonomySelectionScreen>
         ),
         Expanded(
           child: ListView.builder(
-            itemCount: widget.catalog.sections.length,
+            itemCount: widget.catalog.sections.where((s) => s.id != 'legacy_quick_roles').length,
             itemBuilder: (context, si) {
-              final sec = widget.catalog.sections[si];
+              final sec = widget.catalog.sections.where((s) => s.id != 'legacy_quick_roles').elementAt(si);
               final children = sec.categories
                   .where((c) {
                     final q = _query.trim().toLowerCase();
@@ -111,7 +112,7 @@ class _JobTaxonomySelectionScreenState extends State<JobTaxonomySelectionScreen>
                   .toList();
               if (children.isEmpty) return const SizedBox.shrink();
               return ExpansionTile(
-                initiallyExpanded: _query.isNotEmpty || si == 0,
+                initiallyExpanded: _query.trim().isNotEmpty,
                 title: Text(sec.labelFor(hi), style: const TextStyle(fontWeight: FontWeight.w600)),
                 children: children
                     .map(
@@ -120,6 +121,9 @@ class _JobTaxonomySelectionScreenState extends State<JobTaxonomySelectionScreen>
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () {
                           setState(() {
+                            if (_cat?.id != c.id) {
+                              _picked.removeWhere((e) => !e.startsWith('${c.id}/'));
+                            }
                             _cat = c;
                             _step = 1;
                           });
@@ -146,7 +150,9 @@ class _JobTaxonomySelectionScreenState extends State<JobTaxonomySelectionScreen>
         ),
         const SizedBox(height: 4),
         Text(
-          hi ? 'उम्मीदवार को क्या क्या आना चाहिए' : 'What should the applicant know',
+          widget.forSeekerProfile
+              ? (hi ? 'आप को क्या क्या skills आती हैं – चुनें' : 'Select skills you have')
+              : (hi ? 'उम्मीदवार को क्या क्या आना चाहिए' : 'What should the applicant know'),
           style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
         ),
         const SizedBox(height: 16),

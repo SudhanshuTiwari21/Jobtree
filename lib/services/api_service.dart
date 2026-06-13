@@ -600,10 +600,14 @@ class ApiService {
     required String experience,
     String? accommodation,
     String? preferredGender,
+    String? shiftType,
+    List<String>? weeklyOff,
+    List<String>? facilities,
+    String? description,
   }) async {
     try {
       final headers = await _getHeaders(requireAuth: true);
-      
+
       final body = {
         'jobRole': jobRole,
         if (otherCategory != null) 'otherCategory': otherCategory,
@@ -617,6 +621,10 @@ class ApiService {
         'experience': experience,
         if (accommodation != null) 'accommodation': accommodation,
         if (preferredGender != null) 'preferredGender': preferredGender,
+        if (shiftType != null) 'shiftType': shiftType,
+        if (weeklyOff != null && weeklyOff.isNotEmpty) 'weeklyOff': weeklyOff,
+        if (facilities != null && facilities.isNotEmpty) 'facilities': facilities,
+        if (description != null && description.isNotEmpty) 'description': description,
       };
       
       print('Creating job with data: $body');
@@ -1109,13 +1117,20 @@ class ApiService {
   }
 
   /// Get job feed for seekers
-  Future<ApiResponse<List<SeekerJobItem>>> getSeekerJobs({String? city, String? role, int limit = 20, int offset = 0}) async {
+  Future<ApiResponse<List<SeekerJobItem>>> getSeekerJobs({
+    String? city,
+    String? role,
+    bool browseAll = false,
+    int limit = 20,
+    int offset = 0,
+  }) async {
     try {
       final headers = await _getHeaders(requireAuth: true);
       final queryParams = <String, String>{
         'limit': limit.toString(),
         'offset': offset.toString(),
       };
+      if (browseAll) queryParams['browseAll'] = 'true';
       if (city != null && city.isNotEmpty) queryParams['city'] = city;
       if (role != null && role.isNotEmpty) queryParams['role'] = role;
 

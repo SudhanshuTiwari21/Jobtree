@@ -319,7 +319,7 @@ class JobtreeSplashLogo extends StatelessWidget {
             ),
             SizedBox(height: gap),
             Transform.translate(
-              offset: Offset(0, textOffsetY),
+              offset: Offset(-textW * 0.06, textOffsetY),
               child: SvgPicture.asset(
                 'assets/images/logo_tm_text.svg',
                 width: textW,
@@ -1133,7 +1133,16 @@ class AppLocalizations {
   String get mustSelectDateTime => language == Language.hindi ? 'तारीख और समय चुनें' : 'Please select date and time';
   String get interviewDetails => language == Language.hindi ? 'इंटरव्यू विवरण' : 'Interview Details';
 
-  String get editJobTitle => language == Language.hindi ? 'जॉब सुधारें' : 'Edit Job';
+  String get editJobTitle =>
+      language == Language.hindi ? 'जॉब डिटेल्स सुधारें' : 'Edit job details';
+  String get chooseJobTypeTitle =>
+      language == Language.hindi ? 'जॉब टाइप चुनें' : 'Choose job type';
+  String get chooseSkillSetTitle =>
+      language == Language.hindi ? 'स्किल सेट चुनें' : 'Choose skill set';
+  String get chooseSkillSetChange =>
+      language == Language.hindi ? 'स्किल सेट चुनें / बदलें' : 'Choose / change skill set';
+  String get shiftTimeSelectLabel =>
+      language == Language.hindi ? 'शिफ्ट टाइम सेलेक्ट करें' : 'Select shift time';
   String get jobDetailsTitle => language == Language.hindi ? 'जॉब की जानकारी' : 'Job details';
   String get saveChanges => language == Language.hindi ? 'सेव करें' : 'Save';
   String get completeJobHelper => language == Language.hindi ? 'जॉब को 70% तक पूरा करें ताकि ज़्यादा कॉल मिलें' : 'Complete job to 70% to get more calls';
@@ -1384,8 +1393,16 @@ class AppLocalizations {
   String get enterFullName => language == Language.hindi ? 'अपना पूरा नाम दर्ज करें' : 'Enter your full name';
   String get selectGender => language == Language.hindi ? 'लिंग *' : 'Gender *';
   String get otherGender => language == Language.hindi ? 'अन्य' : 'Other';
-  String get preferredJobRole => language == Language.hindi ? 'पसंदीदा नौकरी *' : 'Preferred Job Role *';
-  String get seekerCity => language == Language.hindi ? 'शहर *' : 'City *';
+  String get preferredJobRole =>
+      language == Language.hindi ? 'अपना job type व skills चुनें *' : 'Choose your job type & skills *';
+  String get seekerChooseJobTypeButton =>
+      language == Language.hindi ? 'अपना job type व skills चुनें' : 'Choose your job type & skills';
+  String get seekerCity => language == Language.hindi ? 'अभी जहाँ पर हैं *' : 'Where you are now *';
+  String get seekerPreferredWorkCities => language == Language.hindi
+      ? 'शहर जिसमें जॉब चाहिए (आप एक से अधिक शहर चुन सकते हैं)'
+      : 'Cities where you want a job (you can pick more than one)';
+  String get seekerPreferredCitiesLabel =>
+      language == Language.hindi ? 'जॉब चाहिए शहर' : 'Job wanted in';
   String get saveAndContinue => language == Language.hindi ? 'सेव करें और आगे बढ़ें' : 'Save & Continue';
   String get jobFeedTitle => language == Language.hindi ? 'नौकरियां' : 'Jobs';
   String get noJobsInArea => language == Language.hindi ? 'आपके क्षेत्र में अभी कोई नौकरी उपलब्ध नहीं है' : 'No jobs available in your area right now';
@@ -1401,14 +1418,33 @@ class AppLocalizations {
       ? 'बेहतर जॉब पाने के लिए जानकारी जोड़ें'
       : 'Add details to get better job matches';
   String get enhanceProfile => language == Language.hindi ? 'प्रोफ़ाइल सुधारें' : 'Enhance Profile';
-  String get experienceField => language == Language.hindi ? 'अनुभव' : 'Experience';
-  String get expectedSalaryField => language == Language.hindi ? 'अपेक्षित वेतन' : 'Expected Salary';
+  String get experienceField =>
+      language == Language.hindi ? 'अपना experience जोड़ें' : 'Add your experience';
+  String get seekerMaritalStatus =>
+      language == Language.hindi ? 'वैवाहिक status' : 'Marital status';
+  String get seekerCurrentSalary => language == Language.hindi
+      ? 'अभी कितनी salary ले रहे हैं (महीने में)'
+      : 'Current monthly salary';
+  String get expectedSalaryField => language == Language.hindi
+      ? 'नई job में कितनी salary expect कर रहे हैं – डालें'
+      : 'Expected salary in your next job';
+  String get seekerWorkPortfolio => language == Language.hindi
+      ? 'अपने काम की photo या video डालें'
+      : 'Add photos or videos of your work';
+  String get browseAllJobs => language == Language.hindi ? 'सभी jobs देखें' : 'Browse all jobs';
+  String get browseAllJobsHint => language == Language.hindi
+      ? 'सभी employer की job posts — job type और location से filter करें'
+      : 'All employer job posts — filter by job type and location';
+  String get noJobsForFilter => language == Language.hindi
+      ? 'इस filter पर कोई job नहीं मिली'
+      : 'No jobs match this filter';
   String get seekerSkills => language == Language.hindi ? 'कौशल' : 'Skills';
   String get fresherSeeker => language == Language.hindi ? 'फ्रेशर' : 'Fresher';
   String get experiencedSeeker => language == Language.hindi ? 'अनुभवी (1+ वर्ष)' : 'Experienced (1+ year)';
   String get seniorSeeker => language == Language.hindi ? 'सीनियर (3+ वर्ष)' : 'Senior (3+ years)';
   String get seekerHome => language == Language.hindi ? 'होम' : 'Home';
-  String get seekerApplications => language == Language.hindi ? 'आवेदन' : 'Applications';
+  String get seekerApplications =>
+      language == Language.hindi ? 'कहाँ apply किया – देखें' : 'Where you applied – view';
   String get seekerProfileTab => language == Language.hindi ? 'प्रोफ़ाइल' : 'Profile';
   String get salary => language == Language.hindi ? 'वेतन' : 'Salary';
   String get postedBy => language == Language.hindi ? 'पोस्ट किया' : 'Posted by';
@@ -4689,13 +4725,6 @@ class _SeekerCreateProfileScreenState extends State<SeekerCreateProfileScreen> {
 
               // Preferred role (taxonomy)
               Text(_localizations.preferredJobRole, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF121A2C))),
-              const SizedBox(height: 4),
-              Text(
-                widget.selectedLanguage == Language.hindi
-                    ? 'श्रेणी और उप-श्रेणी चुनें'
-                    : 'Choose category and sub-skills',
-                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-              ),
               const SizedBox(height: 12),
               Container(
                 width: double.infinity,
@@ -4747,6 +4776,7 @@ class _SeekerCreateProfileScreenState extends State<SeekerCreateProfileScreen> {
                           catalog: cat,
                           initialCategoryId: _selectedRole,
                           initialCompoundSkills: _selectedSkills.toList(),
+                          forSeekerProfile: true,
                         ),
                       ),
                     );
@@ -4761,7 +4791,7 @@ class _SeekerCreateProfileScreenState extends State<SeekerCreateProfileScreen> {
                   },
                   icon: const Icon(Icons.category_outlined),
                   label: Text(
-                    _localizations.chooseJobTypeAndSkills,
+                    _localizations.seekerChooseJobTypeButton,
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ),
@@ -4809,6 +4839,294 @@ class _SeekerCreateProfileScreenState extends State<SeekerCreateProfileScreen> {
         ),
         child: Text(label, style: TextStyle(fontSize: 13, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400, color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade700)),
       ),
+    );
+  }
+}
+
+// ============== SEEKER: BROWSE ALL JOBS ==============
+class SeekerBrowseAllJobsScreen extends StatefulWidget {
+  final Language selectedLanguage;
+
+  const SeekerBrowseAllJobsScreen({super.key, required this.selectedLanguage});
+
+  @override
+  State<SeekerBrowseAllJobsScreen> createState() => _SeekerBrowseAllJobsScreenState();
+}
+
+class _SeekerBrowseAllJobsScreenState extends State<SeekerBrowseAllJobsScreen> {
+  final ApiService _apiService = ApiService();
+  late AppLocalizations _localizations;
+
+  List<SeekerJobItem> _jobs = [];
+  bool _loading = true;
+  String? _filterRole;
+  String? _filterCity;
+  JobTaxonomyCatalog? _taxonomy;
+  List<String> _cities = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _localizations = AppLocalizations(widget.selectedLanguage);
+    _bootstrap();
+  }
+
+  Future<void> _bootstrap() async {
+    final cat = await JobTaxonomyCatalog.instance();
+    final cities = await IndiaCityService.instance.loadCities();
+    if (!mounted) return;
+    setState(() {
+      _taxonomy = cat;
+      _cities = cities;
+    });
+    await _loadJobs();
+  }
+
+  Future<void> _loadJobs() async {
+    setState(() => _loading = true);
+    final res = await _apiService.getSeekerJobs(
+      browseAll: true,
+      city: _filterCity,
+      role: _filterRole,
+      limit: 100,
+    );
+    if (!mounted) return;
+    setState(() {
+      _jobs = res.success && res.data != null ? res.data! : [];
+      _loading = false;
+    });
+  }
+
+  Future<void> _openFilters() async {
+    final result = await Navigator.of(context).push<Map<String, String?>>(
+      MaterialPageRoute(
+        builder: (context) => OwnerApplicantsFilterScreen(
+          selectedLanguage: widget.selectedLanguage,
+          jobs: const [],
+          taxonomy: _taxonomy,
+          cityOptions: _cities,
+          initialJobRole: _filterRole,
+          initialCity: _filterCity,
+        ),
+      ),
+    );
+    if (result == null || !mounted) return;
+    setState(() {
+      _filterRole = result['jobRole'];
+      _filterCity = result['city'];
+    });
+    await _loadJobs();
+  }
+
+  Future<void> _applyToJob(SeekerJobItem job, int index) async {
+    if (job.hasApplied) return;
+    final response = await _apiService.applyToJob(job.id);
+    if (!mounted) return;
+    if (response.success) {
+      setState(() {
+        _jobs[index] = SeekerJobItem(
+          id: job.id,
+          jobRole: job.jobRole,
+          customRoleName: job.customRoleName,
+          location: job.location,
+          salaryMin: job.salaryMin,
+          salaryMax: job.salaryMax,
+          workType: job.workType,
+          experience: job.experience,
+          salonName: job.salonName,
+          description: job.description,
+          status: job.status,
+          hasApplied: true,
+          createdAt: job.createdAt,
+          salonPhotoUrls: job.salonPhotoUrls,
+        );
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(_localizations.applicationSuccess), backgroundColor: Colors.green),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response.message ?? _localizations.alreadyApplied), backgroundColor: Colors.orange),
+      );
+    }
+  }
+
+  String _formatSalary(double val) {
+    if (val >= 1000) return '${(val / 1000).toStringAsFixed(0)}K';
+    return val.toStringAsFixed(0);
+  }
+
+  Widget _infoChip(IconData icon, String label, {Widget? trailing}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(6)),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: Colors.grey.shade600),
+          const SizedBox(width: 4),
+          Text(label, style: TextStyle(fontSize: 12, color: Colors.grey.shade700)),
+          if (trailing != null) trailing,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildJobCard(SeekerJobItem job, int index) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2))],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(job.displayRole, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: Color(0xFF121A2C))),
+                ),
+                Text(job.postedAgo, style: TextStyle(fontSize: 12, color: Colors.grey.shade500)),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                Icon(Icons.location_on_outlined, size: 16, color: Colors.grey.shade500),
+                const SizedBox(width: 4),
+                Text(job.location, style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                _infoChip(Icons.currency_rupee, '${_formatSalary(job.salaryMin)} - ${_formatSalary(job.salaryMax)}'),
+                const SizedBox(width: 8),
+                _infoChip(Icons.work_outline, job.experience == 'fresher_ok' ? _localizations.fresherSeeker : _localizations.experiencedSeeker),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                _infoChip(Icons.access_time, job.workType == 'full_time' ? _localizations.fullTime : _localizations.partTime),
+                if (job.salonName != null) ...[
+                  const SizedBox(width: 8),
+                  _infoChip(Icons.storefront_outlined, job.salonName!),
+                ],
+              ],
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              height: 44,
+              child: ElevatedButton(
+                onPressed: job.hasApplied ? null : () => _applyToJob(job, index),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: job.hasApplied ? Colors.grey.shade200 : const Color(0xFF3D3D7B),
+                  disabledBackgroundColor: Colors.grey.shade200,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  elevation: 0,
+                ),
+                child: Text(
+                  job.hasApplied ? _localizations.applied : _localizations.apply,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: job.hasApplied ? Colors.grey.shade600 : Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hasFilter = (_filterRole != null && _filterRole!.isNotEmpty) || (_filterCity != null && _filterCity!.isNotEmpty);
+
+    return Scaffold(
+      backgroundColor: Colors.grey.shade50,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        foregroundColor: const Color(0xFF121A2C),
+        title: Text(_localizations.browseAllJobs, style: const TextStyle(fontWeight: FontWeight.w600)),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.tune),
+            tooltip: _localizations.filterApplicants,
+            onPressed: _openFilters,
+          ),
+        ],
+      ),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
+              onRefresh: _loadJobs,
+              child: _jobs.isEmpty
+                  ? ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
+                      children: [
+                        Icon(Icons.work_off_outlined, size: 72, color: Colors.grey.shade300),
+                        const SizedBox(height: 16),
+                        Text(
+                          hasFilter ? _localizations.noJobsForFilter : _localizations.noJobsInArea,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.grey.shade600),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          hasFilter ? _localizations.browseAllJobsHint : _localizations.noJobsSubtext,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14, color: Colors.grey.shade400),
+                        ),
+                        const SizedBox(height: 20),
+                        OutlinedButton.icon(
+                          onPressed: _openFilters,
+                          icon: const Icon(Icons.tune),
+                          label: Text(_localizations.filterApplicants),
+                        ),
+                      ],
+                    )
+                  : ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: AppResponsive.scrollScreenPadding(context, top: 12, bottom: 32),
+                      children: [
+                        Text(
+                          _localizations.browseAllJobsHint,
+                          style: TextStyle(fontSize: 13, color: Colors.grey.shade600, height: 1.35),
+                        ),
+                        if (hasFilter) ...[
+                          const SizedBox(height: 10),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [
+                              if (_filterRole != null && _filterRole!.isNotEmpty)
+                                Chip(
+                                  label: Text(
+                                    _taxonomy?.categoryLabel(_filterRole!, widget.selectedLanguage == Language.hindi) ?? _filterRole!,
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                              if (_filterCity != null && _filterCity!.isNotEmpty)
+                                Chip(label: Text(_filterCity!, style: const TextStyle(fontSize: 12))),
+                            ],
+                          ),
+                        ],
+                        const SizedBox(height: 12),
+                        ...List.generate(_jobs.length, (i) => _buildJobCard(_jobs[i], i)),
+                      ],
+                    ),
+            ),
     );
   }
 }
@@ -5027,6 +5345,32 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
             ),
           ),
 
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
+              child: OutlinedButton.icon(
+                onPressed: () async {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => SeekerBrowseAllJobsScreen(selectedLanguage: _currentLanguage),
+                    ),
+                  );
+                  _loadData();
+                },
+                icon: const Icon(Icons.work_outline, size: 20),
+                label: Text(
+                  _localizations.browseAllJobs,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFF3D3D7B),
+                  side: const BorderSide(color: Color(0xFF3D3D7B)),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+            ),
+          ),
+
           // Profile completion card
           if (_seekerProfile != null && _seekerProfile!.profileCompletionPercent < 100)
             SliverToBoxAdapter(child: _buildCompletionCard()),
@@ -5068,7 +5412,7 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
         decoration: BoxDecoration(
           color: const Color(0xFFFFF8E1),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFFFE082)),
+          border: Border.all(color: AppResponsive.ownerHomeCardBorder),
         ),
         child: Row(
           children: [
@@ -5553,7 +5897,7 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
           if ((p?.preferredCities ?? []).isNotEmpty)
             _profileRow(
               Icons.location_searching_outlined,
-              _currentLanguage == Language.hindi ? 'पसंदीदा शहर' : 'Preferred cities',
+              _localizations.seekerPreferredCitiesLabel,
               p!.preferredCities.join(', '),
             ),
           FutureBuilder<JobTaxonomyCatalog>(
@@ -5588,11 +5932,11 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
           if (p?.email != null && p!.email!.trim().isNotEmpty)
             _profileRow(Icons.email_outlined, _currentLanguage == Language.hindi ? 'ईमेल' : 'Email', p.email!.trim()),
           if (p?.maritalStatus != null && p!.maritalStatus!.isNotEmpty)
-            _profileRow(Icons.favorite_outline, _currentLanguage == Language.hindi ? 'वैवाहिक स्थिति' : 'Marital status', _seekerMaritalLabel(p.maritalStatus)),
+            _profileRow(Icons.favorite_outline, _localizations.seekerMaritalStatus, _seekerMaritalLabel(p.maritalStatus)),
           if (p?.currentSalary != null)
             _profileRow(
               Icons.payments_outlined,
-              _currentLanguage == Language.hindi ? 'वर्तमान सैलरी' : 'Current salary',
+              _localizations.seekerCurrentSalary,
               '₹${p!.currentSalary!.toStringAsFixed(0)}',
             ),
           _profileRow(Icons.currency_rupee, _localizations.expectedSalaryField, _formatSeekerSalaryRange(p)),
@@ -5607,7 +5951,7 @@ class _SeekerHomeScreenState extends State<SeekerHomeScreen> {
           if ((p?.workPortfolioUrls ?? []).isNotEmpty)
             _profileRow(
               Icons.collections_outlined,
-              _currentLanguage == Language.hindi ? 'पोर्टफोलियो' : 'Portfolio',
+              _localizations.seekerWorkPortfolio,
               _currentLanguage == Language.hindi
                   ? '${(p?.workPortfolioUrls ?? []).length} फ़ाइलें'
                   : '${(p?.workPortfolioUrls ?? []).length} items',
@@ -6336,13 +6680,8 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
               const SizedBox(height: 20),
 
               Text(
-                widget.selectedLanguage == Language.hindi ? 'काम करने की पसंदीदा जगहें' : 'Preferred work cities',
+                _localizations.seekerPreferredWorkCities,
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                widget.selectedLanguage == Language.hindi ? 'एक से ज़्यादा शहर जोड़ सकते हैं' : 'You can add more than one city',
-                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
               ),
               const SizedBox(height: 8),
               Wrap(
@@ -6380,13 +6719,6 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
 
               // Role + skills (taxonomy)
               Text(_localizations.preferredJobRole, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-              const SizedBox(height: 4),
-              Text(
-                widget.selectedLanguage == Language.hindi
-                    ? 'श्रेणी और उप-श्रेणी चुनें'
-                    : 'Choose category and sub-skills',
-                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-              ),
               const SizedBox(height: 12),
               Container(
                 width: double.infinity,
@@ -6438,6 +6770,7 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
                           catalog: cat,
                           initialCategoryId: _selectedRole,
                           initialCompoundSkills: _selectedSkills.toList(),
+                          forSeekerProfile: true,
                         ),
                       ),
                     );
@@ -6452,7 +6785,7 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
                   },
                   icon: const Icon(Icons.category_outlined),
                   label: Text(
-                    _localizations.chooseJobTypeAndSkills,
+                    _localizations.seekerChooseJobTypeButton,
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ),
@@ -6558,7 +6891,7 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
               const SizedBox(height: 20),
 
               Text(
-                widget.selectedLanguage == Language.hindi ? 'वैवाहिक स्थिति' : 'Marital status',
+                _localizations.seekerMaritalStatus,
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 8),
@@ -6591,7 +6924,7 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
               const SizedBox(height: 20),
 
               Text(
-                widget.selectedLanguage == Language.hindi ? 'वर्तमान सैलरी (महीने में)' : 'Current salary (monthly)',
+                _localizations.seekerCurrentSalary,
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 8),
@@ -6608,7 +6941,7 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
               const SizedBox(height: 20),
 
               Text(
-                widget.selectedLanguage == Language.hindi ? 'अपेक्षित सैलरी (न्यूनतम)' : 'Expected salary (minimum)',
+                _localizations.expectedSalaryField,
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 8),
@@ -6682,7 +7015,7 @@ class _SeekerEnhanceProfileScreenState extends State<SeekerEnhanceProfileScreen>
               const SizedBox(height: 20),
 
               Text(
-                widget.selectedLanguage == Language.hindi ? 'काम के नमूने (फोटो / छोटा वीडियो)' : 'Work portfolio (photos / short video)',
+                _localizations.seekerWorkPortfolio,
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 8),
@@ -6817,6 +7150,12 @@ class _PostJobStep1ScreenState extends State<PostJobStep1Screen> {
   // Skill bundles (for core service roles only)
   Set<String> _selectedSkillBundles = {};
   
+  // Work timing & benefits (included in basic job details)
+  ShiftTimingState _shiftTiming = ShiftTimingState.defaults();
+  Set<String> _weeklyOff = {};
+  Set<String> _selectedFacilities = {};
+  late List<Map<String, String>> _daysOfWeek;
+  
   // Location data
   List<String> _allLocations = [];
   bool _isLoadingLocations = false;
@@ -6840,6 +7179,7 @@ class _PostJobStep1ScreenState extends State<PostJobStep1Screen> {
     _initJobRoles();
     _initOtherCategories();
     _initSkillBundles();
+    _initDaysOfWeek();
     _loadLocations();
     _loadExistingProfile();
     JobTaxonomyCatalog.instance().then((c) {
@@ -6963,10 +7303,23 @@ class _PostJobStep1ScreenState extends State<PostJobStep1Screen> {
     };
   }
 
+  void _initDaysOfWeek() {
+    _daysOfWeek = [
+      {'id': 'sun', 'label': _localizations.sunday},
+      {'id': 'mon', 'label': _localizations.monday},
+      {'id': 'tue', 'label': _localizations.tuesday},
+      {'id': 'wed', 'label': _localizations.wednesday},
+      {'id': 'thu', 'label': _localizations.thursday},
+      {'id': 'fri', 'label': _localizations.friday},
+      {'id': 'sat', 'label': _localizations.saturday},
+    ];
+  }
+
   Future<void> _loadLocations() async {
     setState(() => _isLoadingLocations = true);
     try {
-      final cities = await IndiaCityService.instance.loadCities();
+      IndiaCityService.instance.clearCache();
+      final cities = await IndiaCityService.instance.loadCities(forceRefresh: true);
       if (mounted) setState(() => _allLocations = cities);
     } finally {
       if (mounted) setState(() => _isLoadingLocations = false);
@@ -7322,6 +7675,137 @@ class _PostJobStep1ScreenState extends State<PostJobStep1Screen> {
                     
                     const SizedBox(height: 32),
                     
+                    ShiftTimingPicker(
+                      labels: ShiftTimingLabels(
+                        hindi: widget.selectedLanguage == Language.hindi,
+                        shiftTiming: _localizations.shiftTiming,
+                        partTimeFreelance: _localizations.partTimeFreelance,
+                        chooseTimeSlot: _localizations.shiftTimeSelectLabel,
+                        fromLabel: _localizations.shiftFromLabel,
+                        toLabel: _localizations.shiftToLabel,
+                      ),
+                      state: _shiftTiming,
+                      onChanged: (s) => setState(() => _shiftTiming = s),
+                    ),
+                    
+                    const SizedBox(height: 24),
+                    
+                    Text(
+                      _localizations.weeklyOff,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: _daysOfWeek.map((day) {
+                        final isSelected = _weeklyOff.contains(day['id']);
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              if (isSelected) {
+                                _weeklyOff.remove(day['id']);
+                              } else {
+                                _weeklyOff.add(day['id']!);
+                              }
+                            });
+                          },
+                          child: Container(
+                            width: 42,
+                            height: 42,
+                            decoration: BoxDecoration(
+                              color: isSelected ? const Color(0xFF3D3D7B) : Colors.white,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade300,
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                day['label']!,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                  color: isSelected ? Colors.white : const Color(0xFF121A2C),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    
+                    const SizedBox(height: 24),
+                    
+                    Text(
+                      _localizations.facilitiesBenefits,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        {'id': 'accommodation', 'label': _localizations.accommodation, 'icon': Icons.home_outlined},
+                        {'id': 'food', 'label': _localizations.foodProvided, 'icon': Icons.restaurant_outlined},
+                        {'id': 'incentives', 'label': _localizations.incentives, 'icon': Icons.monetization_on_outlined},
+                        {'id': 'paid_leave', 'label': _localizations.paidLeave, 'icon': Icons.event_available_outlined},
+                        {'id': 'training', 'label': _localizations.training, 'icon': Icons.school_outlined},
+                      ].map((facility) {
+                        final isSelected = _selectedFacilities.contains(facility['id']);
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              if (isSelected) {
+                                _selectedFacilities.remove(facility['id']);
+                              } else {
+                                _selectedFacilities.add(facility['id'] as String);
+                              }
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: isSelected ? const Color(0xFF3D3D7B) : Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: isSelected ? const Color(0xFF3D3D7B) : Colors.grey.shade300,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  facility['icon'] as IconData,
+                                  size: 18,
+                                  color: isSelected ? Colors.white : Colors.grey.shade600,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  facility['label'] as String,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: isSelected ? Colors.white : const Color(0xFF121A2C),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    
+                    const SizedBox(height: 32),
+                    
                     // Divider
                     Container(
                       height: 1,
@@ -7484,6 +7968,9 @@ class _PostJobStep1ScreenState extends State<PostJobStep1Screen> {
                           salaryRange: _salaryRange,
                           salonName: _salonNameController.text,
                           ownerName: _ownerNameController.text,
+                          shiftTiming: _shiftTiming,
+                          weeklyOff: _weeklyOff.toList(),
+                          selectedFacilities: _selectedFacilities.toList(),
                         ),
                       ),
                     );
@@ -7531,6 +8018,9 @@ class PostJobStep2Screen extends StatefulWidget {
   final RangeValues salaryRange;
   final String salonName;
   final String ownerName;
+  final ShiftTimingState shiftTiming;
+  final List<String> weeklyOff;
+  final List<String> selectedFacilities;
   
   const PostJobStep2Screen({
     super.key,
@@ -7545,6 +8035,9 @@ class PostJobStep2Screen extends StatefulWidget {
     required this.salaryRange,
     required this.salonName,
     required this.ownerName,
+    required this.shiftTiming,
+    required this.weeklyOff,
+    required this.selectedFacilities,
   });
 
   @override
@@ -7669,36 +8162,7 @@ class _PostJobStep2ScreenState extends State<PostJobStep2Screen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 1. WORK TYPE (Mandatory)
-                    Text(
-                      '${_localizations.workType} *',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF121A2C),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    FormBulletOption<String>(
-                      value: 'full_time',
-                      groupValue: _selectedWorkType,
-                      label: _localizations.fullTime,
-                      onChanged: (v) {
-                        if (v != null) setState(() => _selectedWorkType = v);
-                      },
-                    ),
-                    FormBulletOption<String>(
-                      value: 'part_time',
-                      groupValue: _selectedWorkType,
-                      label: _localizations.partTime,
-                      onChanged: (v) {
-                        if (v != null) setState(() => _selectedWorkType = v);
-                      },
-                    ),
-                    
-                    const SizedBox(height: 32),
-                    
-                    // 2. EXPERIENCE (Mandatory)
+                    // 1. EXPERIENCE (Mandatory)
                     Text(
                       '${_localizations.experience} *',
                       style: const TextStyle(
@@ -7788,27 +8252,6 @@ class _PostJobStep2ScreenState extends State<PostJobStep2Screen> {
                       ],
                     ),
                     
-                    const SizedBox(height: 24),
-                    
-                    // 4. ACCOMMODATION (Optional)
-                    Text(
-                      _localizations.accommodation,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey.shade700,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    FormBulletOptionRow<String>(
-                      options: [
-                        (value: 'yes', label: _localizations.yes),
-                        (value: 'no', label: _localizations.no),
-                      ],
-                      groupValue: _selectedAccommodation,
-                      onChanged: (v) => setState(() => _selectedAccommodation = v),
-                    ),
-                    
                     const SizedBox(height: 100), // Space for button
                   ],
                 ),
@@ -7849,6 +8292,9 @@ class _PostJobStep2ScreenState extends State<PostJobStep2Screen> {
                           salaryRange: widget.salaryRange,
                           salonName: widget.salonName,
                           ownerName: widget.ownerName,
+                          shiftTiming: widget.shiftTiming,
+                          weeklyOff: widget.weeklyOff,
+                          selectedFacilities: widget.selectedFacilities,
                           // Step 2 data
                           workType: _selectedWorkType,
                           experience: _selectedExperience,
@@ -7936,6 +8382,9 @@ class PostJobStep3Screen extends StatefulWidget {
   final String experience;
   final String? accommodation;
   final String? gender;
+  final ShiftTimingState shiftTiming;
+  final List<String> weeklyOff;
+  final List<String> selectedFacilities;
   
   const PostJobStep3Screen({
     super.key,
@@ -7954,6 +8403,9 @@ class PostJobStep3Screen extends StatefulWidget {
     required this.experience,
     this.accommodation,
     this.gender,
+    required this.shiftTiming,
+    required this.weeklyOff,
+    required this.selectedFacilities,
   });
 
   @override
@@ -8040,6 +8492,10 @@ class _PostJobStep3ScreenState extends State<PostJobStep3Screen> {
         experience: widget.experience,
         accommodation: widget.accommodation,
         preferredGender: widget.gender ?? 'any',
+        shiftType: widget.shiftTiming.toApiShiftType(),
+        weeklyOff: widget.weeklyOff.isNotEmpty ? widget.weeklyOff : null,
+        facilities: widget.selectedFacilities.isNotEmpty ? widget.selectedFacilities : null,
+        description: ShiftTimingMeta.mergeIntoDescription('', widget.shiftTiming),
       );
       
       if (response.success && response.data != null && mounted) {
@@ -8623,7 +9079,7 @@ class _JobPostedSuccessScreenState extends State<JobPostedSuccessScreen>
                                 decoration: BoxDecoration(
                                   color: const Color(0xFFE8F5E9),
                                   borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(color: const Color(0xFF81C784)),
+                                  border: Border.all(color: AppResponsive.ownerHomeCardBorder),
                                 ),
                                 child: Row(
                                   children: [
@@ -8670,7 +9126,7 @@ class _JobPostedSuccessScreenState extends State<JobPostedSuccessScreen>
                                 decoration: BoxDecoration(
                                   color: const Color(0xFFFFF8E1),
                                   borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(color: const Color(0xFFFFE082)),
+                                  border: Border.all(color: AppResponsive.ownerHomeCardBorder),
                                 ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -8753,7 +9209,7 @@ class _JobPostedSuccessScreenState extends State<JobPostedSuccessScreen>
                                         decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius: BorderRadius.circular(8),
-                                          border: Border.all(color: const Color(0xFFFFE082)),
+                                          border: Border.all(color: AppResponsive.ownerHomeCardBorder),
                                         ),
                                         child: Text(
                                           _localizations.improveJob,
@@ -8906,6 +9362,7 @@ class _ImproveJobScreenState extends State<ImproveJobScreen> {
   int? _expandedSection;
   
   // Section 1: Skills
+  String? _selectedJobRole;
   Set<String> _selectedSkills = {};
   bool _skillsSaved = false;
   
@@ -9016,8 +9473,13 @@ class _ImproveJobScreenState extends State<ImproveJobScreen> {
           _completionPercentage = job.completionPercent;
           
           // Load existing optional fields
-          _selectedSkills = job.skills.toSet();
-          _skillsSaved = job.skills.isNotEmpty;
+          final loadedRole = JobTaxonomyCatalog.effectiveCategoryId(
+            jobRole: job.jobRole,
+            skills: job.skills,
+          );
+          _selectedJobRole = loadedRole.isEmpty ? null : loadedRole;
+          _selectedSkills = JobTaxonomyCatalog.skillsMatchingRole(loadedRole, job.skills).toSet();
+          _skillsSaved = _selectedSkills.isNotEmpty;
           
           _shiftTiming = ShiftTimingState.fromJob(
             shiftType: job.shiftType,
@@ -9070,10 +9532,19 @@ class _ImproveJobScreenState extends State<ImproveJobScreen> {
       Map<String, dynamic> updates = {};
       
       switch (section) {
-        case 0: // Skills + sync job_role from taxonomy compounds
-          final newRole = JobTaxonomyCatalog.categoryIdFromSkills(_selectedSkills);
+        case 0: // Skills + sync job_role from taxonomy picker
+          final newRole = _selectedJobRole ??
+              (_job != null
+                  ? JobTaxonomyCatalog.effectiveCategoryId(
+                      jobRole: _job!.jobRole,
+                      skills: _selectedSkills.toList(),
+                    )
+                  : null) ??
+              JobTaxonomyCatalog.categoryIdFromSkills(_selectedSkills);
+          final roleId = newRole ?? '';
+          final filteredSkills = JobTaxonomyCatalog.skillsMatchingRole(roleId, _selectedSkills);
           updates = {
-            'skills': _selectedSkills.toList(),
+            'skills': filteredSkills,
             if (newRole != null && newRole.isNotEmpty) 'jobRole': newRole,
           };
           break;
@@ -9510,11 +9981,6 @@ class _ImproveJobScreenState extends State<ImproveJobScreen> {
             color: Colors.grey.shade600,
           ),
         ),
-        const SizedBox(height: 8),
-        Text(
-          hi ? 'पूरी सूची से श्रेणी और कौशल चुनें' : 'Pick category and skills from the full salon list',
-          style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-        ),
         const SizedBox(height: 12),
         if (_selectedSkills.isNotEmpty)
           Wrap(
@@ -9546,7 +10012,7 @@ class _ImproveJobScreenState extends State<ImproveJobScreen> {
                           hindi: hi,
                           catalog: cat,
                           initialCategoryId: JobTaxonomyCatalog.effectiveCategoryId(
-                            jobRole: _job!.jobRole,
+                            jobRole: _selectedJobRole ?? _job!.jobRole,
                             skills: _selectedSkills.toList(),
                           ),
                           initialCompoundSkills: _selectedSkills.toList(),
@@ -9555,6 +10021,7 @@ class _ImproveJobScreenState extends State<ImproveJobScreen> {
                     );
                     if (res != null && mounted) {
                       setState(() {
+                        _selectedJobRole = res.categoryId;
                         _selectedSkills
                           ..clear()
                           ..addAll(res.compoundSkillIds);
@@ -9562,7 +10029,7 @@ class _ImproveJobScreenState extends State<ImproveJobScreen> {
                     }
                   },
             icon: const Icon(Icons.edit_outlined, size: 18),
-            label: Text(hi ? 'कौशल चुनें / बदलें' : 'Choose / change skills'),
+            label: Text(_localizations.chooseSkillSetChange),
           ),
         ),
         const SizedBox(height: 16),
@@ -9583,6 +10050,7 @@ class _ImproveJobScreenState extends State<ImproveJobScreen> {
             hindi: widget.selectedLanguage == Language.hindi,
             shiftTiming: _localizations.shiftTiming,
             partTimeFreelance: _localizations.partTimeFreelance,
+            chooseTimeSlot: _localizations.shiftTimeSelectLabel,
             fromLabel: _localizations.shiftFromLabel,
             toLabel: _localizations.shiftToLabel,
           ),
@@ -10001,7 +10469,7 @@ class _JobEditScreenState extends State<JobEditScreen> {
           if (job.customRoleName != null) {
             _customRoleNameController.text = job.customRoleName!;
           }
-          _selectedSkills = job.skills.toSet();
+          _selectedSkills = JobTaxonomyCatalog.skillsMatchingRole(role, job.skills).toSet();
           _selectedLocation = job.location;
           _numberOfStaff = job.numberOfStaff;
           // Salary slider bounds adapt to existing values so the control stays draggable
@@ -10122,12 +10590,14 @@ class _JobEditScreenState extends State<JobEditScreen> {
       final resolvedRole = _selectedJobRole ??
           JobTaxonomyCatalog.categoryIdFromSkills(_selectedSkills) ??
           _job?.jobRole;
+      final roleId = resolvedRole ?? '';
+      final filteredSkills = JobTaxonomyCatalog.skillsMatchingRole(roleId, _selectedSkills);
       // Prepare all updates
       final Map<String, dynamic> updates = {
         if (resolvedRole != null && resolvedRole.isNotEmpty) 'jobRole': resolvedRole,
         if (_selectedOtherCategory != null) 'otherCategory': _selectedOtherCategory,
         if (_customRoleNameController.text.trim().isNotEmpty) 'customRoleName': _customRoleNameController.text.trim(),
-            'skills': _selectedSkills.toList(),
+            'skills': filteredSkills,
         'location': _selectedLocation,
         'numberOfStaff': _numberOfStaff,
         'salaryMin': _salaryMin,
@@ -10241,7 +10711,10 @@ class _JobEditScreenState extends State<JobEditScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(_localizations.editJobTitle),
+        title: Text(
+          _localizations.editJobTitle,
+          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
@@ -10256,7 +10729,7 @@ class _JobEditScreenState extends State<JobEditScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                    // Job Role Section
+                    // Job type & skills
                   Text(
                       '${_localizations.selectJobRole} *',
                     style: const TextStyle(
@@ -10265,49 +10738,6 @@ class _JobEditScreenState extends State<JobEditScreen> {
                       color: Color(0xFF121A2C),
                     ),
                   ),
-                    const SizedBox(height: 12),
-                    Text(
-                      widget.selectedLanguage == Language.hindi
-                          ? 'श्रेणी और उप-श्रेणी चुनें (सूची से)'
-                          : 'Choose category & sub-skills from the salon list',
-                      style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-                    ),
-                    const SizedBox(height: 12),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade50,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _selectedJobRole == null
-                                ? (widget.selectedLanguage == Language.hindi ? 'अभी तक नहीं चुना' : 'None selected')
-                                : (_jobTaxonomy?.categoryLabel(_selectedJobRole!, widget.selectedLanguage == Language.hindi) ?? _selectedJobRole!),
-                            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Color(0xFF121A2C)),
-                          ),
-                          if (_selectedSkills.isNotEmpty) ...[
-                            const SizedBox(height: 8),
-                            Wrap(
-                              spacing: 6,
-                              runSpacing: 6,
-                              children: _selectedSkills.map((s) {
-                                final lab = _jobTaxonomy?.compoundLabel(s, widget.selectedLanguage == Language.hindi) ?? s;
-                                return Chip(
-                                  label: Text(lab, style: const TextStyle(fontSize: 11)),
-                                  visualDensity: VisualDensity.compact,
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                );
-                              }).toList(),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
                     const SizedBox(height: 10),
                     SizedBox(
                       width: double.infinity,
@@ -10345,6 +10775,39 @@ class _JobEditScreenState extends State<JobEditScreen> {
                         ),
                       ),
                     ),
+                    if (_selectedJobRole != null) ...[
+                      const SizedBox(height: 10),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: [
+                          Chip(
+                            label: Text(
+                              _jobTaxonomy?.categoryLabel(
+                                    _selectedJobRole!,
+                                    widget.selectedLanguage == Language.hindi,
+                                  ) ??
+                                  _selectedJobRole!,
+                              style: const TextStyle(fontSize: 11),
+                            ),
+                            visualDensity: VisualDensity.compact,
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          ..._selectedSkills.map((s) {
+                            final lab = _jobTaxonomy?.compoundLabel(
+                                  s,
+                                  widget.selectedLanguage == Language.hindi,
+                                ) ??
+                                s;
+                            return Chip(
+                              label: Text(lab, style: const TextStyle(fontSize: 11)),
+                              visualDensity: VisualDensity.compact,
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            );
+                          }),
+                        ],
+                      ),
+                    ],
                     if (_selectedJobRole == 'other') ...[
                       const SizedBox(height: 16),
                       Text(
@@ -10485,35 +10948,6 @@ class _JobEditScreenState extends State<JobEditScreen> {
                     const Divider(),
                     const SizedBox(height: 24),
                     
-                    // Work Type
-                    Text(
-                      '${_localizations.workType} *',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF121A2C),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    FormBulletOption<String>(
-                      value: 'full_time',
-                      groupValue: _selectedWorkType,
-                      label: _localizations.fullTime,
-                      onChanged: (v) {
-                        if (v != null) setState(() => _selectedWorkType = v);
-                      },
-                    ),
-                    FormBulletOption<String>(
-                      value: 'part_time',
-                      groupValue: _selectedWorkType,
-                      label: _localizations.partTime,
-                      onChanged: (v) {
-                        if (v != null) setState(() => _selectedWorkType = v);
-                      },
-                    ),
-                    
-                    const SizedBox(height: 24),
-                    
                     // Experience
                     Text(
                       '${_localizations.experience} *',
@@ -10578,32 +11012,12 @@ class _JobEditScreenState extends State<JobEditScreen> {
                     
                     const SizedBox(height: 24),
                     
-                    // Accommodation
-                    Text(
-                      _localizations.accommodation,
-                  style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey.shade700,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    FormBulletOptionRow<String>(
-                      options: [
-                        (value: 'yes', label: _localizations.yes),
-                        (value: 'no', label: _localizations.no),
-                      ],
-                      groupValue: _selectedAccommodation,
-                      onChanged: (v) => setState(() => _selectedAccommodation = v),
-                    ),
-                    
-                    const SizedBox(height: 24),
-                    
                     ShiftTimingPicker(
                       labels: ShiftTimingLabels(
                         hindi: widget.selectedLanguage == Language.hindi,
                         shiftTiming: _localizations.shiftTiming,
                         partTimeFreelance: _localizations.partTimeFreelance,
+                        chooseTimeSlot: _localizations.shiftTimeSelectLabel,
                         fromLabel: _localizations.shiftFromLabel,
                         toLabel: _localizations.shiftToLabel,
                       ),
@@ -11381,7 +11795,7 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFFFE082)),
+        border: Border.all(color: AppResponsive.ownerHomeCardBorder),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -11818,6 +12232,7 @@ class _JobOwnerHomeScreenState extends State<JobOwnerHomeScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppResponsive.ownerHomeCardBorder),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -15348,7 +15763,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       decoration: BoxDecoration(
         color: const Color(0xFFFFF8E1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFFFE082)),
+        border: Border.all(color: AppResponsive.ownerHomeCardBorder),
       ),
       child: Stack(
         children: [
@@ -15456,7 +15871,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       decoration: BoxDecoration(
         color: const Color(0xFFFFF8E1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFFFE082)),
+        border: Border.all(color: AppResponsive.ownerHomeCardBorder),
       ),
       child: Stack(
         children: [
@@ -15567,7 +15982,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       decoration: BoxDecoration(
         color: const Color(0xFFE3F2FD),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF90CAF9)),
+        border: Border.all(color: AppResponsive.ownerHomeCardBorder),
       ),
       child: Stack(
         children: [
@@ -15663,7 +16078,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       decoration: BoxDecoration(
         color: const Color(0xFFE8F5E9),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF81C784)),
+        border: Border.all(color: AppResponsive.ownerHomeCardBorder),
       ),
       child: Stack(
         children: [

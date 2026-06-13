@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 class AppResponsive {
   AppResponsive._();
 
+  /// Yellow accent border used on owner home profile / job cards.
+  static const Color ownerHomeCardBorder = Color(0xFFFFE082);
+
   static const double tablet = 600;
   static const double desktop = 900;
 

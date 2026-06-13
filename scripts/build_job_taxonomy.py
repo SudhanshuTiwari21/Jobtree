@@ -182,13 +182,503 @@ def T(en: str, hi: str = "") -> tuple[str, str]:
     return (en, hi)
 
 
+def _skill_key(en: str) -> str:
+    return re.sub(r"\s+", " ", en.strip().lower())
+
+
+# Full-phrase Hindi labels (checked before auto-translation).
+SKILL_PHRASE_HI: dict[str, str] = {
+    _skill_key(k): v
+    for k, v in {
+        # Sweeper / housekeeping
+        "Removing hair, dust & waste": "बाल, धूल और कचरा हटाना",
+        "Sweeping & mopping": "झाड़ू और पोछा लगाना",
+        "Wiping mirrors & counters": "शीशे और काउंटर पोछना",
+        "Chairs & stations clean": "कुर्सी और स्टेशन साफ करना",
+        "Emptying bins": "डस्टबिन खाली करना",
+        "Waste segregation": "कचरा अलग करना",
+        "Washroom cleanliness": "वॉशरूम की सफाई",
+        "Neat appearance": "साफ-सुथरा रूप",
+        # Salon helper
+        "Salon floor & stations cleaning": "सैलून फ्लोर और स्टेशन की सफाई",
+        "Washrooms & reception cleanliness": "वॉशरूम और रिसेप्शन की सफाई",
+        "Assisting stylists & therapists": "स्टाइलिस्ट और थेरेपिस्ट की सहायता",
+        "Setting up stations": "स्टेशन तैयार करना",
+        "Towel & laundry": "तौलिए और लॉन्ड्री",
+        "Water/tea service": "पानी/चाय सर्विस",
+        "Organizing shelves": "शेल्फ़ व्यवस्थित करना",
+        # Shampoo / pantry
+        "Proper shampooing": "सही तरीके से शैम्पू करना",
+        "Gentle scalp massage": "हल्की सिर की मालिश",
+        "Preparing client for services": "क्लाइंट को सर्विस के लिए तैयार करना",
+        "Assisting stylists": "स्टाइलिस्ट की सहायता",
+        "Shampoo knowledge": "शैम्पू का नॉलेज",
+        "Personal hygiene": "व्यक्तिगत हाइजीन",
+        "Towels & laundry": "तौलिए और लॉन्ड्री",
+        "Tea, coffee & beverages": "चाय, कॉफी और पेय",
+        "Serving water & refreshments": "पानी और रिफ्रेशमेंट सर्व करना",
+        "Pantry cleanliness": "पेंट्री की सफाई",
+        "Small errands": "छोटे-मोटे काम",
+        # Reception / front desk
+        "Greeting clients": "क्लाइंट का स्वागत करना",
+        "Understanding needs & guiding": "ज़रूरत समझकर गाइड करना",
+        "Scheduling & rescheduling": "अपॉइंटमेंट शेड्यूल और रीशेड्यूल",
+        "Walk-ins & wait times": "वॉक-इन और वेटिंग टाइम",
+        "Coordinating with staff": "स्टाफ के साथ समन्वय",
+        "Bookings & queries": "बुकिंग और सवाल-जवाब",
+        "Bills & payments": "बिल और पेमेंट",
+        "Client records": "क्लाइंट रिकॉर्ड",
+        "Daily register": "दैनिक रजिस्टर",
+        "Salon services knowledge": "सैलून सर्विसेज का नॉलेज",
+        "Grooming": "ग्रूमिंग",
+        "Basic computer skills": "बेसिक कंप्यूटर स्किल्स",
+        "WhatsApp/SMS/email": "व्हाट्सऐप/एसएमएस/ईमेल",
+        # Makeup artist
+        "Basic Makeup": "बेसिक मेकअप करना",
+        "Advance Makeup": "एडवांस मेकअप करना",
+        "Party Makeup": "पार्टी मेकअप करना",
+        "Bridal Makeup": "ब्राइडल मेकअप करना",
+        "HD Makeup": "एचडी मेकअप करना",
+        "Waterproof Makeup": "वॉटरप्रूफ मेकअप करना",
+        "Long-Lasting Makeup": "लॉन्ग-लास्टिंग मेकअप करना",
+        "Celebrity & Fashion Makeup": "सेलेब्रिटी और फैशन मेकअप",
+        "Natural, Glam, Matte, Dewy Looks": "नेचुरल, ग्लैम, मैट, ड्यू लुक",
+        "Skin Prepping & Priming": "स्किन प्रिपिंग और प्राइमिंग",
+        "Colour Correction": "कलर करेक्शन",
+        "Eye Shadow Blending": "आई शैडो ब्लेंडिंग",
+        "Eyeliner Styles": "आईलाइनर स्टाइल",
+        "Eyelash Application": "आईलैश लगाना",
+        "Contour": "कॉन्टूर करना",
+        "Blush": "ब्लश लगाना",
+        "Highlight": "हाइलाइट करना",
+        "Salon Management": "सैलून मैनेजमेंट का नॉलेज",
+        # Mehandi
+        "Traditional designs": "ट्रेडिशनल डिज़ाइन",
+        "Arabic designs": "अरबी डिज़ाइन",
+        "Indian designs": "भारतीय डिज़ाइन",
+        "Rajasthani designs": "राजस्थानी डिज़ाइन",
+        "Contemporary designs": "कंटेम्पररी डिज़ाइन",
+        "Intricate patterns & customized design": "जटिल पैटर्न और कस्टम डिज़ाइन",
+        "Glitter, stone & coloured mehandi": "ग्लिटर, स्टोन और कलर्ड मेहंदी",
+        "Bridal mehandi specialization": "ब्राइडल मेहंदी स्पेशलाइज़ेशन",
+        # Tattoo
+        "Lining": "लाइनिंग",
+        "Shading": "शेडिंग",
+        "Coloring": "कलरिंग",
+        "Traditional style": "ट्रेडिशनल स्टाइल",
+        "Realism style": "रियलिज़्म स्टाइल",
+        "Geometric style": "ज्योमेट्रिक स्टाइल",
+        "Tribal style": "ट्राइबल स्टाइल",
+        "Minimalistic style": "मिनिमलिस्टिक स्टाइल",
+        "Freehand drawing": "फ्रीहैंड ड्रॉइंग",
+        "Custom tattoo designs": "कस्टम टैटू डिज़ाइन",
+        "Colour theory & ink mixing": "कलर थ्योरी और इंक मिक्सिंग",
+        "Latest tattoo trends": "लेटेस्ट टैटू ट्रेंड्स",
+        # Academy
+        "Academic & operational leadership": "एकेडमिक और ऑपरेशनल लीडरशिप",
+        "Curriculum & training quality": "करिकुलम और ट्रेनिंग क्वालिटी",
+        "Faculty management": "फैकल्टी मैनेजमेंट",
+        "Student experience": "स्टूडेंट एक्सपीरियंस",
+        "Admissions & marketing": "एडमिशंस और मार्केटिंग",
+        "Quality & compliance": "क्वालिटी और कम्प्लायंस",
+        "Planning & reporting": "प्लानिंग और रिपोर्टिंग",
+        "Industry & placement": "इंडस्ट्री और प्लेसमेंट",
+        "Report management": "रिपोर्ट मैनेजमेंट",
+    }.items()
+}
+
+
+def _has_latin_word(s: str) -> bool:
+    return bool(re.search(r"[A-Za-z]{3,}", s))
+
+
+# Transliterate leftover English tokens to Devanagari (hinglish salon terms).
+_LATIN_TO_HI: dict[str, str] = {
+    "lip": "लिप", "contouring": "कॉन्टूरिंग", "saree": "साड़ी", "draping": "ड्रेपिंग",
+    "shapes": "शेप्स", "coffin": "कॉफिन", "almond": "आलमंड", "stiletto": "स्टिलेटो",
+    "square": "स्क्वेयर", "ballerina": "बैलेरिना", "top": "टॉप", "base": "बेस",
+    "coats": "कोट्स", "coat": "कोट", "acrylics": "एक्रिलिक", "acrylic": "एक्रिलिक",
+    "condition": "कंडीशन", "identification": "पहचान", "types": "टाइप्स", "type": "टाइप",
+    "deep": "डीप", "conditioning": "कंडीशनिंग", "rituals": "रिचुअल", "ritual": "रिचुअल",
+    "keratin": "केराटिन", "botox": "बोटॉक्स", "smoothing": "स्मूदिंग", "hot": "हॉट",
+    "points": "पॉइंट्स", "point": "पॉइंट", "professional": "प्रोफेशनल", "brands": "ब्रांड्स",
+    "brand": "ब्रांड", "home": "होम", "care": "केयर", "recommendations": "सलाह",
+    "recommendation": "सलाह", "prosthetic": "प्रोस्थेटिक", "application": "अप्लाई",
+    "fake": "फेक", "wounds": "घाव", "wound": "घाव", "scars": "निशान", "scar": "निशान",
+    "burns": "जलन", "bruises": "चोट", "sculpting": "स्कल्प्टिंग", "airbrushing": "एयरब्रशिंग",
+    "blood": "ब्लड", "effects": "इफेक्ट्स", "effect": "इफेक्ट", "texture": "टेक्सचर",
+    "mixing": "मिक्सिंग", "lighting": "लाइटिंग", "camera": "कैमरा", "impact": "इम्पैक्ट",
+    "haircutting": "हेयरकटिंग", "styling": "स्टाइलिंग", "wigs": "विग", "wig": "विग",
+    "latest": "लेटेस्ट", "red-carpet": "रेड-कार्पेट", "styles": "स्टाइल", "blow-drying": "ब्लो-ड्राईंग",
+    "blow": "ब्लो", "drying": "ड्राईंग", "curling": "कर्लिंग", "straightening": "स्ट्रेटनिंग",
+    "updos": "अपडो", "trend-setting": "ट्रेंड-सेटिंग", "hairstyles": "हेयरस्टाइल",
+    "hairstyle": "हेयरस्टाइल", "premium": "प्रीमियम", "collaboration": "कोलैबोरेशन",
+    "photographers": "फोटोग्राफर्स", "photographer": "फोटोग्राफर", "essential": "एसेंशियल",
+    "blending": "ब्लेंडिंग", "systems": "सिस्टम", "basics": "बेसिक्स", "assessment": "असेसमेंट",
+    "personalized": "पर्सनलाइज़्ड", "plans": "प्लान", "plan": "प्लान", "custom": "कस्टम",
+    "blends": "ब्लेंड", "diffuser": "डिफ्यूज़र", "recipes": "रेसिपी", "dilution": "डिल्यूशन",
+    "massage": "मसाज", "inhalation": "इनहेलेशन", "compress": "कंप्रेस", "bath": "बाथ",
+    "contraindications": "कॉन्ट्राइंडिकेशन", "calming": "काम", "environment": "माहौल",
+    "holistic": "होलिस्टिक", "wellness": "वेलनेस", "documentation": "डॉक्यूमेंटेशन",
+    "health": "हेल्थ", "lifestyle": "लाइफस्टाइल", "evaluation": "इवैल्यूएशन",
+    "customized": "कस्टमाइज़्ड", "programs": "प्रोग्राम", "program": "प्रोग्राम",
+    "goal": "गोल", "tracking": "ट्रैकिंग", "stress": "स्ट्रेस", "nutrition": "न्यूट्रिशन",
+    "supportive": "सपोर्टिव", "behaviour": "व्यवहार", "educate": "सिखाना", "healthy": "स्वस्थ",
+    "living": "जीवन", "recommend": "सुझाव", "services": "सर्विसेज", "service": "सर्विस",
+    "dermatologist": "डर्मेटोलॉजिस्ट", "preparing": "तैयारी", "rooms": "कमरे", "room": "कमरा",
+    "tools": "टूल्स", "tool": "टूल", "minor": "माइनर", "procedure": "प्रोसीजर",
+    "assistance": "सहायता", "sterilization": "स्टेरलाइज़ेशन", "managing": "मैनेज", "patient": "मरीज़",
+    "history": "हिस्ट्री", "microderm": "माइक्रोडर्म", "basics": "बेसिक्स", "numbing": "नंबिंग",
+    "prep": "प्रेप", "files": "फाइलें", "file": "फाइल", "billing": "बिलिंग", "clinic": "क्लिनिक",
+    "software": "सॉफ्टवेयर", "common": "कॉमन", "conditions": "कंडीशन", "counseling": "काउंसलिंग",
+    "bald": "गंजा", "area": "एरिया", "measurement": "माप", "mapping": "मैपिंग",
+    "patch": "पैच", "cutting": "कटिंग", "glue": "ग्लू", "tape": "टेप", "clip": "क्लिप",
+    "fixing": "फिक्सिंग", "maintenance": "मेंटेनेंस", "explaining": "समझाना", "advice": "सलाह",
+    "daily": "दैनिक", "chemical": "केमिकल", "microdermabrasion": "माइक्रोडर्माब्रेशन",
+    "hydrafacial": "हाइड्राफेशियल", "dermaplaning": "डर्माप्लानिंग", "microneedling": "माइक्रोनीडलिंग",
+    "acne": "एक्ने", "pigmentation": "पिग्मेंटेशन", "toning": "टोनिंग", "photo": "फोटो",
+    "tightening": "टाइटनिंग", "therapy": "थेरेपी", "trimming": "ट्रिमिंग", "cuticle": "क्यूटिकल",
+    "exfoliation": "एक्सफोलिएशन", "hand": "हाथ", "foot": "पैर", "tan": "टैन", "callus": "कैलस",
+    "lower-leg": "निचला पैर", "smooth": "स्मूद", "french": "फ्रेंच", "gel": "जेल",
+    "operations": "ऑपरेशंस", "operation": "ऑपरेशन", "schedules": "शेड्यूल", "schedule": "शेड्यूल",
+    "complaints": "शिकायत", "retention": "रिटेंशन", "team": "टीम", "meetings": "मीटिंग",
+    "offers": "ऑफर", "cash": "कैश", "safety": "सेफ्टी", "communication": "कम्युनिकेशन",
+    "skills": "स्किल्स", "skill": "स्किल", "walk-ins": "वॉक-इन", "walk-in": "वॉक-इन",
+    "newcomers": "नए लोग", "newcomer": "नया", "monitoring": "मॉनिटरिंग", "displays": "डिस्प्ले",
+    "display": "डिस्प्ले", "checks": "चेक", "check": "चेक", "vip": "वीआईपी", "attitude": "रवैया",
+    "escalation": "एस्केलेशन", "counter": "काउंटर", "lead": "लीड", "generation": "जनरेशन",
+    "crm": "सीआरएम", "market": "मार्केट", "admin": "एडमिन", "open": "ओपन", "travel": "ट्रैवल",
+    "shampoo": "शैम्पू", "boy": "बॉय", "pantry": "पेंट्री", "errands": "काम", "beverages": "पेय",
+    "serving": "सर्व", "refreshments": "रिफ्रेशमेंट", "scalp": "स्कैल्प", "gentle": "हल्की",
+    "proper": "सही", "laundry": "लॉन्ड्री", "shelves": "शेल्फ़", "shelf": "शेल्फ़",
+    "floor": "फ्लोर", "reception": "रिसेप्शन", "queries": "सवाल", "query": "सवाल",
+    "whatsapp": "व्हाट्सऐप", "sms": "एसएमएस", "email": "ईमेल", "computer": "कंप्यूटर",
+    "understanding": "समझ", "guiding": "गाइड", "guide": "गाइड", "needs": "ज़रूरत",
+    "wait": "वेट", "times": "टाइम", "time": "समय",
+    "gels": "जेल", "oil": "ऑयल", "aromatherapy": "अरोमाथेरेपी", "pressure": "प्रेशर",
+    "trend": "ट्रेंड", "trend-setting": "ट्रेंड-सेटिंग", "with": "के साथ", "mua": "एमयूए",
+    "stylists": "स्टाइलिस्ट", "safe": "सेफ", "body": "बॉडी", "client": "क्लाइंट",
+    "salon": "सैलून", "spa": "स्पा", "wood": "वुड", "lamp": "लैंप", "wood's": "वुड्स",
+    "product": "प्रोडक्ट", "reduction": "रिडक्शन", "gradient": "ग्रेडिएंट", "staff": "स्टाफ",
+    "sales": "सेल्स", "executive": "एग्ज़िक्यूटिव", "cashier": "कैशियर", "guest": "गेस्ट",
+    "relations": "रिलेशंस", "supervisor": "सुपरवाइज़र", "assistant": "असिस्टेंट",
+    "manager": "मैनेजर", "front": "फ्रंट", "desk": "डेस्क", "receptionist": "रिसेप्शनिस्ट",
+    "shampoo": "शैम्पू", "pantry": "पेंट्री", "sweeper": "स्वीपर", "helper": "हेल्पर",
+    "housekeeping": "हाउसकीपिंग", "inventory": "इन्वेंटरी", "merchandising": "मर्चेंडाइज़िंग",
+    "forecasting": "फोरकास्टिंग", "budgeting": "बजटिंग", "payroll": "पेरोल",
+    "recruitment": "भर्ती", "onboarding": "ऑनबोर्डिंग", "exit": "एग्ज़िट", "interviews": "इंटरव्यू",
+    "interview": "इंटरव्यू", "hiring": "हायरिंग", "firing": "फायरिंग", "incentives": "इंसेंटिव",
+    "leave": "लीव", "policies": "पॉलिसी", "policy": "पॉलिसी", "audit": "ऑडिट", "audits": "ऑडिट",
+    "mystery": "मिस्ट्री", "shopping": "शॉपिंग", "feedback": "फीडबैक", "reviews": "रिव्यू",
+    "review": "रिव्यू", "ratings": "रेटिंग", "rating": "रेटिंग", "google": "गूगल",
+    "social": "सोशल", "media": "मीडिया", "content": "कंटेंट", "influencer": "इन्फ्लुएंसर",
+    "campaign": "कैंपेन", "campaigns": "कैंपेन", "events": "इवेंट", "event": "इवेंट",
+    "workshop": "वर्कशॉप", "seminar": "सेमिनार", "webinar": "वेबिनार", "demo": "डेमो",
+    "demos": "डेमो", "practical": "प्रैक्टिकल", "theory": "थ्योरी", "exam": "एग्ज़ाम",
+    "exams": "एग्ज़ाम", "certificate": "सर्टिफिकेट", "certificates": "सर्टिफिकेट",
+    "placement": "प्लेसमेंट", "internship": "इंटर्नशिप", "internships": "इंटर्नशिप",
+}
+
+
+def _devanagarize_remaining(hi: str) -> str:
+    result = hi
+    for eng, dev in sorted(_LATIN_TO_HI.items(), key=lambda x: -len(x[0])):
+        result = re.sub(rf"\b{re.escape(eng)}\b", dev, result, flags=re.IGNORECASE)
+    return re.sub(r"\s+", " ", result).strip()
+
+
+def auto_hi_skill(en: str) -> str:
+    """Generate Hindi skill label when no manual translation is provided."""
+    en = en.strip()
+    if not en:
+        return en
+
+    keyed = _skill_key(en)
+    if keyed in SKILL_PHRASE_HI:
+        return SKILL_PHRASE_HI[keyed]
+
+    exact = {
+        "Professionalism": "काम के प्रति जिम्मेदारी",
+        "Hygiene & safety": "हाइजीन और सेफ्टी का नॉलेज",
+        "Hygiene & Safety": "हाइजीन और सेफ्टी का नॉलेज",
+        "Product knowledge": "प्रोडक्ट नॉलेज",
+        "Product Knowledge": "प्रोडक्ट नॉलेज",
+        "Client consultation": "क्लाइंट कंसल्टेशन करना",
+        "Client Consultation": "क्लाइंट कंसल्टेशन करना",
+        "Skin Consultation": "स्किन कंसल्टेशन का नॉलेज",
+        "Open to travel": "ट्रैवल के लिए तैयार",
+    }
+    if en in exact:
+        return exact[en]
+
+    # Longest-first phrase replacements (English → Devanagari / hinglish terms)
+    phrases = [
+        ("Nail cleaning, shaping & filing", "नाखून की सफाई, शेपिंग और फाइलिंग"),
+        ("Academic & operational leadership", "एकेडमिक और ऑपरेशनल लीडरशिप"),
+        ("Curriculum & training quality", "करिकुलम और ट्रेनिंग क्वालिटी"),
+        ("Admissions & marketing", "एडमिशंस और मार्केटिंग"),
+        ("Quality & compliance", "क्वालिटी और कम्प्लायंस"),
+        ("Planning & reporting", "प्लानिंग और रिपोर्टिंग"),
+        ("Industry & placement", "इंडस्ट्री और प्लेसमेंट"),
+        ("Basic & advance facials", "बेसिक और एडवांस फेशियल"),
+        ("Manicure & pedicure", "मैनीक्योर और पेडीक्योर"),
+        ("Daily & party makeup", "डेली और पार्टी मेकअप"),
+        ("Highlights & lowlights", "हाइलाइट्स और लो-लाइट्स"),
+        ("Root touch-ups", "रूट टच-अप"),
+        ("Global colour", "ग्लोबल कलर"),
+        ("Grey coverage", "ग्रे कवरेज"),
+        ("Colour correction", "कलर करेक्शन"),
+        ("Safety & hygiene", "सेफ्टी और हाइजीन"),
+        ("Products & tools", "प्रोडक्ट्स और टूल्स"),
+        ("Nail art basics", "नेल आर्ट बेसिक्स"),
+        ("Freehand nail art", "फ्रीहैंड नेल आर्ट"),
+        ("Glitter, stones, chrome, foil, stickers", "ग्लिटर, स्टोन्स, क्रोम, फॉइल, स्टिकर्स"),
+        ("Ombre & gradient effects", "ओम्ब्रे और ग्रेडिएंट इफेक्ट्स"),
+        ("3D nail art", "3D नेल आर्ट"),
+        ("Acrylic extensions", "एक्रिलिक एक्सटेंशंस"),
+        ("Gel extensions", "जेल एक्सटेंशंस"),
+        ("Polygel extensions", "पॉलीजेल एक्सटेंशंस"),
+        ("French extensions", "फ्रेंच एक्सटेंशंस"),
+        ("Refill, repair & removal", "रिफिल, रिपेयर और रिमूवल"),
+        ("Gel polish UV/LED", "जेल पॉलिश UV/LED"),
+        ("Classic/matte/chrome/French polish", "क्लासिक/मैट/क्रोम/फ्रेंच पॉलिश"),
+        ("Waterproof & long-lasting bridal makeup", "वॉटरप्रूफ और लॉन्ग-लास्टिंग ब्राइडल मेकअप"),
+        ("Traditional/Modern/Regional bridal looks", "ट्रेडिशनल/मॉडर्न/रिजनल ब्राइडल लुक"),
+        ("Airbrush bridal makeup", "एयरब्रश ब्राइडल मेकअप"),
+        ("Bridal eye makeup", "ब्राइडल आई मेकअप"),
+        ("Perfect eyebrow shaping", "परफेक्ट आईब्रो शेपिंग"),
+        ("Bridal contour/highlight/blush", "ब्राइडल कॉन्टूर/हाइलाइट/ब्लश"),
+        ("Basic hair styling touch-ups", "बेसिक हेयर स्टाइलिंग टच-अप"),
+        ("Celebrity & Fashion Makeup", "सेलेब्रिटी और फैशन मेकअप"),
+        ("Natural, Glam, Matte, Dewy Looks", "नेचुरल, ग्लैम, मैट, ड्यू लुक"),
+        ("Skin Prepping & Priming", "स्किन प्रिपिंग और प्राइमिंग"),
+        ("Eye Shadow Blending", "आई शैडो ब्लेंडिंग"),
+        ("Eyeliner Styles", "आईलाइनर स्टाइल्स"),
+        ("Eyelash Application", "आईलैश अप्लाई"),
+        ("Faculty management", "फैकल्टी मैनेजमेंट"),
+        ("Student experience", "स्टूडेंट एक्सपीरियंस"),
+    ]
+    result = en
+    for eng, hi in sorted(phrases, key=lambda x: -len(x[0])):
+        if eng.lower() in result.lower():
+            result = re.sub(re.escape(eng), hi, result, flags=re.IGNORECASE)
+
+    tokens = [
+        ("professionalism", "काम के प्रति जिम्मेदारी"),
+        ("consultation", "कंसल्टेशन"),
+        ("management", "मैनेजमेंट"),
+        ("knowledge", "नॉलेज"),
+        ("training", "ट्रेनिंग"),
+        ("teaching", "टीचिंग"),
+        ("communication", "कम्युनिकेशन"),
+        ("marketing", "मार्केटिंग"),
+        ("admissions", "एडमिशंस"),
+        ("faculty", "फैकल्टी"),
+        ("student", "स्टूडेंट"),
+        ("quality", "क्वालिटी"),
+        ("compliance", "कम्प्लायंस"),
+        ("planning", "प्लानिंग"),
+        ("reporting", "रिपोर्टिंग"),
+        ("industry", "इंडस्ट्री"),
+        ("placement", "प्लेसमेंट"),
+        ("leadership", "लीडरशिप"),
+        ("curriculum", "करिकुलम"),
+        ("operational", "ऑपरेशनल"),
+        ("academic", "एकेडमिक"),
+        ("makeup", "मेकअप"),
+        ("bridal", "ब्राइडल"),
+        ("party", "पार्टी"),
+        ("advance", "एडवांस"),
+        ("advanced", "एडवांस"),
+        ("basic", "बेसिक"),
+        ("facial", "फेशियल"),
+        ("facials", "फेशियल"),
+        ("waxing", "वैक्सिंग"),
+        ("threading", "थ्रेडिंग"),
+        ("manicure", "मैनीक्योर"),
+        ("pedicure", "पेडीक्योर"),
+        ("nail", "नेल"),
+        ("hair", "हेयर"),
+        ("skin", "स्किन"),
+        ("colour", "कलर"),
+        ("color", "कलर"),
+        ("highlight", "हाइलाइट"),
+        ("highlights", "हाइलाइट्स"),
+        ("lowlights", "लो-लाइट्स"),
+        ("balayage", "बैलेयाज"),
+        ("ombre", "ओम्ब्रे"),
+        ("ombré", "ओम्ब्रे"),
+        ("airbrush", "एयरब्रश"),
+        ("extensions", "एक्सटेंशंस"),
+        ("hygiene", "हाइजीन"),
+        ("safety", "सेफ्टी"),
+        ("massage", "मसाज"),
+        ("spa", "स्पा"),
+        ("polish", "पॉलिश"),
+        ("shaping", "शेपिंग"),
+        ("filing", "फाइलिंग"),
+        ("cleaning", "सफाई"),
+        ("buffing", "बफिंग"),
+        ("contour", "कॉन्टूर"),
+        ("blush", "ब्लश"),
+        ("eyeliner", "आईलाइनर"),
+        ("eyelash", "आईलैश"),
+        ("lashes", "लैश"),
+        ("records", "रिकॉर्ड्स"),
+        ("workshops", "वर्कशॉप"),
+        ("demos", "डेमो"),
+        ("trends", "ट्रेंड्स"),
+        ("products", "प्रोडक्ट्स"),
+        ("equipment", "इक्विपमेंट"),
+        ("appointments", "अपॉइंटमेंट"),
+        ("refills", "रिफिल"),
+        ("refill", "रिफिल"),
+        ("repair", "रिपेयर"),
+        ("removal", "रिमूवल"),
+        ("peels", "पील"),
+        ("laser", "लेज़र"),
+        ("therapy", "थेरेपी"),
+        ("treatment", "ट्रीटमेंट"),
+        ("treatments", "ट्रीटमेंट्स"),
+        ("removing", "हटाना"),
+        ("sweeping", "झाड़ू"),
+        ("mopping", "पोछा"),
+        ("wiping", "पोछना"),
+        ("mirrors", "शीशे"),
+        ("mirror", "शीशा"),
+        ("counters", "काउंटर"),
+        ("counter", "काउंटर"),
+        ("chairs", "कुर्सी"),
+        ("chair", "कुर्सी"),
+        ("stations", "स्टेशन"),
+        ("station", "स्टेशन"),
+        ("emptying", "खाली करना"),
+        ("bins", "डस्टबिन"),
+        ("bin", "डस्टबिन"),
+        ("waste", "कचरा"),
+        ("segregation", "अलग करना"),
+        ("washroom", "वॉशरूम"),
+        ("washrooms", "वॉशरूम"),
+        ("cleanliness", "सफाई"),
+        ("neat", "साफ-सुथरा"),
+        ("appearance", "रूप"),
+        ("dust", "धूल"),
+        ("assisting", "सहायता"),
+        ("greeting", "स्वागत"),
+        ("greeting", "स्वागत"),
+        ("scheduling", "शेड्यूलिंग"),
+        ("rescheduling", "रीशेड्यूल"),
+        ("coordinating", "समन्वय"),
+        ("bookings", "बुकिंग"),
+        ("queries", "सवाल"),
+        ("bills", "बिल"),
+        ("payments", "पेमेंट"),
+        ("register", "रजिस्टर"),
+        ("grooming", "ग्रूमिंग"),
+        ("supervising", "सुपरविज़न"),
+        ("training", "ट्रेनिंग"),
+        ("motivation", "प्रेरणा"),
+        ("meetings", "मीटिंग"),
+        ("targets", "टार्गेट"),
+        ("upselling", "अपसेल"),
+        ("retail", "रिटेल"),
+        ("offers", "ऑफर"),
+        ("promotions", "प्रमोशन"),
+        ("closing", "क्लोज़िंग"),
+        ("stock", "स्टॉक"),
+        ("wastage", "वेस्टेज"),
+        ("protocols", "प्रोटोकॉल"),
+        ("performance", "परफॉर्मेंस"),
+        ("tracking", "ट्रैकिंग"),
+        ("problem", "समस्या"),
+        ("solving", "सुलझाना"),
+        ("welcoming", "स्वागत"),
+        ("refreshments", "रिफ्रेशमेंट"),
+        ("comfort", "आराम"),
+        ("listening", "सुनना"),
+        ("concerns", "चिंता"),
+        ("escalation", "एस्केलेशन"),
+        ("waiting", "वेटिंग"),
+        ("memberships", "मेंबरशिप"),
+        ("generating", "बनाना"),
+        ("shampooing", "शैम्पू"),
+        ("scalp", "स्कैल्प"),
+        ("preparing", "तैयार करना"),
+        ("organizing", "व्यवस्थित करना"),
+        ("setting", "सेटअप"),
+        ("laundry", "लॉन्ड्री"),
+        ("towels", "तौलिए"),
+        ("towel", "तौलिया"),
+        ("shelves", "शेल्फ़"),
+        ("floor", "फ्लोर"),
+        ("reception", "रिसेप्शन"),
+        ("designs", "डिज़ाइन"),
+        ("design", "डिज़ाइन"),
+        ("style", "स्टाइल"),
+        ("drawing", "ड्रॉइंग"),
+        ("lining", "लाइनिंग"),
+        ("shading", "शेडिंग"),
+        ("coloring", "कलरिंग"),
+        ("traditional", "ट्रेडिशनल"),
+        ("realism", "रियलिज़्म"),
+        ("geometric", "ज्योमेट्रिक"),
+        ("tribal", "ट्राइबल"),
+        ("minimalistic", "मिनिमलिस्टिक"),
+        ("freehand", "फ्रीहैंड"),
+        ("customized", "कस्टम"),
+        ("patterns", "पैटर्न"),
+        ("intricate", "जटिल"),
+        ("coloured", "कलर्ड"),
+        ("specialization", "स्पेशलाइज़ेशन"),
+        ("long-lasting", "लॉन्ग-लास्टिंग"),
+        ("waterproof", "वॉटरप्रूफ"),
+        ("contour", "कॉन्टूर"),
+        ("blending", "ब्लेंडिंग"),
+        ("prepping", "प्रिपिंग"),
+        ("priming", "प्राइमिंग"),
+        ("natural", "नेचुरल"),
+        ("glam", "ग्लैम"),
+        ("matte", "मैट"),
+        ("dewy", "ड्यू"),
+        ("looks", "लुक"),
+        ("celebrity", "सेलेब्रिटी"),
+        ("fashion", "फैशन"),
+    ]
+    result = result.replace(" & ", " और ").replace("&", " और ")
+    for eng, hi in sorted(tokens, key=lambda x: -len(x[0])):
+        result = re.sub(rf"\b{re.escape(eng)}\b", hi, result, flags=re.IGNORECASE)
+
+    if keyed in SKILL_PHRASE_HI:
+        return SKILL_PHRASE_HI[keyed]
+
+    low = result.lower()
+    knowledge_markers = (
+        "नॉलेज", "management", "मैनेजमेंट", "knowledge", "consultation",
+        "कंसल्टेशन", "awareness", "proficiency", "coordination", "reporting",
+        "communication", "documentation", "records", "compliance", "strategy",
+        "forecasting", "mentoring", "monitoring", "evaluation", "counseling",
+        "experience", "leadership", "लीडरशिप", "products", "प्रोडक्ट",
+        "equipment", "software", "trends", "understanding", "skills",
+        "लीडरशिप", "मैनेजमेंट", "क्वालिटी", "कम्प्लायंस",
+    )
+    result = _devanagarize_remaining(result)
+    if not _has_latin_word(result):
+        return result
+    if any(m in low for m in knowledge_markers):
+        if not result.endswith("का नॉलेज") and not result.endswith("की नॉलेज"):
+            return f"{result} का नॉलेज"
+    if not result.endswith("करना") and not result.endswith("ना") and not result.endswith("नी"):
+        return f"{result} करना"
+    return _devanagarize_remaining(result)
+
+
 def from_lines(cid: str, title_en: str, title_hi: str, lines: list[str]) -> dict:
     pairs: list[tuple[str, str]] = []
     for line in lines:
         line = line.strip()
         if not line:
             continue
-        pairs.append((line, ""))
+        pairs.append((line, auto_hi_skill(line)))
     return C(cid, title_en, title_hi, pairs)
 
 
@@ -218,7 +708,7 @@ BEAUTICIAN = C(
         ("Hairdos", "हेयरडोज़ करना"),
         ("Hair Extensions", "हेयर एक्सटेंशंस का नॉलेज"),
         ("Product Knowledge", "प्रोडक्ट नॉलेज"),
-        ("Skin Consultation", ""),
+        ("Skin Consultation", "स्किन कंसल्टेशन का नॉलेज"),
         ("Hygiene & Safety", "हाइजीन और सेफ्टी का नॉलेज"),
         ("Professionalism", "काम के प्रति जिम्मेदारी"),
     ],
@@ -383,19 +873,44 @@ def main() -> None:
     sec.append(fn)
 
     # --- Support & operations ---
+    SWEEPER = C(
+        "sweeper",
+        "Sweeper",
+        "स्वीपर",
+        [
+            ("Removing hair, dust & waste", "बाल, धूल और कचरा हटाना"),
+            ("Sweeping & mopping", "झाड़ू और पोछा लगाना"),
+            ("Wiping mirrors & counters", "शीशे और काउंटर पोछना"),
+            ("Chairs & stations clean", "कुर्सी और स्टेशन साफ करना"),
+            ("Emptying bins", "डस्टबिन खाली करना"),
+            ("Waste segregation", "कचरा अलग करना"),
+            ("Washroom cleanliness", "वॉशरूम की सफाई"),
+            ("Neat appearance", "साफ-सुथरा रूप"),
+        ],
+    )
+    SALON_HELPER = C(
+        "salon_helper_housekeeping",
+        "Salon Helper / Housekeeping",
+        "सैलून हेल्पर / हाउसकीपिंग",
+        [
+            ("Salon floor & stations cleaning", "सैलून फ्लोर और स्टेशन की सफाई"),
+            ("Washrooms & reception cleanliness", "वॉशरूम और रिसेप्शन की सफाई"),
+            ("Assisting stylists & therapists", "स्टाइलिस्ट और थेरेपिस्ट की सहायता"),
+            ("Setting up stations", "स्टेशन तैयार करना"),
+            ("Towel & laundry", "तौलिए और लॉन्ड्री"),
+            ("Water/tea service", "पानी/चाय सर्विस"),
+            ("Organizing shelves", "शेल्फ़ व्यवस्थित करना"),
+            ("Neat appearance", "साफ-सुथरा रूप"),
+        ],
+    )
+
     support = {
         "id": "support_operations",
-        "labelEn": "Support & operations",
-        "labelHi": "सपोर्ट और संचालन",
+        "labelEn": "Salon Management & Housekeeping",
+        "labelHi": "सैलून मैनेजमेंट और हाउसकीपिंग",
         "categories": [
-            from_lines("salon_helper_housekeeping", "Salon Helper / Housekeeping", "सैलून हेल्पर / हाउसकीपिंग", [
-                "Salon floor & stations cleaning", "Washrooms & reception cleanliness", "Assisting stylists & therapists",
-                "Setting up stations", "Towel & laundry", "Water/tea service", "Organizing shelves", "Neat appearance",
-            ]),
-            from_lines("sweeper", "Sweeper", "स्वीपर", [
-                "Removing hair, dust & waste", "Sweeping & mopping", "Wiping mirrors & counters", "Chairs & stations clean",
-                "Emptying bins", "Waste segregation", "Washroom cleanliness", "Neat appearance",
-            ]),
+            SALON_HELPER,
+            SWEEPER,
             from_lines("shampoo_boy", "Shampoo Boy", "शैम्पू बॉय", [
                 "Proper shampooing", "Gentle scalp massage", "Preparing client for services", "Assisting stylists",
                 "Shampoo knowledge", "Personal hygiene", "Towels & laundry",
@@ -443,7 +958,7 @@ def main() -> None:
     academy = {
         "id": "academy",
         "labelEn": "Academy",
-        "labelHi": "अकादमी",
+        "labelHi": "Academy",
         "categories": [
             from_lines("academy_head", "Academy Head", "एकेडमी हेड", [
                 "Academic & operational leadership", "Curriculum & training quality", "Faculty management",
@@ -458,7 +973,7 @@ def main() -> None:
                 "Academic coordination", "Student management", "Trainer support", "Admin & ops", "Sales & admissions help",
                 "Reporting & documentation", "Customer service", "Events & workshops",
             ]),
-            from_lines("academy_supervisor", "Academy Supervisor", "Academy supervisor", [
+            from_lines("academy_supervisor", "Academy Supervisor", "Academy Supervisor", [
                 "Daily academic coordination", "Classroom management", "Student monitoring", "Admin support",
                 "Quality & hygiene", "Assist head/manager", "Internal communication", "Events & workshops",
             ]),
@@ -616,22 +1131,15 @@ def main() -> None:
         ],
     }
 
-    # Legacy quick-pick aliases (map to taxonomy for skills UI); subs optional
-    legacy = {
-        "id": "legacy_quick_roles",
-        "labelEn": "Common roles (quick)",
-        "labelHi": "आम रोल (जल्दी)",
-        "categories": [
-            C("hair_stylist", "Hair stylist (legacy)", "हेयर स्टाइलिस्ट", [("General hair services", "हेयर सर्विस")]),
-            C("massage_therapist", "Massage therapist (legacy)", "मसाज थेरेपिस्ट", [("Body massage", "बॉडी मसाज")]),
-            C("receptionist", "Receptionist (legacy)", "रिसेप्शनिस्ट", [("Front desk duties", "फ्रंट डेस्क")]),
-            C("helper", "Helper (legacy)", "हेल्पर", [("Salon support", "सहायता")]),
-            C("manager", "Manager (legacy)", "मैनेजर", [("Team management", "टीम प्रबंधन")]),
-            C("other", "Other (custom title)", "अन्य", [("Custom duties as discussed", "कस्टम")]),
-        ],
-    }
-
-    doc = {"version": 2, "sections": [SECTIONS[0], support, academy, creative, technician, therapist, educator, trainer, legacy]}
+    doc = {"version": 2, "sections": [SECTIONS[0], support, academy, creative, technician, therapist, educator, trainer]}
+    # Final pass: ensure Hindi labels have no leftover English words
+    for sec in doc["sections"]:
+        for cat in sec["categories"]:
+            for sub in cat["subcategories"]:
+                en = sub["labelEn"]
+                hi = sub.get("labelHi") or ""
+                if _has_latin_word(hi):
+                    sub["labelHi"] = auto_hi_skill(en)
     out.write_text(json.dumps(doc, ensure_ascii=False, indent=2), encoding="utf-8")
     print("Wrote", out, "sections", len(doc["sections"]))
 

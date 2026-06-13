@@ -7,6 +7,19 @@ import s3Service from './s3Service.js';
  * Handles all job-related business logic
  */
 class JobService {
+  _normalizeShiftType(shiftType) {
+    const shiftMap = {
+      full_day: 'flexible',
+      shift_based: 'flexible',
+      part_time_freelance: 'flexible',
+      morning: 'morning',
+      evening: 'evening',
+      night: 'night',
+      flexible: 'flexible',
+    };
+    return shiftMap[shiftType] || 'flexible';
+  }
+
   /**
    * Create a new job posting
    */
@@ -24,7 +37,13 @@ class JobService {
       experience,
       accommodation,
       preferredGender,
+      shiftType,
+      weeklyOff = [],
+      facilities = [],
+      description,
     } = jobData;
+
+    const normalizedShift = shiftType ? this._normalizeShiftType(shiftType) : null;
 
     try {
       const result = await db.query(
@@ -32,8 +51,9 @@ class JobService {
           salon_id, job_role, other_category, custom_role_name, skills,
           location, number_of_staff, salary_min, salary_max,
           work_type, experience, accommodation, preferred_gender,
+          shift_type, weekly_off, facilities, description,
           status, completion_percent
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, 'active', 40)
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, 'active', 40)
         RETURNING *`,
         [
           salonId,
@@ -49,6 +69,10 @@ class JobService {
           experience,
           accommodation || null,
           preferredGender || 'any',
+          normalizedShift,
+          JSON.stringify(weeklyOff),
+          JSON.stringify(facilities),
+          description || null,
         ]
       );
 
@@ -292,16 +316,7 @@ class JobService {
   async updateJob(jobId, salonId, updates) {
     // Normalize shift type from UI to allowed DB values
     if (updates.shiftType) {
-      const shiftMap = {
-        full_day: 'flexible',
-        shift_based: 'flexible',
-        part_time_freelance: 'flexible',
-        morning: 'morning',
-        evening: 'evening',
-        night: 'night',
-        flexible: 'flexible',
-      };
-      updates.shiftType = shiftMap[updates.shiftType] || 'flexible';
+      updates.shiftType = this._normalizeShiftType(updates.shiftType);
     }
 
     const allowedFields = [

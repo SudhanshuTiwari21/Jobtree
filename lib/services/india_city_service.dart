@@ -11,20 +11,20 @@ class IndiaCityService {
 
   List<String>? _cache;
 
-  /// Offline / API-failure fallback (merged from prior app lists + common hubs).
+  /// Offline / API-failure fallback — expanded Indian cities for salon hiring.
   static const List<String> kFallbackCities = [
-    'Agra', 'Ahmedabad', 'Ajmer', 'Akola', 'Aligarh', 'Allahabad', 'Amravati', 'Amritsar',
-    'Asansol', 'Aurangabad', 'Bangalore', 'Bareilly', 'Belgaum', 'Bhopal', 'Bhubaneswar',
-    'Bikaner', 'Chandigarh', 'Chennai', 'Coimbatore', 'Cuttack', 'Dehradun', 'Delhi',
-    'Dhanbad', 'Faridabad', 'Gandhinagar', 'Ghaziabad', 'Goa', 'Gorakhpur', 'Guntur',
-    'Gurgaon', 'Guwahati', 'Gwalior', 'Howrah', 'Hubli', 'Hyderabad', 'Indore', 'Jabalpur',
-    'Jaipur', 'Jalandhar', 'Jammu', 'Jamshedpur', 'Jodhpur', 'Kanpur', 'Kochi', 'Kolhapur',
-    'Kolkata', 'Kota', 'Kozhikode', 'Lucknow', 'Ludhiana', 'Madurai', 'Malegaon', 'Mangalore',
-    'Meerut', 'Moradabad', 'Mumbai', 'Mysore', 'Mysuru', 'Nagpur', 'Nashik', 'Navi Mumbai',
-    'Noida', 'Patna', 'Prayagraj', 'Pune', 'Raipur', 'Rajkot', 'Ranchi', 'Salem', 'Shimla',
-    'Solapur', 'Srinagar', 'Surat', 'Thane', 'Thiruvananthapuram', 'Tiruchirappalli',
-    'Tirunelveli', 'Tirupati', 'Udaipur', 'Vadodara', 'Varanasi', 'Vijayawada',
-    'Visakhapatnam', 'Warangal',
+    'Agra', 'Ahmedabad', 'Ajmer', 'Akola', 'Aligarh', 'Allahabad', 'Ambala', 'Amravati', 'Amritsar',
+    'Anand', 'Asansol', 'Aurangabad', 'Bangalore', 'Bareilly', 'Belgaum', 'Bhavnagar', 'Bhilai',
+    'Bhopal', 'Bhubaneswar', 'Bikaner', 'Chandigarh', 'Chennai', 'Coimbatore', 'Cuttack', 'Dehradun',
+    'Delhi', 'Dhanbad', 'Durgapur', 'Erode', 'Faridabad', 'Gandhinagar', 'Ghaziabad', 'Goa', 'Gorakhpur',
+    'Guntur', 'Gurgaon', 'Guwahati', 'Gwalior', 'Haridwar', 'Howrah', 'Hubli', 'Hyderabad', 'Indore',
+    'Jabalpur', 'Jaipur', 'Jalandhar', 'Jammu', 'Jamnagar', 'Jamshedpur', 'Jhansi', 'Jodhpur', 'Kanpur',
+    'Karnal', 'Kochi', 'Kolhapur', 'Kolkata', 'Kota', 'Kozhikode', 'Lucknow', 'Ludhiana', 'Madurai',
+    'Mangalore', 'Meerut', 'Mohali', 'Moradabad', 'Mumbai', 'Mysore', 'Mysuru', 'Nagpur', 'Nashik',
+    'Navi Mumbai', 'Noida', 'Panipat', 'Patna', 'Pondicherry', 'Prayagraj', 'Pune', 'Raipur', 'Rajkot',
+    'Ranchi', 'Rohtak', 'Salem', 'Shimla', 'Siliguri', 'Solapur', 'Srinagar', 'Surat', 'Thane',
+    'Thiruvananthapuram', 'Tiruchirappalli', 'Tirunelveli', 'Tirupati', 'Trichy', 'Udaipur', 'Ujjain',
+    'Vadodara', 'Varanasi', 'Vijayawada', 'Visakhapatnam', 'Warangal',
   ];
 
   /// Clears in-memory cache (e.g. after logout — optional).
@@ -49,8 +49,7 @@ class IndiaCityService {
         final data = json.decode(response.body) as Map<String, dynamic>;
         if (data['error'] == false && data['data'] != null) {
           final raw = List<String>.from(data['data'] as List);
-          final deduped = _dedupeAndSort(raw);
-          if (deduped.isNotEmpty) result = deduped;
+          result = _dedupeAndSort([...result, ...raw]);
         }
       }
     } catch (e, st) {

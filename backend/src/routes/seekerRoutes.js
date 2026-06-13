@@ -240,12 +240,12 @@ router.get(
   '/jobs',
   authenticateSeeker,
   asyncHandler(async (req, res) => {
-    const { city, role, limit = 20, offset = 0 } = req.query;
+    const { city, role, limit = 20, offset = 0, browseAll } = req.query;
 
-    // Use seeker profile defaults if no filters given
     const seeker = req.seeker;
-    const filterCity = city || seeker.city || null;
-    const filterRole = role || seeker.preferred_role || null;
+    const showAll = browseAll === 'true' || browseAll === '1';
+    const filterCity = showAll ? (city || null) : (city || seeker.city || null);
+    const filterRole = showAll ? (role || null) : (role || seeker.preferred_role || null);
 
     const result = await jobService.searchJobs({
       location: filterCity,

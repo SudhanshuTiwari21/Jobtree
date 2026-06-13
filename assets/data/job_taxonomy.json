@@ -722,7 +722,7 @@
             {
               "id": "skin_consultation",
               "labelEn": "Skin Consultation",
-              "labelHi": "Skin Consultation"
+              "labelHi": "स्किन कंसल्टेशन का नॉलेज"
             },
             {
               "id": "hygiene_safety",
@@ -744,122 +744,122 @@
             {
               "id": "basic_makeup",
               "labelEn": "Basic Makeup",
-              "labelHi": "Basic Makeup"
+              "labelHi": "बेसिक मेकअप करना"
             },
             {
               "id": "advance_makeup",
               "labelEn": "Advance Makeup",
-              "labelHi": "Advance Makeup"
+              "labelHi": "एडवांस मेकअप करना"
             },
             {
               "id": "party_makeup",
               "labelEn": "Party Makeup",
-              "labelHi": "Party Makeup"
+              "labelHi": "पार्टी मेकअप करना"
             },
             {
               "id": "bridal_makeup",
               "labelEn": "Bridal Makeup",
-              "labelHi": "Bridal Makeup"
+              "labelHi": "ब्राइडल मेकअप करना"
             },
             {
               "id": "hd_makeup",
               "labelEn": "HD Makeup",
-              "labelHi": "HD Makeup"
+              "labelHi": "एचडी मेकअप करना"
             },
             {
               "id": "waterproof_makeup",
               "labelEn": "Waterproof Makeup",
-              "labelHi": "Waterproof Makeup"
+              "labelHi": "वॉटरप्रूफ मेकअप करना"
             },
             {
               "id": "longlasting_makeup",
               "labelEn": "Long-Lasting Makeup",
-              "labelHi": "Long-Lasting Makeup"
+              "labelHi": "लॉन्ग-लास्टिंग मेकअप करना"
             },
             {
               "id": "airbrush",
               "labelEn": "Airbrush",
-              "labelHi": "Airbrush"
+              "labelHi": "एयरब्रश"
             },
             {
               "id": "3d_makeup",
               "labelEn": "3D Makeup",
-              "labelHi": "3D Makeup"
+              "labelHi": "3D मेकअप"
             },
             {
               "id": "celebrity_fashion_makeup",
               "labelEn": "Celebrity & Fashion Makeup",
-              "labelHi": "Celebrity & Fashion Makeup"
+              "labelHi": "सेलेब्रिटी और फैशन मेकअप"
             },
             {
               "id": "natural_glam_matte_dewy_looks",
               "labelEn": "Natural, Glam, Matte, Dewy Looks",
-              "labelHi": "Natural, Glam, Matte, Dewy Looks"
+              "labelHi": "नेचुरल, ग्लैम, मैट, ड्यू लुक"
             },
             {
               "id": "skin_prepping_priming",
               "labelEn": "Skin Prepping & Priming",
-              "labelHi": "Skin Prepping & Priming"
+              "labelHi": "स्किन प्रिपिंग और प्राइमिंग"
             },
             {
               "id": "colour_correction",
               "labelEn": "Colour Correction",
-              "labelHi": "Colour Correction"
+              "labelHi": "कलर करेक्शन"
             },
             {
               "id": "eye_shadow_blending",
               "labelEn": "Eye Shadow Blending",
-              "labelHi": "Eye Shadow Blending"
+              "labelHi": "आई शैडो ब्लेंडिंग"
             },
             {
               "id": "eyeliner_styles",
               "labelEn": "Eyeliner Styles",
-              "labelHi": "Eyeliner Styles"
+              "labelHi": "आईलाइनर स्टाइल"
             },
             {
               "id": "eyelash_application",
               "labelEn": "Eyelash Application",
-              "labelHi": "Eyelash Application"
+              "labelHi": "आईलैश लगाना"
             },
             {
               "id": "threading",
               "labelEn": "Threading",
-              "labelHi": "Threading"
+              "labelHi": "थ्रेडिंग"
             },
             {
               "id": "contour",
               "labelEn": "Contour",
-              "labelHi": "Contour"
+              "labelHi": "कॉन्टूर करना"
             },
             {
               "id": "blush",
               "labelEn": "Blush",
-              "labelHi": "Blush"
+              "labelHi": "ब्लश लगाना"
             },
             {
               "id": "highlight",
               "labelEn": "Highlight",
-              "labelHi": "Highlight"
+              "labelHi": "हाइलाइट करना"
             },
             {
               "id": "product_knowledge",
               "labelEn": "Product Knowledge",
-              "labelHi": "Product Knowledge"
+              "labelHi": "प्रोडक्ट नॉलेज"
             },
             {
               "id": "hygiene_safety",
               "labelEn": "Hygiene & Safety",
-              "labelHi": "Hygiene & Safety"
+              "labelHi": "हाइजीन और सेफ्टी का नॉलेज"
             },
             {
               "id": "salon_management",
               "labelEn": "Salon Management",
-              "labelHi": "Salon Management"
+              "labelHi": "सैलून मैनेजमेंट का नॉलेज"
             },
             {
               "id": "professionalism",
               "labelEn": "Professionalism",
-              "labelHi": "Professionalism"
+              "labelHi": "काम के प्रति जिम्मेदारी"
             }
           ]
         },
@@ -871,82 +871,82 @@
             {
               "id": "hd_makeup",
               "labelEn": "HD Makeup",
-              "labelHi": "HD Makeup"
+              "labelHi": "एचडी मेकअप करना"
             },
             {
               "id": "waterproof_longlasting_bridal_makeup",
               "labelEn": "Waterproof & long-lasting bridal makeup",
-              "labelHi": "Waterproof & long-lasting bridal makeup"
+              "labelHi": "वॉटरप्रूफ और लॉन्ग-लास्टिंग ब्राइडल मेकअप"
             },
             {
               "id": "traditional_modern_regional_bridal_looks",
               "labelEn": "Traditional/Modern/Regional bridal looks",
-              "labelHi": "Traditional/Modern/Regional bridal looks"
+              "labelHi": "ट्रेडिशनल/मॉडर्न/रिजनल ब्राइडल लुक"
             },
             {
               "id": "airbrush_bridal_makeup",
               "labelEn": "Airbrush bridal makeup",
-              "labelHi": "Airbrush bridal makeup"
+              "labelHi": "एयरब्रश ब्राइडल मेकअप"
             },
             {
               "id": "colour_correction",
               "labelEn": "Colour correction",
-              "labelHi": "Colour correction"
+              "labelHi": "कलर करेक्शन"
             },
             {
               "id": "bridal_eye_makeup",
               "labelEn": "Bridal eye makeup",
-              "labelHi": "Bridal eye makeup"
+              "labelHi": "ब्राइडल आई मेकअप"
             },
             {
               "id": "eyelash_application",
               "labelEn": "Eyelash application",
-              "labelHi": "Eyelash application"
+              "labelHi": "आईलैश लगाना"
             },
             {
               "id": "perfect_eyebrow_shaping",
               "labelEn": "Perfect eyebrow shaping",
-              "labelHi": "Perfect eyebrow shaping"
+              "labelHi": "परफेक्ट आईब्रो शेपिंग"
             },
             {
               "id": "bridal_contour_highlight_blush",
               "labelEn": "Bridal contour/highlight/blush",
-              "labelHi": "Bridal contour/highlight/blush"
+              "labelHi": "ब्राइडल कॉन्टूर/हाइलाइट/ब्लश"
             },
             {
               "id": "product_knowledge",
               "labelEn": "Product knowledge",
-              "labelHi": "Product knowledge"
+              "labelHi": "प्रोडक्ट नॉलेज"
             },
             {
               "id": "lip_contouring",
               "labelEn": "Lip contouring",
-              "labelHi": "Lip contouring"
+              "labelHi": "लिप कॉन्टूरिंग"
             },
             {
               "id": "basic_hair_styling_touchups",
               "labelEn": "Basic hair styling touch-ups",
-              "labelHi": "Basic hair styling touch-ups"
+              "labelHi": "बेसिक हेयर स्टाइलिंग टच-अप"
             },
             {
               "id": "saree_draping",
               "labelEn": "Saree draping",
-              "labelHi": "Saree draping"
+              "labelHi": "साड़ी ड्रेपिंग"
             },
             {
               "id": "hair_extensions",
               "labelEn": "Hair extensions",
-              "labelHi": "Hair extensions"
+              "labelHi": "हेयर एक्सटेंशंस"
             },
             {
               "id": "hygiene_safety",
               "labelEn": "Hygiene & safety",
-              "labelHi": "Hygiene & safety"
+              "labelHi": "हाइजीन और सेफ्टी का नॉलेज"
             },
             {
               "id": "professionalism",
               "labelEn": "Professionalism",
-              "labelHi": "Professionalism"
+              "labelHi": "काम के प्रति जिम्मेदारी"
             }
           ]
         },
@@ -958,82 +958,82 @@
             {
               "id": "nail_cleaning_shaping_filing",
               "labelEn": "Nail cleaning, shaping & filing",
-              "labelHi": "Nail cleaning, shaping & filing"
+              "labelHi": "नाखून की सफाई, शेपिंग और फाइलिंग"
             },
             {
               "id": "nail_buffing",
               "labelEn": "Nail buffing",
-              "labelHi": "Nail buffing"
+              "labelHi": "नेल बफिंग"
             },
             {
               "id": "freehand_nail_art",
               "labelEn": "Freehand nail art",
-              "labelHi": "Freehand nail art"
+              "labelHi": "फ्रीहैंड नेल आर्ट"
             },
             {
               "id": "glitter_stones_chrome_foil_stickers",
               "labelEn": "Glitter, stones, chrome, foil, stickers",
-              "labelHi": "Glitter, stones, chrome, foil, stickers"
+              "labelHi": "ग्लिटर, स्टोन्स, क्रोम, फॉइल, स्टिकर्स"
             },
             {
               "id": "ombre_gradient_effects",
               "labelEn": "Ombre & gradient effects",
-              "labelHi": "Ombre & gradient effects"
+              "labelHi": "ओम्ब्रे और ग्रेडिएंट इफेक्ट्स"
             },
             {
               "id": "3d_nail_art",
               "labelEn": "3D nail art",
-              "labelHi": "3D nail art"
+              "labelHi": "3D नेल आर्ट"
             },
             {
               "id": "acrylic_extensions",
               "labelEn": "Acrylic extensions",
-              "labelHi": "Acrylic extensions"
+              "labelHi": "एक्रिलिक एक्सटेंशंस"
             },
             {
               "id": "gel_extensions",
               "labelEn": "Gel extensions",
-              "labelHi": "Gel extensions"
+              "labelHi": "जेल एक्सटेंशंस"
             },
             {
               "id": "polygel_extensions",
               "labelEn": "Polygel extensions",
-              "labelHi": "Polygel extensions"
+              "labelHi": "पॉलीजेल एक्सटेंशंस"
             },
             {
               "id": "french_extensions",
               "labelEn": "French extensions",
-              "labelHi": "French extensions"
+              "labelHi": "फ्रेंच एक्सटेंशंस"
             },
             {
               "id": "refill_repair_removal",
               "labelEn": "Refill, repair & removal",
-              "labelHi": "Refill, repair & removal"
+              "labelHi": "रिफिल, रिपेयर और रिमूवल"
             },
             {
               "id": "gel_polish_uv_led",
               "labelEn": "Gel polish UV/LED",
-              "labelHi": "Gel polish UV/LED"
+              "labelHi": "जेल पॉलिश UV/LED करना"
             },
             {
               "id": "classic_matte_chrome_french_polish",
               "labelEn": "Classic/matte/chrome/French polish",
-              "labelHi": "Classic/matte/chrome/French polish"
+              "labelHi": "क्लासिक/मैट/क्रोम/फ्रेंच पॉलिश"
             },
             {
               "id": "nail_shapes_coffin_almond_stiletto_square_ballerina",
               "labelEn": "Nail shapes (coffin, almond, stiletto, square, ballerina)",
-              "labelHi": "Nail shapes (coffin, almond, stiletto, square, ballerina)"
+              "labelHi": "नेल शेप्स (कॉफिन, आलमंड, स्टिलेटो, स्क्वेयर, बैलेरिना)"
             },
             {
               "id": "top_base_coats_gels_acrylics_knowledge",
               "labelEn": "Top/base coats, gels, acrylics knowledge",
-              "labelHi": "Top/base coats, gels, acrylics knowledge"
+              "labelHi": "टॉप/बेस कोट्स, जेल, एक्रिलिक नॉलेज"
             },
             {
               "id": "professionalism",
               "labelEn": "Professionalism",
-              "labelHi": "Professionalism"
+              "labelHi": "काम के प्रति जिम्मेदारी"
             }
           ]
         },
@@ -1045,42 +1045,42 @@
             {
               "id": "traditional_designs",
               "labelEn": "Traditional designs",
-              "labelHi": "Traditional designs"
+              "labelHi": "ट्रेडिशनल डिज़ाइन"
             },
             {
               "id": "arabic_designs",
               "labelEn": "Arabic designs",
-              "labelHi": "Arabic designs"
+              "labelHi": "अरबी डिज़ाइन"
             },
             {
               "id": "indian_designs",
               "labelEn": "Indian designs",
-              "labelHi": "Indian designs"
+              "labelHi": "भारतीय डिज़ाइन"
             },
             {
               "id": "rajasthani_designs",
               "labelEn": "Rajasthani designs",
-              "labelHi": "Rajasthani designs"
+              "labelHi": "राजस्थानी डिज़ाइन"
             },
             {
               "id": "contemporary_designs",
               "labelEn": "Contemporary designs",
-              "labelHi": "Contemporary designs"
+              "labelHi": "कंटेम्पररी डिज़ाइन"
             },
             {
               "id": "intricate_patterns_customized_design",
               "labelEn": "Intricate patterns & customized design",
-              "labelHi": "Intricate patterns & customized design"
+              "labelHi": "जटिल पैटर्न और कस्टम डिज़ाइन"
             },
             {
               "id": "glitter_stone_coloured_mehandi",
               "labelEn": "Glitter, stone & coloured mehandi",
-              "labelHi": "Glitter, stone & coloured mehandi"
+              "labelHi": "ग्लिटर, स्टोन और कलर्ड मेहंदी"
             },
             {
               "id": "bridal_mehandi_specialization",
               "labelEn": "Bridal mehandi specialization",
-              "labelHi": "Bridal mehandi specialization"
+              "labelHi": "ब्राइडल मेहंदी स्पेशलाइज़ेशन"
             }
           ]
         },
@@ -1092,67 +1092,67 @@
             {
               "id": "lining",
               "labelEn": "Lining",
-              "labelHi": "Lining"
+              "labelHi": "लाइनिंग"
             },
             {
               "id": "shading",
               "labelEn": "Shading",
-              "labelHi": "Shading"
+              "labelHi": "शेडिंग"
             },
             {
               "id": "coloring",
               "labelEn": "Coloring",
-              "labelHi": "Coloring"
+              "labelHi": "कलरिंग"
             },
             {
               "id": "traditional_style",
               "labelEn": "Traditional style",
-              "labelHi": "Traditional style"
+              "labelHi": "ट्रेडिशनल स्टाइल"
             },
             {
               "id": "realism_style",
               "labelEn": "Realism style",
-              "labelHi": "Realism style"
+              "labelHi": "रियलिज़्म स्टाइल"
             },
             {
               "id": "geometric_style",
               "labelEn": "Geometric style",
-              "labelHi": "Geometric style"
+              "labelHi": "ज्योमेट्रिक स्टाइल"
             },
             {
               "id": "tribal_style",
               "labelEn": "Tribal style",
-              "labelHi": "Tribal style"
+              "labelHi": "ट्राइबल स्टाइल"
             },
             {
               "id": "minimalistic_style",
               "labelEn": "Minimalistic style",
-              "labelHi": "Minimalistic style"
+              "labelHi": "मिनिमलिस्टिक स्टाइल"
             },
             {
               "id": "freehand_drawing",
               "labelEn": "Freehand drawing",
-              "labelHi": "Freehand drawing"
+              "labelHi": "फ्रीहैंड ड्रॉइंग"
             },
             {
               "id": "custom_tattoo_designs",
               "labelEn": "Custom tattoo designs",
-              "labelHi": "Custom tattoo designs"
+              "labelHi": "कस्टम टैटू डिज़ाइन"
             },
             {
               "id": "colour_theory_ink_mixing",
               "labelEn": "Colour theory & ink mixing",
-              "labelHi": "Colour theory & ink mixing"
+              "labelHi": "कलर थ्योरी और इंक मिक्सिंग"
             },
             {
               "id": "hygiene_safety",
               "labelEn": "Hygiene & safety",
-              "labelHi": "Hygiene & safety"
+              "labelHi": "हाइजीन और सेफ्टी का नॉलेज"
             },
             {
               "id": "latest_tattoo_trends",
               "labelEn": "Latest tattoo trends",
-              "labelHi": "Latest tattoo trends"
+              "labelHi": "लेटेस्ट टैटू ट्रेंड्स"
             }
           ]
         },
@@ -1164,67 +1164,67 @@
             {
               "id": "scalp_condition_identification",
               "labelEn": "Scalp condition identification",
-              "labelHi": "Scalp condition identification"
+              "labelHi": "स्कैल्प कंडीशन पहचान"
             },
             {
               "id": "hair_types",
               "labelEn": "Hair types",
-              "labelHi": "Hair types"
+              "labelHi": "हेयर टाइप्स"
             },
             {
               "id": "deep_conditioning_rituals",
               "labelEn": "Deep conditioning rituals",
-              "labelHi": "Deep conditioning rituals"
+              "labelHi": "डीप कंडीशनिंग रिचुअल"
             },
             {
               "id": "keratin_botox_smoothing_rituals",
               "labelEn": "Keratin, botox & smoothing rituals",
-              "labelHi": "Keratin, botox & smoothing rituals"
+              "labelHi": "केराटिन, बोटॉक्स और स्मूदिंग रिचुअल"
             },
             {
               "id": "hair_spa",
               "labelEn": "Hair spa",
-              "labelHi": "Hair spa"
+              "labelHi": "हेयर स्पा"
             },
             {
               "id": "hot_oil_aromatherapy_scalp_rituals",
               "labelEn": "Hot oil & aromatherapy scalp rituals",
-              "labelHi": "Hot oil & aromatherapy scalp rituals"
+              "labelHi": "हॉट ऑयल और अरोमाथेरेपी स्कैल्प रिचुअल"
             },
             {
               "id": "pressure_points",
               "labelEn": "Pressure points",
-              "labelHi": "Pressure points"
+              "labelHi": "प्रेशर पॉइंट्स"
             },
             {
               "id": "product_knowledge",
               "labelEn": "Product knowledge",
-              "labelHi": "Product knowledge"
+              "labelHi": "प्रोडक्ट नॉलेज"
             },
             {
               "id": "professional_brands",
               "labelEn": "Professional brands",
-              "labelHi": "Professional brands"
+              "labelHi": "प्रोफेशनल ब्रांड्स"
             },
             {
               "id": "hygiene_safety",
               "labelEn": "Hygiene & safety",
-              "labelHi": "Hygiene & safety"
+              "labelHi": "हाइजीन और सेफ्टी का नॉलेज"
             },
             {
               "id": "client_consultation",
               "labelEn": "Client consultation",
-              "labelHi": "Client consultation"
+              "labelHi": "क्लाइंट कंसल्टेशन करना"
             },
             {
               "id": "home_care_recommendations",
               "labelEn": "Home care recommendations",
-              "labelHi": "Home care recommendations"
+              "labelHi": "होम केयर सलाह"
             },
             {
               "id": "professionalism",
               "labelEn": "Professionalism",
-              "labelHi": "Professionalism"
+              "labelHi": "काम के प्रति जिम्मेदारी"
             }
           ]
         },
@@ -1236,42 +1236,42 @@
             {
               "id": "prosthetic_application",
               "labelEn": "Prosthetic application",
-              "labelHi": "Prosthetic application"
+              "labelHi": "प्रोस्थेटिक अप्लाई"
             },
             {
               "id": "fake_wounds_scars_burns_bruises",
               "labelEn": "Fake wounds, scars, burns & bruises",
-              "labelHi": "Fake wounds, scars, burns & bruises"
+              "labelHi": "फेक घाव, निशान, जलन और चोट"
             },
             {
               "id": "3d_makeup_sculpting",
               "labelEn": "3D makeup & sculpting",
-              "labelHi": "3D makeup & sculpting"
+              "labelHi": "3D मेकअप और स्कल्प्टिंग"
             },
             {
               "id": "airbrushing",
               "labelEn": "Airbrushing",
-              "labelHi": "Airbrushing"
+              "labelHi": "एयरब्रशिंग"
             },
             {
               "id": "blood_effects_texture",
               "labelEn": "Blood effects & texture",
-              "labelHi": "Blood effects & texture"
+              "labelHi": "ब्लड इफेक्ट्स और टेक्सचर"
             },
             {
               "id": "colour_mixing",
               "labelEn": "Colour mixing",
-              "labelHi": "Colour mixing"
+              "labelHi": "कलर मिक्सिंग"
             },
             {
               "id": "lighting_camera_impact",
               "labelEn": "Lighting & camera impact",
-              "labelHi": "Lighting & camera impact"
+              "labelHi": "लाइटिंग और कैमरा इम्पैक्ट"
             },
             {
               "id": "hygiene_safety",
               "labelEn": "Hygiene & safety",
-              "labelHi": "Hygiene & safety"
+              "labelHi": "हाइजीन और सेफ्टी का नॉलेज"
             }
           ]
         },
@@ -1283,82 +1283,82 @@
             {
               "id": "advanced_haircutting",
               "labelEn": "Advanced haircutting",
-              "labelHi": "Advanced haircutting"
+              "labelHi": "एडवांस हेयरकटिंग"
             },
             {
               "id": "advanced_styling",
               "labelEn": "Advanced styling",
-              "labelHi": "Advanced styling"
+              "labelHi": "एडवांस स्टाइलिंग"
             },
             {
               "id": "highlights",
               "labelEn": "Highlights",
-              "labelHi": "Highlights"
+              "labelHi": "हाइलाइट्स"
             },
             {
               "id": "balayage",
               "labelEn": "Balayage",
-              "labelHi": "Balayage"
+              "labelHi": "बैलेयाज"
             },
             {
               "id": "colour_correction",
               "labelEn": "Colour correction",
-              "labelHi": "Colour correction"
+              "labelHi": "कलर करेक्शन"
             },
             {
               "id": "hair_extensions",
               "labelEn": "Hair extensions",
-              "labelHi": "Hair extensions"
+              "labelHi": "हेयर एक्सटेंशंस"
             },
             {
               "id": "wigs",
               "labelEn": "Wigs",
-              "labelHi": "Wigs"
+              "labelHi": "विग"
             },
             {
               "id": "latest_hair_trends",
               "labelEn": "Latest hair trends",
-              "labelHi": "Latest hair trends"
+              "labelHi": "लेटेस्ट हेयर ट्रेंड्स"
             },
             {
               "id": "redcarpet_styles",
               "labelEn": "Red-carpet styles",
-              "labelHi": "Red-carpet styles"
+              "labelHi": "रेड-कार्पेट स्टाइल"
             },
             {
               "id": "blowdrying",
               "labelEn": "Blow-drying",
-              "labelHi": "Blow-drying"
+              "labelHi": "ब्लो-ड्राईंग"
             },
             {
               "id": "curling",
               "labelEn": "Curling",
-              "labelHi": "Curling"
+              "labelHi": "कर्लिंग"
             },
             {
               "id": "straightening",
               "labelEn": "Straightening",
-              "labelHi": "Straightening"
+              "labelHi": "स्ट्रेटनिंग"
             },
             {
               "id": "updos",
               "labelEn": "Updos",
-              "labelHi": "Updos"
+              "labelHi": "अपडो"
             },
             {
               "id": "trendsetting_hairstyles",
               "labelEn": "Trend-setting hairstyles",
-              "labelHi": "Trend-setting hairstyles"
+              "labelHi": "ट्रेंड-सेटअप हेयरस्टाइल"
             },
             {
               "id": "premium_products",
               "labelEn": "Premium products",
-              "labelHi": "Premium products"
+              "labelHi": "प्रीमियम प्रोडक्ट्स"
             },
             {
               "id": "collaboration_with_mua_stylists_photographers",
               "labelEn": "Collaboration with MUA/stylists/photographers",
-              "labelHi": "Collaboration with MUA/stylists/photographers"
+              "labelHi": "कोलैबोरेशन के साथ एमयूए/स्टाइलिस्ट/फोटोग्राफर्स"
             }
           ]
         },
@@ -1370,62 +1370,62 @@
             {
               "id": "essential_oil_knowledge",
               "labelEn": "Essential oil knowledge",
-              "labelHi": "Essential oil knowledge"
+              "labelHi": "एसेंशियल ऑयल नॉलेज"
             },
             {
               "id": "safe_blending",
               "labelEn": "Safe blending",
-              "labelHi": "Safe blending"
+              "labelHi": "सेफ ब्लेंडिंग"
             },
             {
               "id": "body_systems_basics",
               "labelEn": "Body systems basics",
-              "labelHi": "Body systems basics"
+              "labelHi": "बॉडी सिस्टम बेसिक्स"
             },
             {
               "id": "client_assessment",
               "labelEn": "Client assessment",
-              "labelHi": "Client assessment"
+              "labelHi": "क्लाइंट असेसमेंट"
             },
             {
               "id": "personalized_plans",
               "labelEn": "Personalized plans",
-              "labelHi": "Personalized plans"
+              "labelHi": "पर्सनलाइज़्ड प्लान"
             },
             {
               "id": "custom_blends_diffuser_recipes",
               "labelEn": "Custom blends & diffuser recipes",
-              "labelHi": "Custom blends & diffuser recipes"
+              "labelHi": "कस्टम ब्लेंड और डिफ्यूज़र रेसिपी"
             },
             {
               "id": "dilution_safety",
               "labelEn": "Dilution & safety",
-              "labelHi": "Dilution & safety"
+              "labelHi": "डिल्यूशन और सेफ्टी"
             },
             {
               "id": "massage_inhalation_compress_bath_diffuser_use",
               "labelEn": "Massage/inhalation/compress/bath/diffuser use",
-              "labelHi": "Massage/inhalation/compress/bath/diffuser use"
+              "labelHi": "मसाज/इनहेलेशन/कंप्रेस/बाथ/डिफ्यूज़र use करना"
             },
             {
               "id": "contraindications",
               "labelEn": "Contraindications",
-              "labelHi": "Contraindications"
+              "labelHi": "कॉन्ट्राइंडिकेशन"
             },
             {
               "id": "calming_environment",
               "labelEn": "Calming environment",
-              "labelHi": "Calming environment"
+              "labelHi": "काम माहौल"
             },
             {
               "id": "holistic_wellness",
               "labelEn": "Holistic wellness",
-              "labelHi": "Holistic wellness"
+              "labelHi": "होलिस्टिक वेलनेस"
             },
             {
               "id": "documentation",
               "labelEn": "Documentation",
-              "labelHi": "Documentation"
+              "labelHi": "डॉक्यूमेंटेशन"
             }
           ]
         },
@@ -1437,57 +1437,57 @@
             {
               "id": "holistic_health_knowledge",
               "labelEn": "Holistic health knowledge",
-              "labelHi": "Holistic health knowledge"
+              "labelHi": "होलिस्टिक हेल्थ नॉलेज"
             },
             {
               "id": "lifestyle_evaluation",
               "labelEn": "Lifestyle evaluation",
-              "labelHi": "Lifestyle evaluation"
+              "labelHi": "लाइफस्टाइल इवैल्यूएशन"
             },
             {
               "id": "customized_wellness_programs",
               "labelEn": "Customized wellness programs",
-              "labelHi": "Customized wellness programs"
+              "labelHi": "कस्टम वेलनेस प्रोग्राम"
             },
             {
               "id": "goal_setting_tracking",
               "labelEn": "Goal setting & tracking",
-              "labelHi": "Goal setting & tracking"
+              "labelHi": "गोल सेटअप और ट्रैकिंग"
             },
             {
               "id": "stress_lifestyle_management",
               "labelEn": "Stress & lifestyle management",
-              "labelHi": "Stress & lifestyle management"
+              "labelHi": "स्ट्रेस और लाइफस्टाइल मैनेजमेंट"
             },
             {
               "id": "basic_nutrition",
               "labelEn": "Basic nutrition",
-              "labelHi": "Basic nutrition"
+              "labelHi": "बेसिक न्यूट्रिशन"
             },
             {
               "id": "supportive_behaviour",
               "labelEn": "Supportive behaviour",
-              "labelHi": "Supportive behaviour"
+              "labelHi": "सपोर्टिव व्यवहार"
             },
             {
               "id": "client_records",
               "labelEn": "Client records",
-              "labelHi": "Client records"
+              "labelHi": "क्लाइंट रिकॉर्ड"
             },
             {
               "id": "educate_on_healthy_living",
               "labelEn": "Educate on healthy living",
-              "labelHi": "Educate on healthy living"
+              "labelHi": "सिखाना on स्वस्थ जीवन"
             },
             {
               "id": "spa_salon_wellness_services",
               "labelEn": "Spa/salon wellness services",
-              "labelHi": "Spa/salon wellness services"
+              "labelHi": "स्पा/सैलून वेलनेस सर्विसेज"
             },
             {
               "id": "recommend_products_services",
               "labelEn": "Recommend products/services",
-              "labelHi": "Recommend products/services"
+              "labelHi": "सुझाव प्रोडक्ट्स/सर्विसेज"
             }
           ]
         },
@@ -1499,72 +1499,72 @@
             {
               "id": "assisting_dermatologist",
               "labelEn": "Assisting dermatologist",
-              "labelHi": "Assisting dermatologist"
+              "labelHi": "सहायता डर्मेटोलॉजिस्ट"
             },
             {
               "id": "preparing_rooms_tools",
               "labelEn": "Preparing rooms & tools",
-              "labelHi": "Preparing rooms & tools"
+              "labelHi": "तैयार करना कमरे और टूल्स"
             },
             {
               "id": "minor_procedure_assistance",
               "labelEn": "Minor procedure assistance",
-              "labelHi": "Minor procedure assistance"
+              "labelHi": "माइनर प्रोसीजर सहायता"
             },
             {
               "id": "sterilization_hygiene",
               "labelEn": "Sterilization & hygiene",
-              "labelHi": "Sterilization & hygiene"
+              "labelHi": "स्टेरलाइज़ेशन और हाइजीन"
             },
             {
               "id": "managing_appointments",
               "labelEn": "Managing appointments",
-              "labelHi": "Managing appointments"
+              "labelHi": "मैनेज अपॉइंटमेंट"
             },
             {
               "id": "patient_history",
               "labelEn": "Patient history",
-              "labelHi": "Patient history"
+              "labelHi": "मरीज़ हिस्ट्री"
             },
             {
               "id": "laser_microderm_peels_led_basics",
               "labelEn": "Laser/microderm/peels/LED basics",
-              "labelHi": "Laser/microderm/peels/LED basics"
+              "labelHi": "लेज़र/माइक्रोडर्म/पील/LED बेसिक्स करना"
             },
             {
               "id": "woods_lamp",
               "labelEn": "Wood's lamp",
-              "labelHi": "Wood's lamp"
+              "labelHi": "वुड्स लैंप"
             },
             {
               "id": "numbing_skin_prep",
               "labelEn": "Numbing & skin prep",
-              "labelHi": "Numbing & skin prep"
+              "labelHi": "नंबिंग और स्किन प्रेप"
             },
             {
               "id": "records_files",
               "labelEn": "Records & files",
-              "labelHi": "Records & files"
+              "labelHi": "रिकॉर्ड्स और फाइलें"
             },
             {
               "id": "billing_clinic_software",
               "labelEn": "Billing & clinic software",
-              "labelHi": "Billing & clinic software"
+              "labelHi": "बिलिंग और क्लिनिक सॉफ्टवेयर"
             },
             {
               "id": "common_skin_conditions",
               "labelEn": "Common skin conditions",
-              "labelHi": "Common skin conditions"
+              "labelHi": "कॉमन स्किन कंडीशन"
             },
             {
               "id": "product_knowledge",
               "labelEn": "Product knowledge",
-              "labelHi": "Product knowledge"
+              "labelHi": "प्रोडक्ट नॉलेज"
             },
             {
               "id": "patient_counseling",
               "labelEn": "Patient counseling",
-              "labelHi": "Patient counseling"
+              "labelHi": "मरीज़ काउंसलिंग"
             }
           ]
         },
@@ -1576,42 +1576,42 @@
             {
               "id": "bald_area_measurement_mapping",
               "labelEn": "Bald area measurement & mapping",
-              "labelHi": "Bald area measurement & mapping"
+              "labelHi": "गंजा एरिया माप और मैपिंग"
             },
             {
               "id": "patch_cutting_blending_styling",
               "labelEn": "Patch cutting, blending & styling",
-              "labelHi": "Patch cutting, blending & styling"
+              "labelHi": "पैच कटिंग, ब्लेंडिंग और स्टाइलिंग"
             },
             {
               "id": "glue_tape_clip_fixing",
               "labelEn": "Glue/tape/clip fixing",
-              "labelHi": "Glue/tape/clip fixing"
+              "labelHi": "ग्लू/टेप/क्लिप फिक्सिंग"
             },
             {
               "id": "patch_maintenance",
               "labelEn": "Patch maintenance",
-              "labelHi": "Patch maintenance"
+              "labelHi": "पैच मेंटेनेंस"
             },
             {
               "id": "product_patch_knowledge",
               "labelEn": "Product & patch knowledge",
-              "labelHi": "Product & patch knowledge"
+              "labelHi": "प्रोडक्ट और पैच नॉलेज"
             },
             {
               "id": "client_consultation",
               "labelEn": "Client consultation",
-              "labelHi": "Client consultation"
+              "labelHi": "क्लाइंट कंसल्टेशन करना"
             },
             {
               "id": "explaining_patch_types",
               "labelEn": "Explaining patch types",
-              "labelHi": "Explaining patch types"
+              "labelHi": "समझाना पैच टाइप्स"
             },
             {
               "id": "daily_care_advice",
               "labelEn": "Daily care advice",
-              "labelHi": "Daily care advice"
+              "labelHi": "दैनिक केयर सलाह"
             }
           ]
         },
@@ -1623,87 +1623,87 @@
             {
               "id": "advanced_facials",
               "labelEn": "Advanced facials",
-              "labelHi": "Advanced facials"
+              "labelHi": "एडवांस फेशियल"
             },
             {
               "id": "chemical_peels",
               "labelEn": "Chemical peels",
-              "labelHi": "Chemical peels"
+              "labelHi": "केमिकल पील"
             },
             {
               "id": "microdermabrasion",
               "labelEn": "Microdermabrasion",
-              "labelHi": "Microdermabrasion"
+              "labelHi": "माइक्रोडर्माब्रेशन"
             },
             {
               "id": "hydrafacial",
               "labelEn": "Hydrafacial",
-              "labelHi": "Hydrafacial"
+              "labelHi": "हाइड्राफेशियल"
             },
             {
               "id": "dermaplaning",
               "labelEn": "Dermaplaning",
-              "labelHi": "Dermaplaning"
+              "labelHi": "डर्माप्लानिंग"
             },
             {
               "id": "microneedling",
               "labelEn": "Microneedling",
-              "labelHi": "Microneedling"
+              "labelHi": "माइक्रोनीडलिंग"
             },
             {
               "id": "acne_pigmentation",
               "labelEn": "Acne & pigmentation",
-              "labelHi": "Acne & pigmentation"
+              "labelHi": "एक्ने और पिग्मेंटेशन"
             },
             {
               "id": "skin_type_identification",
               "labelEn": "Skin type identification",
-              "labelHi": "Skin type identification"
+              "labelHi": "स्किन टाइप पहचान"
             },
             {
               "id": "laser_hair_reduction",
               "labelEn": "Laser hair reduction",
-              "labelHi": "Laser hair reduction"
+              "labelHi": "लेज़र हेयर रिडक्शन"
             },
             {
               "id": "laser_toning",
               "labelEn": "Laser toning",
-              "labelHi": "Laser toning"
+              "labelHi": "लेज़र टोनिंग"
             },
             {
               "id": "photo_facials",
               "labelEn": "Photo facials",
-              "labelHi": "Photo facials"
+              "labelHi": "फोटो फेशियल"
             },
             {
               "id": "rf_skin_tightening",
               "labelEn": "RF skin tightening",
-              "labelHi": "RF skin tightening"
+              "labelHi": "RF स्किन टाइटनिंग"
             },
             {
               "id": "led_therapy",
               "labelEn": "LED therapy",
-              "labelHi": "LED therapy"
+              "labelHi": "LED थेरेपी करना"
             },
             {
               "id": "waxing",
               "labelEn": "Waxing",
-              "labelHi": "Waxing"
+              "labelHi": "वैक्सिंग"
             },
             {
               "id": "product_knowledge",
               "labelEn": "Product knowledge",
-              "labelHi": "Product knowledge"
+              "labelHi": "प्रोडक्ट नॉलेज"
             },
             {
               "id": "hygiene_safety",
               "labelEn": "Hygiene & safety",
-              "labelHi": "Hygiene & safety"
+              "labelHi": "हाइजीन और सेफ्टी का नॉलेज"
             },
             {
               "id": "professionalism",
               "labelEn": "Professionalism",
-              "labelHi": "Professionalism"
+              "labelHi": "काम के प्रति जिम्मेदारी"
             }
           ]
         },
@@ -1715,82 +1715,82 @@
             {
               "id": "nail_trimming_shaping_buffing",
               "labelEn": "Nail trimming, shaping & buffing",
-              "labelHi": "Nail trimming, shaping & buffing"
+              "labelHi": "नेल ट्रिमिंग, शेपिंग और बफिंग"
             },
             {
               "id": "cuticle_care",
               "labelEn": "Cuticle care",
-              "labelHi": "Cuticle care"
+              "labelHi": "क्यूटिकल केयर"
             },
             {
               "id": "hand_foot_exfoliation",
               "labelEn": "Hand & foot exfoliation",
-              "labelHi": "Hand & foot exfoliation"
+              "labelHi": "हाथ और पैर एक्सफोलिएशन"
             },
             {
               "id": "manicure",
               "labelEn": "Manicure",
-              "labelHi": "Manicure"
+              "labelHi": "मैनीक्योर"
             },
             {
               "id": "pedicure",
               "labelEn": "Pedicure",
-              "labelHi": "Pedicure"
+              "labelHi": "पेडीक्योर"
             },
             {
               "id": "spa_manicure_pedicure",
               "labelEn": "Spa manicure & pedicure",
-              "labelHi": "Spa manicure & pedicure"
+              "labelHi": "स्पा मैनीक्योर और पेडीक्योर"
             },
             {
               "id": "tan_removal",
               "labelEn": "Tan removal",
-              "labelHi": "Tan removal"
+              "labelHi": "टैन रिमूवल"
             },
             {
               "id": "callus_removal",
               "labelEn": "Callus removal",
-              "labelHi": "Callus removal"
+              "labelHi": "कैलस रिमूवल"
             },
             {
               "id": "hand_massage",
               "labelEn": "Hand massage",
-              "labelHi": "Hand massage"
+              "labelHi": "हाथ मसाज"
             },
             {
               "id": "foot_lowerleg_massage",
               "labelEn": "Foot & lower-leg massage",
-              "labelHi": "Foot & lower-leg massage"
+              "labelHi": "पैर और निचला पैर मसाज"
             },
             {
               "id": "smooth_polish",
               "labelEn": "Smooth polish",
-              "labelHi": "Smooth polish"
+              "labelHi": "स्मूद पॉलिश"
             },
             {
               "id": "french_polish",
               "labelEn": "French polish",
-              "labelHi": "French polish"
+              "labelHi": "फ्रेंच पॉलिश"
             },
             {
               "id": "gel_polish",
               "labelEn": "Gel polish",
-              "labelHi": "Gel polish"
+              "labelHi": "जेल पॉलिश"
             },
             {
               "id": "hygiene_safety",
               "labelEn": "Hygiene & safety",
-              "labelHi": "Hygiene & safety"
+              "labelHi": "हाइजीन और सेफ्टी का नॉलेज"
             },
             {
               "id": "product_knowledge",
               "labelEn": "Product knowledge",
-              "labelHi": "Product knowledge"
+              "labelHi": "प्रोडक्ट नॉलेज"
             },
             {
               "id": "professionalism",
               "labelEn": "Professionalism",
-              "labelHi": "Professionalism"
+              "labelHi": "काम के प्रति जिम्मेदारी"
             }
           ]
         },
@@ -1802,127 +1802,127 @@
             {
               "id": "basic_makeup",
               "labelEn": "Basic Makeup",
-              "labelHi": "Basic Makeup"
+              "labelHi": "बेसिक मेकअप करना"
             },
             {
               "id": "advance_makeup",
               "labelEn": "Advance Makeup",
-              "labelHi": "Advance Makeup"
+              "labelHi": "एडवांस मेकअप करना"
             },
             {
               "id": "party_makeup",
               "labelEn": "Party Makeup",
-              "labelHi": "Party Makeup"
+              "labelHi": "पार्टी मेकअप करना"
             },
             {
               "id": "bridal_makeup",
               "labelEn": "Bridal Makeup",
-              "labelHi": "Bridal Makeup"
+              "labelHi": "ब्राइडल मेकअप करना"
             },
             {
               "id": "hd_makeup",
               "labelEn": "HD Makeup",
-              "labelHi": "HD Makeup"
+              "labelHi": "एचडी मेकअप करना"
             },
             {
               "id": "waterproof_makeup",
               "labelEn": "Waterproof Makeup",
-              "labelHi": "Waterproof Makeup"
+              "labelHi": "वॉटरप्रूफ मेकअप करना"
             },
             {
               "id": "longlasting_makeup",
               "labelEn": "Long-Lasting Makeup",
-              "labelHi": "Long-Lasting Makeup"
+              "labelHi": "लॉन्ग-लास्टिंग मेकअप करना"
             },
             {
               "id": "airbrush",
               "labelEn": "Airbrush",
-              "labelHi": "Airbrush"
+              "labelHi": "एयरब्रश"
             },
             {
               "id": "3d_makeup",
               "labelEn": "3D Makeup",
-              "labelHi": "3D Makeup"
+              "labelHi": "3D मेकअप"
             },
             {
               "id": "celebrity_fashion_makeup",
               "labelEn": "Celebrity & Fashion Makeup",
-              "labelHi": "Celebrity & Fashion Makeup"
+              "labelHi": "सेलेब्रिटी और फैशन मेकअप"
             },
             {
               "id": "natural_glam_matte_dewy_looks",
               "labelEn": "Natural, Glam, Matte, Dewy Looks",
-              "labelHi": "Natural, Glam, Matte, Dewy Looks"
+              "labelHi": "नेचुरल, ग्लैम, मैट, ड्यू लुक"
             },
             {
               "id": "skin_prepping_priming",
               "labelEn": "Skin Prepping & Priming",
-              "labelHi": "Skin Prepping & Priming"
+              "labelHi": "स्किन प्रिपिंग और प्राइमिंग"
             },
             {
               "id": "colour_correction",
               "labelEn": "Colour Correction",
-              "labelHi": "Colour Correction"
+              "labelHi": "कलर करेक्शन"
             },
             {
               "id": "eye_shadow_blending",
               "labelEn": "Eye Shadow Blending",
-              "labelHi": "Eye Shadow Blending"
+              "labelHi": "आई शैडो ब्लेंडिंग"
             },
             {
               "id": "eyeliner_styles",
               "labelEn": "Eyeliner Styles",
-              "labelHi": "Eyeliner Styles"
+              "labelHi": "आईलाइनर स्टाइल"
             },
             {
               "id": "eyelash_application",
               "labelEn": "Eyelash Application",
-              "labelHi": "Eyelash Application"
+              "labelHi": "आईलैश लगाना"
             },
             {
               "id": "threading",
               "labelEn": "Threading",
-              "labelHi": "Threading"
+              "labelHi": "थ्रेडिंग"
             },
             {
               "id": "contour",
               "labelEn": "Contour",
-              "labelHi": "Contour"
+              "labelHi": "कॉन्टूर करना"
             },
             {
               "id": "blush",
               "labelEn": "Blush",
-              "labelHi": "Blush"
+              "labelHi": "ब्लश लगाना"
             },
             {
               "id": "highlight",
               "labelEn": "Highlight",
-              "labelHi": "Highlight"
+              "labelHi": "हाइलाइट करना"
             },
             {
               "id": "product_knowledge",
               "labelEn": "Product Knowledge",
-              "labelHi": "Product Knowledge"
+              "labelHi": "प्रोडक्ट नॉलेज"
             },
             {
               "id": "hygiene_safety",
               "labelEn": "Hygiene & Safety",
-              "labelHi": "Hygiene & Safety"
+              "labelHi": "हाइजीन और सेफ्टी का नॉलेज"
             },
             {
               "id": "salon_management",
               "labelEn": "Salon Management",
-              "labelHi": "Salon Management"
+              "labelHi": "सैलून मैनेजमेंट का नॉलेज"
             },
             {
               "id": "professionalism",
               "labelEn": "Professionalism",
-              "labelHi": "Professionalism"
+              "labelHi": "काम के प्रति जिम्मेदारी"
             },
             {
               "id": "open_to_travel",
               "labelEn": "Open to travel",
-              "labelHi": "Open to travel"
+              "labelHi": "ट्रैवल के लिए तैयार"
             }
           ]
         },
@@ -1974,7 +1974,7 @@
             {
               "id": "open_to_travel",
               "labelEn": "Open to travel",
-              "labelHi": "Open to travel"
+              "labelHi": "ट्रैवल के लिए तैयार"
             }
           ]
         },
@@ -1986,77 +1986,77 @@
             {
               "id": "nail_cleaning_shaping_filing",
               "labelEn": "Nail cleaning, shaping & filing",
-              "labelHi": "Nail cleaning, shaping & filing"
+              "labelHi": "नाखून की सफाई, शेपिंग और फाइलिंग"
             },
             {
               "id": "cuticle_care_buffing",
               "labelEn": "Cuticle care & buffing",
-              "labelHi": "Cuticle care & buffing"
+              "labelHi": "क्यूटिकल केयर और बफिंग"
             },
             {
               "id": "freehand_nail_art",
               "labelEn": "Freehand nail art",
-              "labelHi": "Freehand nail art"
+              "labelHi": "फ्रीहैंड नेल आर्ट"
             },
             {
               "id": "glitter_stones_chrome_foil_stickers",
               "labelEn": "Glitter, stones, chrome, foil, stickers",
-              "labelHi": "Glitter, stones, chrome, foil, stickers"
+              "labelHi": "ग्लिटर, स्टोन्स, क्रोम, फॉइल, स्टिकर्स"
             },
             {
               "id": "ombre_gradient",
               "labelEn": "Ombre & gradient",
-              "labelHi": "Ombre & gradient"
+              "labelHi": "ओम्ब्रे और ग्रेडिएंट"
             },
             {
               "id": "3d_nail_art",
               "labelEn": "3D nail art",
-              "labelHi": "3D nail art"
+              "labelHi": "3D नेल आर्ट"
             },
             {
               "id": "acrylic_gel_extensions",
               "labelEn": "Acrylic/gel extensions",
-              "labelHi": "Acrylic/gel extensions"
+              "labelHi": "एक्रिलिक/जेल एक्सटेंशंस"
             },
             {
               "id": "polygel_extensions",
               "labelEn": "Polygel extensions",
-              "labelHi": "Polygel extensions"
+              "labelHi": "पॉलीजेल एक्सटेंशंस"
             },
             {
               "id": "french_extensions",
               "labelEn": "French extensions",
-              "labelHi": "French extensions"
+              "labelHi": "फ्रेंच एक्सटेंशंस"
             },
             {
               "id": "refill_repair_removal",
               "labelEn": "Refill, repair & removal",
-              "labelHi": "Refill, repair & removal"
+              "labelHi": "रिफिल, रिपेयर और रिमूवल"
             },
             {
               "id": "gel_polish_uv_led",
               "labelEn": "Gel polish UV/LED",
-              "labelHi": "Gel polish UV/LED"
+              "labelHi": "जेल पॉलिश UV/LED करना"
             },
             {
               "id": "classic_matte_chrome_french_polish",
               "labelEn": "Classic/matte/chrome/French polish",
-              "labelHi": "Classic/matte/chrome/French polish"
+              "labelHi": "क्लासिक/मैट/क्रोम/फ्रेंच पॉलिश"
             },
             {
               "id": "nail_shapes",
               "labelEn": "Nail shapes",
-              "labelHi": "Nail shapes"
+              "labelHi": "नेल शेप्स"
             },
             {
               "id": "top_base_gels_acrylics_knowledge",
               "labelEn": "Top/base/gels/acrylics knowledge",
-              "labelHi": "Top/base/gels/acrylics knowledge"
+              "labelHi": "टॉप/बेस/जेल/एक्रिलिक नॉलेज"
             },
             {
               "id": "open_to_travel",
               "labelEn": "Open to travel",
-              "labelHi": "Open to travel"
+              "labelHi": "ट्रैवल के लिए तैयार"
             }
           ]
         }
@@ -2064,8 +2064,8 @@
     },
     {
       "id": "support_operations",
-      "labelEn": "Support & operations",
-      "labelHi": "सपोर्ट और संचालन",
+      "labelEn": "Salon Management & Housekeeping",
+      "labelHi": "सैलून मैनेजमेंट और हाउसकीपिंग",
       "categories": [
         {
           "id": "salon_helper_housekeeping",
@@ -2075,42 +2075,42 @@
             {
               "id": "salon_floor_stations_cleaning",
               "labelEn": "Salon floor & stations cleaning",
-              "labelHi": "Salon floor & stations cleaning"
+              "labelHi": "सैलून फ्लोर और स्टेशन की सफाई"
             },
             {
               "id": "washrooms_reception_cleanliness",
               "labelEn": "Washrooms & reception cleanliness",
-              "labelHi": "Washrooms & reception cleanliness"
+              "labelHi": "वॉशरूम और रिसेप्शन की सफाई"
             },
             {
               "id": "assisting_stylists_therapists",
               "labelEn": "Assisting stylists & therapists",
-              "labelHi": "Assisting stylists & therapists"
+              "labelHi": "स्टाइलिस्ट और थेरेपिस्ट की सहायता"
             },
             {
               "id": "setting_up_stations",
               "labelEn": "Setting up stations",
-              "labelHi": "Setting up stations"
+              "labelHi": "स्टेशन तैयार करना"
             },
             {
               "id": "towel_laundry",
               "labelEn": "Towel & laundry",
-              "labelHi": "Towel & laundry"
+              "labelHi": "तौलिए और लॉन्ड्री"
             },
             {
               "id": "water_tea_service",
               "labelEn": "Water/tea service",
-              "labelHi": "Water/tea service"
+              "labelHi": "पानी/चाय सर्विस"
             },
             {
               "id": "organizing_shelves",
               "labelEn": "Organizing shelves",
-              "labelHi": "Organizing shelves"
+              "labelHi": "शेल्फ़ व्यवस्थित करना"
             },
             {
               "id": "neat_appearance",
               "labelEn": "Neat appearance",
-              "labelHi": "Neat appearance"
+              "labelHi": "साफ-सुथरा रूप"
             }
           ]
         },
@@ -2122,42 +2122,42 @@
             {
               "id": "removing_hair_dust_waste",
               "labelEn": "Removing hair, dust & waste",
-              "labelHi": "Removing hair, dust & waste"
+              "labelHi": "बाल, धूल और कचरा हटाना"
             },
             {
               "id": "sweeping_mopping",
               "labelEn": "Sweeping & mopping",
-              "labelHi": "Sweeping & mopping"
+              "labelHi": "झाड़ू और पोछा लगाना"
             },
             {
               "id": "wiping_mirrors_counters",
               "labelEn": "Wiping mirrors & counters",
-              "labelHi": "Wiping mirrors & counters"
+              "labelHi": "शीशे और काउंटर पोछना"
             },
             {
               "id": "chairs_stations_clean",
               "labelEn": "Chairs & stations clean",
-              "labelHi": "Chairs & stations clean"
+              "labelHi": "कुर्सी और स्टेशन साफ करना"
             },
             {
               "id": "emptying_bins",
               "labelEn": "Emptying bins",
-              "labelHi": "Emptying bins"
+              "labelHi": "डस्टबिन खाली करना"
             },
             {
               "id": "waste_segregation",
               "labelEn": "Waste segregation",
-              "labelHi": "Waste segregation"
+              "labelHi": "कचरा अलग करना"
             },
             {
               "id": "washroom_cleanliness",
               "labelEn": "Washroom cleanliness",
-              "labelHi": "Washroom cleanliness"
+              "labelHi": "वॉशरूम की सफाई"
             },
             {
               "id": "neat_appearance",
               "labelEn": "Neat appearance",
-              "labelHi": "Neat appearance"
+              "labelHi": "साफ-सुथरा रूप"
             }
           ]
         },
@@ -2169,37 +2169,37 @@
             {
               "id": "proper_shampooing",
               "labelEn": "Proper shampooing",
-              "labelHi": "Proper shampooing"
+              "labelHi": "सही तरीके से शैम्पू करना"
             },
             {
               "id": "gentle_scalp_massage",
               "labelEn": "Gentle scalp massage",
-              "labelHi": "Gentle scalp massage"
+              "labelHi": "हल्की सिर की मालिश"
             },
             {
               "id": "preparing_client_for_services",
               "labelEn": "Preparing client for services",
-              "labelHi": "Preparing client for services"
+              "labelHi": "क्लाइंट को सर्विस के लिए तैयार करना"
             },
             {
               "id": "assisting_stylists",
               "labelEn": "Assisting stylists",
-              "labelHi": "Assisting stylists"
+              "labelHi": "स्टाइलिस्ट की सहायता"
             },
             {
               "id": "shampoo_knowledge",
               "labelEn": "Shampoo knowledge",
-              "labelHi": "Shampoo knowledge"
+              "labelHi": "शैम्पू का नॉलेज"
             },
             {
               "id": "personal_hygiene",
               "labelEn": "Personal hygiene",
-              "labelHi": "Personal hygiene"
+              "labelHi": "व्यक्तिगत हाइजीन"
             },
             {
               "id": "towels_laundry",
               "labelEn": "Towels & laundry",
-              "labelHi": "Towels & laundry"
+              "labelHi": "तौलिए और लॉन्ड्री"
             }
           ]
         },
@@ -2211,22 +2211,22 @@
             {
               "id": "tea_coffee_beverages",
               "labelEn": "Tea, coffee & beverages",
-              "labelHi": "Tea, coffee & beverages"
+              "labelHi": "चाय, कॉफी और पेय"
             },
             {
               "id": "serving_water_refreshments",
               "labelEn": "Serving water & refreshments",
-              "labelHi": "Serving water & refreshments"
+              "labelHi": "पानी और रिफ्रेशमेंट सर्व करना"
             },
             {
               "id": "pantry_cleanliness",
               "labelEn": "Pantry cleanliness",
-              "labelHi": "Pantry cleanliness"
+              "labelHi": "पेंट्री की सफाई"
             },
             {
               "id": "small_errands",
               "labelEn": "Small errands",
-              "labelHi": "Small errands"
+              "labelHi": "छोटे-मोटे काम"
             }
           ]
         },
@@ -2238,67 +2238,67 @@
             {
               "id": "greeting_clients",
               "labelEn": "Greeting clients",
-              "labelHi": "Greeting clients"
+              "labelHi": "क्लाइंट का स्वागत करना"
             },
             {
               "id": "understanding_needs_guiding",
               "labelEn": "Understanding needs & guiding",
-              "labelHi": "Understanding needs & guiding"
+              "labelHi": "ज़रूरत समझकर गाइड करना"
             },
             {
               "id": "scheduling_rescheduling",
               "labelEn": "Scheduling & rescheduling",
-              "labelHi": "Scheduling & rescheduling"
+              "labelHi": "अपॉइंटमेंट शेड्यूल और रीशेड्यूल"
             },
             {
               "id": "walkins_wait_times",
               "labelEn": "Walk-ins & wait times",
-              "labelHi": "Walk-ins & wait times"
+              "labelHi": "वॉक-इन और वेटिंग टाइम"
             },
             {
               "id": "coordinating_with_staff",
               "labelEn": "Coordinating with staff",
-              "labelHi": "Coordinating with staff"
+              "labelHi": "स्टाफ के साथ समन्वय"
             },
             {
               "id": "bookings_queries",
               "labelEn": "Bookings & queries",
-              "labelHi": "Bookings & queries"
+              "labelHi": "बुकिंग और सवाल-जवाब"
             },
             {
               "id": "bills_payments",
               "labelEn": "Bills & payments",
-              "labelHi": "Bills & payments"
+              "labelHi": "बिल और पेमेंट"
             },
             {
               "id": "client_records",
               "labelEn": "Client records",
-              "labelHi": "Client records"
+              "labelHi": "क्लाइंट रिकॉर्ड"
             },
             {
               "id": "daily_register",
               "labelEn": "Daily register",
-              "labelHi": "Daily register"
+              "labelHi": "दैनिक रजिस्टर"
             },
             {
               "id": "salon_services_knowledge",
               "labelEn": "Salon services knowledge",
-              "labelHi": "Salon services knowledge"
+              "labelHi": "सैलून सर्विसेज का नॉलेज"
             },
             {
               "id": "grooming",
               "labelEn": "Grooming",
-              "labelHi": "Grooming"
+              "labelHi": "ग्रूमिंग"
             },
             {
               "id": "basic_computer_skills",
               "labelEn": "Basic computer skills",
-              "labelHi": "Basic computer skills"
+              "labelHi": "बेसिक कंप्यूटर स्किल्स"
             },
             {
               "id": "whatsapp_sms_email",
               "labelEn": "WhatsApp/SMS/email",
-              "labelHi": "WhatsApp/SMS/email"
+              "labelHi": "व्हाट्सऐप/एसएमएस/ईमेल"
             }
           ]
         },
@@ -2310,97 +2310,97 @@
             {
               "id": "daily_operations",
               "labelEn": "Daily operations",
-              "labelHi": "Daily operations"
+              "labelHi": "दैनिक ऑपरेशंस"
             },
             {
               "id": "staff_schedules",
               "labelEn": "Staff schedules",
-              "labelHi": "Staff schedules"
+              "labelHi": "स्टाफ शेड्यूल"
             },
             {
               "id": "queries_complaints",
               "labelEn": "Queries & complaints",
-              "labelHi": "Queries & complaints"
+              "labelHi": "सवाल और शिकायत"
             },
             {
               "id": "service_quality",
               "labelEn": "Service quality",
-              "labelHi": "Service quality"
+              "labelHi": "सर्विस क्वालिटी"
             },
             {
               "id": "client_retention",
               "labelEn": "Client retention",
-              "labelHi": "Client retention"
+              "labelHi": "क्लाइंट रिटेंशन"
             },
             {
               "id": "supervising_team",
               "labelEn": "Supervising team",
-              "labelHi": "Supervising team"
+              "labelHi": "सुपरविज़न टीम"
             },
             {
               "id": "training_motivation",
               "labelEn": "Training & motivation",
-              "labelHi": "Training & motivation"
+              "labelHi": "ट्रेनिंग और प्रेरणा"
             },
             {
               "id": "team_meetings",
               "labelEn": "Team meetings",
-              "labelHi": "Team meetings"
+              "labelHi": "टीम मीटिंग"
             },
             {
               "id": "targets",
               "labelEn": "Targets",
-              "labelHi": "Targets"
+              "labelHi": "टार्गेट"
             },
             {
               "id": "upselling_retail",
               "labelEn": "Upselling & retail",
-              "labelHi": "Upselling & retail"
+              "labelHi": "अपसेल और रिटेल"
             },
             {
               "id": "offers_promotions",
               "labelEn": "Offers & promotions",
-              "labelHi": "Offers & promotions"
+              "labelHi": "ऑफर और प्रमोशन"
             },
             {
               "id": "cash_register_closing",
               "labelEn": "Cash register & closing",
-              "labelHi": "Cash register & closing"
+              "labelHi": "कैश रजिस्टर और क्लोज़िंग"
             },
             {
               "id": "stock_wastage",
               "labelEn": "Stock & wastage",
-              "labelHi": "Stock & wastage"
+              "labelHi": "स्टॉक और वेस्टेज"
             },
             {
               "id": "safety_protocols",
               "labelEn": "Safety protocols",
-              "labelHi": "Safety protocols"
+              "labelHi": "सेफ्टी प्रोटोकॉल"
             },
             {
               "id": "reporting",
               "labelEn": "Reporting",
-              "labelHi": "Reporting"
+              "labelHi": "रिपोर्टिंग"
             },
             {
               "id": "performance_tracking",
               "labelEn": "Performance tracking",
-              "labelHi": "Performance tracking"
+              "labelHi": "परफॉर्मेंस ट्रैकिंग"
             },
             {
               "id": "communication_skills",
               "labelEn": "Communication skills",
-              "labelHi": "Communication skills"
+              "labelHi": "कम्युनिकेशन स्किल्स"
             },
             {
               "id": "problemsolving",
               "labelEn": "Problem-solving",
-              "labelHi": "Problem-solving"
+              "labelHi": "समस्या-सुलझाना"
             },
             {
               "id": "professional_appearance",
               "labelEn": "Professional appearance",
-              "labelHi": "Professional appearance"
+              "labelHi": "प्रोफेशनल रूप"
             }
           ]
         },
@@ -2412,87 +2412,87 @@
             {
               "id": "assist_manager_daily",
               "labelEn": "Assist manager daily",
-              "labelHi": "Assist manager daily"
+              "labelHi": "Assist मैनेजर दैनिक करना"
             },
             {
               "id": "walkins_appointments",
               "labelEn": "Walk-ins & appointments",
-              "labelHi": "Walk-ins & appointments"
+              "labelHi": "वॉक-इन और अपॉइंटमेंट"
             },
             {
               "id": "greeting_clients",
               "labelEn": "Greeting clients",
-              "labelHi": "Greeting clients"
+              "labelHi": "क्लाइंट का स्वागत करना"
             },
             {
               "id": "complaints",
               "labelEn": "Complaints",
-              "labelHi": "Complaints"
+              "labelHi": "शिकायत"
             },
             {
               "id": "client_satisfaction",
               "labelEn": "Client satisfaction",
-              "labelHi": "Client satisfaction"
+              "labelHi": "क्लाइंट satisfaction करना"
             },
             {
               "id": "training_newcomers",
               "labelEn": "Training newcomers",
-              "labelHi": "Training newcomers"
+              "labelHi": "ट्रेनिंग नए लोग"
             },
             {
               "id": "service_quality_monitoring",
               "labelEn": "Service quality monitoring",
-              "labelHi": "Service quality monitoring"
+              "labelHi": "सर्विस क्वालिटी मॉनिटरिंग"
             },
             {
               "id": "promotions",
               "labelEn": "Promotions",
-              "labelHi": "Promotions"
+              "labelHi": "प्रमोशन"
             },
             {
               "id": "targets",
               "labelEn": "Targets",
-              "labelHi": "Targets"
+              "labelHi": "टार्गेट"
             },
             {
               "id": "product_displays",
               "labelEn": "Product displays",
-              "labelHi": "Product displays"
+              "labelHi": "प्रोडक्ट डिस्प्ले"
             },
             {
               "id": "billing_payments",
               "labelEn": "Billing & payments",
-              "labelHi": "Billing & payments"
+              "labelHi": "बिलिंग और पेमेंट"
             },
             {
               "id": "appointments_followups",
               "labelEn": "Appointments & follow-ups",
-              "labelHi": "Appointments & follow-ups"
+              "labelHi": "अपॉइंटमेंट और follow-ups करना"
             },
             {
               "id": "records",
               "labelEn": "Records",
-              "labelHi": "Records"
+              "labelHi": "रिकॉर्ड्स"
             },
             {
               "id": "stock_checks",
               "labelEn": "Stock checks",
-              "labelHi": "Stock checks"
+              "labelHi": "स्टॉक चेक"
             },
             {
               "id": "salon_cleanliness",
               "labelEn": "Salon cleanliness",
-              "labelHi": "Salon cleanliness"
+              "labelHi": "सैलून सफाई"
             },
             {
               "id": "communication_grooming",
               "labelEn": "Communication & grooming",
-              "labelHi": "Communication & grooming"
+              "labelHi": "कम्युनिकेशन और ग्रूमिंग"
             },
             {
               "id": "basic_problemsolving",
               "labelEn": "Basic problem-solving",
-              "labelHi": "Basic problem-solving"
+              "labelHi": "बेसिक समस्या-सुलझाना"
             }
           ]
         },
@@ -2504,37 +2504,37 @@
             {
               "id": "daytoday_activities",
               "labelEn": "Day-to-day activities",
-              "labelHi": "Day-to-day activities"
+              "labelHi": "Day-to-day activities करना"
             },
             {
               "id": "service_monitoring",
               "labelEn": "Service monitoring",
-              "labelHi": "Service monitoring"
+              "labelHi": "सर्विस मॉनिटरिंग"
             },
             {
               "id": "staff_coordination",
               "labelEn": "Staff coordination",
-              "labelHi": "Staff coordination"
+              "labelHi": "स्टाफ coordination का नॉलेज"
             },
             {
               "id": "greeting_clients",
               "labelEn": "Greeting clients",
-              "labelHi": "Greeting clients"
+              "labelHi": "क्लाइंट का स्वागत करना"
             },
             {
               "id": "stock_monitoring",
               "labelEn": "Stock monitoring",
-              "labelHi": "Stock monitoring"
+              "labelHi": "स्टॉक मॉनिटरिंग"
             },
             {
               "id": "reporting_to_manager",
               "labelEn": "Reporting to manager",
-              "labelHi": "Reporting to manager"
+              "labelHi": "रिपोर्टिंग to मैनेजर"
             },
             {
               "id": "grooming",
               "labelEn": "Grooming",
-              "labelHi": "Grooming"
+              "labelHi": "ग्रूमिंग"
             }
           ]
         },
@@ -2546,67 +2546,67 @@
             {
               "id": "welcoming_clients",
               "labelEn": "Welcoming clients",
-              "labelHi": "Welcoming clients"
+              "labelHi": "स्वागत clients करना"
             },
             {
               "id": "refreshments_comfort",
               "labelEn": "Refreshments & comfort",
-              "labelHi": "Refreshments & comfort"
+              "labelHi": "रिफ्रेशमेंट और आराम"
             },
             {
               "id": "professional_attitude",
               "labelEn": "Professional attitude",
-              "labelHi": "Professional attitude"
+              "labelHi": "प्रोफेशनल रवैया"
             },
             {
               "id": "understanding_needs",
               "labelEn": "Understanding needs",
-              "labelHi": "Understanding needs"
+              "labelHi": "समझ ज़रूरत"
             },
             {
               "id": "vip_care",
               "labelEn": "VIP care",
-              "labelHi": "VIP care"
+              "labelHi": "वीआईपी केयर"
             },
             {
               "id": "communication",
               "labelEn": "Communication",
-              "labelHi": "Communication"
+              "labelHi": "कम्युनिकेशन"
             },
             {
               "id": "listening_to_concerns",
               "labelEn": "Listening to concerns",
-              "labelHi": "Listening to concerns"
+              "labelHi": "सुनना to चिंता"
             },
             {
               "id": "escalation",
               "labelEn": "Escalation",
-              "labelHi": "Escalation"
+              "labelHi": "एस्केलेशन"
             },
             {
               "id": "waiting_time",
               "labelEn": "Waiting time",
-              "labelHi": "Waiting time"
+              "labelHi": "वेटिंग समय"
             },
             {
               "id": "offers_memberships",
               "labelEn": "Offers & memberships",
-              "labelHi": "Offers & memberships"
+              "labelHi": "ऑफर और मेंबरशिप"
             },
             {
               "id": "grooming",
               "labelEn": "Grooming",
-              "labelHi": "Grooming"
+              "labelHi": "ग्रूमिंग"
             },
             {
               "id": "appointment_help",
               "labelEn": "Appointment help",
-              "labelHi": "Appointment help"
+              "labelHi": "Appointment help करना"
             },
             {
               "id": "billing_support",
               "labelEn": "Billing support",
-              "labelHi": "Billing support"
+              "labelHi": "बिलिंग support करना"
             }
           ]
         },
@@ -2618,42 +2618,42 @@
             {
               "id": "generating_bills",
               "labelEn": "Generating bills",
-              "labelHi": "Generating bills"
+              "labelHi": "बनाना बिल"
             },
             {
               "id": "cash_payments",
               "labelEn": "Cash & payments",
-              "labelHi": "Cash & payments"
+              "labelHi": "कैश और पेमेंट"
             },
             {
               "id": "daily_register",
               "labelEn": "Daily register",
-              "labelHi": "Daily register"
+              "labelHi": "दैनिक रजिस्टर"
             },
             {
               "id": "billing_software",
               "labelEn": "Billing software",
-              "labelHi": "Billing software"
+              "labelHi": "बिलिंग सॉफ्टवेयर"
             },
             {
               "id": "greeting_at_counter",
               "labelEn": "Greeting at counter",
-              "labelHi": "Greeting at counter"
+              "labelHi": "स्वागत at काउंटर"
             },
             {
               "id": "manager_coordination",
               "labelEn": "Manager coordination",
-              "labelHi": "Manager coordination"
+              "labelHi": "मैनेजर coordination का नॉलेज"
             },
             {
               "id": "grooming",
               "labelEn": "Grooming",
-              "labelHi": "Grooming"
+              "labelHi": "ग्रूमिंग"
             },
             {
               "id": "appointments",
               "labelEn": "Appointments",
-              "labelHi": "Appointments"
+              "labelHi": "अपॉइंटमेंट"
             }
           ]
         },
@@ -2665,42 +2665,42 @@
             {
               "id": "lead_generation",
               "labelEn": "Lead generation",
-              "labelHi": "Lead generation"
+              "labelHi": "लीड जनरेशन"
             },
             {
               "id": "product_service_knowledge",
               "labelEn": "Product/service knowledge",
-              "labelHi": "Product/service knowledge"
+              "labelHi": "प्रोडक्ट/सर्विस नॉलेज"
             },
             {
               "id": "crm",
               "labelEn": "CRM",
-              "labelHi": "CRM"
+              "labelHi": "सीआरएम"
             },
             {
               "id": "communication",
               "labelEn": "Communication",
-              "labelHi": "Communication"
+              "labelHi": "कम्युनिकेशन"
             },
             {
               "id": "sales_reporting",
               "labelEn": "Sales reporting",
-              "labelHi": "Sales reporting"
+              "labelHi": "सेल्स रिपोर्टिंग"
             },
             {
               "id": "coordination",
               "labelEn": "Coordination",
-              "labelHi": "Coordination"
+              "labelHi": "Coordination का नॉलेज"
             },
             {
               "id": "market_understanding",
               "labelEn": "Market understanding",
-              "labelHi": "Market understanding"
+              "labelHi": "मार्केट समझ"
             },
             {
               "id": "basic_admin",
               "labelEn": "Basic admin",
-              "labelHi": "Basic admin"
+              "labelHi": "बेसिक एडमिन"
             }
           ]
         }
@@ -2709,7 +2709,7 @@
     {
       "id": "academy",
       "labelEn": "Academy",
-      "labelHi": "अकादमी",
+      "labelHi": "Academy",
       "categories": [
         {
           "id": "academy_head",
@@ -2719,47 +2719,47 @@
             {
               "id": "academic_operational_leadership",
               "labelEn": "Academic & operational leadership",
-              "labelHi": "Academic & operational leadership"
+              "labelHi": "एकेडमिक और ऑपरेशनल लीडरशिप"
             },
             {
               "id": "curriculum_training_quality",
               "labelEn": "Curriculum & training quality",
-              "labelHi": "Curriculum & training quality"
+              "labelHi": "करिकुलम और ट्रेनिंग क्वालिटी"
             },
             {
               "id": "faculty_management",
               "labelEn": "Faculty management",
-              "labelHi": "Faculty management"
+              "labelHi": "फैकल्टी मैनेजमेंट"
             },
             {
               "id": "student_experience",
               "labelEn": "Student experience",
-              "labelHi": "Student experience"
+              "labelHi": "स्टूडेंट एक्सपीरियंस"
             },
             {
               "id": "admissions_marketing",
               "labelEn": "Admissions & marketing",
-              "labelHi": "Admissions & marketing"
+              "labelHi": "एडमिशंस और मार्केटिंग"
             },
             {
               "id": "quality_compliance",
               "labelEn": "Quality & compliance",
-              "labelHi": "Quality & compliance"
+              "labelHi": "क्वालिटी और कम्प्लायंस"
             },
             {
               "id": "planning_reporting",
               "labelEn": "Planning & reporting",
-              "labelHi": "Planning & reporting"
+              "labelHi": "प्लानिंग और रिपोर्टिंग"
             },
             {
               "id": "industry_placement",
               "labelEn": "Industry & placement",
-              "labelHi": "Industry & placement"
+              "labelHi": "इंडस्ट्री और प्लेसमेंट"
             },
             {
               "id": "report_management",
               "labelEn": "Report management",
-              "labelHi": "Report management"
+              "labelHi": "रिपोर्ट मैनेजमेंट"
             }
           ]
         },
@@ -2771,42 +2771,42 @@
             {
               "id": "academic_leadership",
               "labelEn": "Academic leadership",
-              "labelHi": "Academic leadership"
+              "labelHi": "एकेडमिक लीडरशिप"
             },
             {
               "id": "training_quality",
               "labelEn": "Training quality",
-              "labelHi": "Training quality"
+              "labelHi": "ट्रेनिंग क्वालिटी"
             },
             {
               "id": "faculty",
               "labelEn": "Faculty",
-              "labelHi": "Faculty"
+              "labelHi": "फैकल्टी"
             },
             {
               "id": "student_experience",
               "labelEn": "Student experience",
-              "labelHi": "Student experience"
+              "labelHi": "स्टूडेंट एक्सपीरियंस"
             },
             {
               "id": "admissions_marketing",
               "labelEn": "Admissions & marketing",
-              "labelHi": "Admissions & marketing"
+              "labelHi": "एडमिशंस और मार्केटिंग"
             },
             {
               "id": "compliance",
               "labelEn": "Compliance",
-              "labelHi": "Compliance"
+              "labelHi": "कम्प्लायंस"
             },
             {
               "id": "reporting",
               "labelEn": "Reporting",
-              "labelHi": "Reporting"
+              "labelHi": "रिपोर्टिंग"
             },
             {
               "id": "placement_coordination",
               "labelEn": "Placement coordination",
-              "labelHi": "Placement coordination"
+              "labelHi": "प्लेसमेंट coordination का नॉलेज"
             }
           ]
         },
@@ -2818,89 +2818,89 @@
             {
               "id": "academic_coordination",
               "labelEn": "Academic coordination",
-              "labelHi": "Academic coordination"
+              "labelHi": "एकेडमिक coordination का नॉलेज"
             },
             {
               "id": "student_management",
               "labelEn": "Student management",
-              "labelHi": "Student management"
+              "labelHi": "स्टूडेंट मैनेजमेंट"
             },
             {
               "id": "trainer_support",
               "labelEn": "Trainer support",
-              "labelHi": "Trainer support"
+              "labelHi": "Trainer support करना"
             },
             {
               "id": "admin_ops",
               "labelEn": "Admin & ops",
-              "labelHi": "Admin & ops"
+              "labelHi": "एडमिन और ops करना"
             },
             {
               "id": "sales_admissions_help",
               "labelEn": "Sales & admissions help",
-              "labelHi": "Sales & admissions help"
+              "labelHi": "सेल्स और एडमिशंस help करना"
             },
             {
               "id": "reporting_documentation",
               "labelEn": "Reporting & documentation",
-              "labelHi": "Reporting & documentation"
+              "labelHi": "रिपोर्टिंग और डॉक्यूमेंटेशन"
             },
             {
               "id": "customer_service",
               "labelEn": "Customer service",
-              "labelHi": "Customer service"
+              "labelHi": "Customer सर्विस करना"
             },
             {
               "id": "events_workshops",
               "labelEn": "Events & workshops",
-              "labelHi": "Events & workshops"
+              "labelHi": "इवेंट और वर्कशॉप"
             }
           ]
         },
         {
           "id": "academy_supervisor",
           "labelEn": "Academy Supervisor",
-          "labelHi": "Academy supervisor",
+          "labelHi": "Academy Supervisor",
           "subcategories": [
             {
               "id": "daily_academic_coordination",
               "labelEn": "Daily academic coordination",
-              "labelHi": "Daily academic coordination"
+              "labelHi": "दैनिक एकेडमिक coordination का नॉलेज"
             },
             {
               "id": "classroom_management",
               "labelEn": "Classroom management",
-              "labelHi": "Classroom management"
+              "labelHi": "Classroom मैनेजमेंट का नॉलेज"
             },
             {
               "id": "student_monitoring",
               "labelEn": "Student monitoring",
-              "labelHi": "Student monitoring"
+              "labelHi": "स्टूडेंट मॉनिटरिंग"
             },
             {
               "id": "admin_support",
               "labelEn": "Admin support",
-              "labelHi": "Admin support"
+              "labelHi": "एडमिन support करना"
             },
             {
               "id": "quality_hygiene",
               "labelEn": "Quality & hygiene",
-              "labelHi": "Quality & hygiene"
+              "labelHi": "क्वालिटी और हाइजीन"
             },
             {
               "id": "assist_head_manager",
               "labelEn": "Assist head/manager",
-              "labelHi": "Assist head/manager"
+              "labelHi": "Assist head/मैनेजर करना"
             },
             {
               "id": "internal_communication",
               "labelEn": "Internal communication",
-              "labelHi": "Internal communication"
+              "labelHi": "Internal कम्युनिकेशन करना"
             },
             {
               "id": "events_workshops",
               "labelEn": "Events & workshops",
-              "labelHi": "Events & workshops"
+              "labelHi": "इवेंट और वर्कशॉप"
             }
           ]
         },
@@ -2912,42 +2912,42 @@
             {
               "id": "daily_academic_coordination",
               "labelEn": "Daily academic coordination",
-              "labelHi": "Daily academic coordination"
+              "labelHi": "दैनिक एकेडमिक coordination का नॉलेज"
             },
             {
               "id": "classroom_management",
               "labelEn": "Classroom management",
-              "labelHi": "Classroom management"
+              "labelHi": "Classroom मैनेजमेंट का नॉलेज"
             },
             {
               "id": "student_support",
               "labelEn": "Student support",
-              "labelHi": "Student support"
+              "labelHi": "स्टूडेंट support करना"
             },
             {
               "id": "admin_support",
               "labelEn": "Admin support",
-              "labelHi": "Admin support"
+              "labelHi": "एडमिन support करना"
             },
             {
               "id": "quality_hygiene",
               "labelEn": "Quality & hygiene",
-              "labelHi": "Quality & hygiene"
+              "labelHi": "क्वालिटी और हाइजीन"
             },
             {
               "id": "assist_head_manager",
               "labelEn": "Assist head/manager",
-              "labelHi": "Assist head/manager"
+              "labelHi": "Assist head/मैनेजर करना"
             },
             {
               "id": "notices_communication",
               "labelEn": "Notices & communication",
-              "labelHi": "Notices & communication"
+              "labelHi": "Notices और कम्युनिकेशन करना"
             },
             {
               "id": "events_workshops",
               "labelEn": "Events & workshops",
-              "labelHi": "Events & workshops"
+              "labelHi": "इवेंट और वर्कशॉप"
             }
           ]
         }
@@ -2966,52 +2966,52 @@
             {
               "id": "advanced_techniques",
               "labelEn": "Advanced techniques",
-              "labelHi": "Advanced techniques"
+              "labelHi": "एडवांस techniques करना"
             },
             {
               "id": "trendsetting_looks",
               "labelEn": "Trend-setting looks",
-              "labelHi": "Trend-setting looks"
+              "labelHi": "ट्रेंड-सेटअप लुक"
             },
             {
               "id": "products_tools",
               "labelEn": "Products & tools",
-              "labelHi": "Products & tools"
+              "labelHi": "प्रोडक्ट्स और टूल्स"
             },
             {
               "id": "artistic_vision",
               "labelEn": "Artistic vision",
-              "labelHi": "Artistic vision"
+              "labelHi": "Artistic vision करना"
             },
             {
               "id": "team_mentoring",
               "labelEn": "Team mentoring",
-              "labelHi": "Team mentoring"
+              "labelHi": "टीम mentoring का नॉलेज"
             },
             {
               "id": "creative_projects",
               "labelEn": "Creative projects",
-              "labelHi": "Creative projects"
+              "labelHi": "Creative projects करना"
             },
             {
               "id": "collaboration",
               "labelEn": "Collaboration",
-              "labelHi": "Collaboration"
+              "labelHi": "कोलैबोरेशन"
             },
             {
               "id": "client_communication",
               "labelEn": "Client communication",
-              "labelHi": "Client communication"
+              "labelHi": "क्लाइंट कम्युनिकेशन"
             },
             {
               "id": "trend_forecasting",
               "labelEn": "Trend forecasting",
-              "labelHi": "Trend forecasting"
+              "labelHi": "ट्रेंड फोरकास्टिंग"
             },
             {
               "id": "time_resource_management",
               "labelEn": "Time & resource management",
-              "labelHi": "Time & resource management"
+              "labelHi": "समय और resource मैनेजमेंट का नॉलेज"
             }
           ]
         },
@@ -3023,47 +3023,47 @@
             {
               "id": "artistic_vision",
               "labelEn": "Artistic vision",
-              "labelHi": "Artistic vision"
+              "labelHi": "Artistic vision करना"
             },
             {
               "id": "trends_colour_theory",
               "labelEn": "Trends & colour theory",
-              "labelHi": "Trends & colour theory"
+              "labelHi": "ट्रेंड्स और कलर थ्योरी"
             },
             {
               "id": "campaigns_photoshoots",
               "labelEn": "Campaigns & photoshoots",
-              "labelHi": "Campaigns & photoshoots"
+              "labelHi": "कैंपेन और photoshoots करना"
             },
             {
               "id": "leading_teams",
               "labelEn": "Leading teams",
-              "labelHi": "Leading teams"
+              "labelHi": "Leading teams करना"
             },
             {
               "id": "project_planning",
               "labelEn": "Project planning",
-              "labelHi": "Project planning"
+              "labelHi": "Project प्लानिंग करना"
             },
             {
               "id": "creative_decisions",
               "labelEn": "Creative decisions",
-              "labelHi": "Creative decisions"
+              "labelHi": "Creative decisions करना"
             },
             {
               "id": "communication",
               "labelEn": "Communication",
-              "labelHi": "Communication"
+              "labelHi": "कम्युनिकेशन"
             },
             {
               "id": "trend_forecasting",
               "labelEn": "Trend forecasting",
-              "labelHi": "Trend forecasting"
+              "labelHi": "ट्रेंड फोरकास्टिंग"
             },
             {
               "id": "collaboration",
               "labelEn": "Collaboration",
-              "labelHi": "Collaboration"
+              "labelHi": "कोलैबोरेशन"
             }
           ]
         },
@@ -3075,42 +3075,42 @@
             {
               "id": "deep_domain_knowledge",
               "labelEn": "Deep domain knowledge",
-              "labelHi": "Deep domain knowledge"
+              "labelHi": "डीप domain नॉलेज का नॉलेज"
             },
             {
               "id": "training_programs_curriculum",
               "labelEn": "Training programs & curriculum",
-              "labelHi": "Training programs & curriculum"
+              "labelHi": "ट्रेनिंग प्रोग्राम और करिकुलम"
             },
             {
               "id": "mentoring_trainers",
               "labelEn": "Mentoring trainers",
-              "labelHi": "Mentoring trainers"
+              "labelHi": "Mentoring trainers का नॉलेज"
             },
             {
               "id": "educational_strategy",
               "labelEn": "Educational strategy",
-              "labelHi": "Educational strategy"
+              "labelHi": "Educational strategy का नॉलेज"
             },
             {
               "id": "training_monitoring",
               "labelEn": "Training monitoring",
-              "labelHi": "Training monitoring"
+              "labelHi": "ट्रेनिंग मॉनिटरिंग"
             },
             {
               "id": "communication",
               "labelEn": "Communication",
-              "labelHi": "Communication"
+              "labelHi": "कम्युनिकेशन"
             },
             {
               "id": "trend_awareness",
               "labelEn": "Trend awareness",
-              "labelHi": "Trend awareness"
+              "labelHi": "ट्रेंड awareness का नॉलेज"
             },
             {
               "id": "collaboration",
               "labelEn": "Collaboration",
-              "labelHi": "Collaboration"
+              "labelHi": "कोलैबोरेशन"
             }
           ]
         },
@@ -3122,42 +3122,42 @@
             {
               "id": "advanced_haircutting_colouring_styling_treatments",
               "labelEn": "Advanced haircutting/colouring/styling/treatments",
-              "labelHi": "Advanced haircutting/colouring/styling/treatments"
+              "labelHi": "एडवांस हेयरकटिंग/colouring/स्टाइलिंग/ट्रीटमेंट्स करना"
             },
             {
               "id": "hair_textures_techniques",
               "labelEn": "Hair textures & techniques",
-              "labelHi": "Hair textures & techniques"
+              "labelHi": "हेयर textures और techniques करना"
             },
             {
               "id": "standard_procedures",
               "labelEn": "Standard procedures",
-              "labelHi": "Standard procedures"
+              "labelHi": "Standard procedures करना"
             },
             {
               "id": "mentoring_stylists",
               "labelEn": "Mentoring stylists",
-              "labelHi": "Mentoring stylists"
+              "labelHi": "Mentoring स्टाइलिस्ट का नॉलेज"
             },
             {
               "id": "skill_workshops",
               "labelEn": "Skill workshops",
-              "labelHi": "Skill workshops"
+              "labelHi": "स्किल वर्कशॉप"
             },
             {
               "id": "problem_solving",
               "labelEn": "Problem solving",
-              "labelHi": "Problem solving"
+              "labelHi": "समस्या सुलझाना"
             },
             {
               "id": "global_trends",
               "labelEn": "Global trends",
-              "labelHi": "Global trends"
+              "labelHi": "Global ट्रेंड्स करना"
             },
             {
               "id": "creative_collaboration",
               "labelEn": "Creative collaboration",
-              "labelHi": "Creative collaboration"
+              "labelHi": "Creative कोलैबोरेशन करना"
             }
           ]
         }
@@ -3176,102 +3176,102 @@
             {
               "id": "cleanup",
               "labelEn": "Clean-up",
-              "labelHi": "Clean-up"
+              "labelHi": "Clean-up करना"
             },
             {
               "id": "basic_advance_facials",
               "labelEn": "Basic & advance facials",
-              "labelHi": "Basic & advance facials"
+              "labelHi": "बेसिक और एडवांस फेशियल"
             },
             {
               "id": "bleach",
               "labelEn": "Bleach",
-              "labelHi": "Bleach"
+              "labelHi": "Bleach करना"
             },
             {
               "id": "detan",
               "labelEn": "De-tan",
-              "labelHi": "De-tan"
+              "labelHi": "De-टैन"
             },
             {
               "id": "skin_analysis",
               "labelEn": "Skin analysis",
-              "labelHi": "Skin analysis"
+              "labelHi": "स्किन analysis करना"
             },
             {
               "id": "waxing",
               "labelEn": "Waxing",
-              "labelHi": "Waxing"
+              "labelHi": "वैक्सिंग"
             },
             {
               "id": "threading",
               "labelEn": "Threading",
-              "labelHi": "Threading"
+              "labelHi": "थ्रेडिंग"
             },
             {
               "id": "manicure_pedicure",
               "labelEn": "Manicure & pedicure",
-              "labelHi": "Manicure & pedicure"
+              "labelHi": "मैनीक्योर और पेडीक्योर"
             },
             {
               "id": "nail_shaping_polish",
               "labelEn": "Nail shaping & polish",
-              "labelHi": "Nail shaping & polish"
+              "labelHi": "नेल शेपिंग और पॉलिश"
             },
             {
               "id": "daily_party_makeup",
               "labelEn": "Daily & party makeup",
-              "labelHi": "Daily & party makeup"
+              "labelHi": "डेली और पार्टी मेकअप"
             },
             {
               "id": "advance_3d_hd_makeup",
               "labelEn": "Advance & 3D & HD makeup",
-              "labelHi": "Advance & 3D & HD makeup"
+              "labelHi": "एडवांस और 3D और HD मेकअप"
             },
             {
               "id": "airbrush",
               "labelEn": "Airbrush",
-              "labelHi": "Airbrush"
+              "labelHi": "एयरब्रश"
             },
             {
               "id": "saree_draping",
               "labelEn": "Saree draping",
-              "labelHi": "Saree draping"
+              "labelHi": "साड़ी ड्रेपिंग"
             },
             {
               "id": "hairdos",
               "labelEn": "Hairdos",
-              "labelHi": "Hairdos"
+              "labelHi": "Hairdos करना"
             },
             {
               "id": "extensions",
               "labelEn": "Extensions",
-              "labelHi": "Extensions"
+              "labelHi": "एक्सटेंशंस"
             },
             {
               "id": "body_scrub_polish",
               "labelEn": "Body scrub/polish",
-              "labelHi": "Body scrub/polish"
+              "labelHi": "बॉडी scrub/पॉलिश करना"
             },
             {
               "id": "consultation",
               "labelEn": "Consultation",
-              "labelHi": "Consultation"
+              "labelHi": "कंसल्टेशन"
             },
             {
               "id": "product_knowledge",
               "labelEn": "Product knowledge",
-              "labelHi": "Product knowledge"
+              "labelHi": "प्रोडक्ट नॉलेज"
             },
             {
               "id": "hygiene_safety",
               "labelEn": "Hygiene & safety",
-              "labelHi": "Hygiene & safety"
+              "labelHi": "हाइजीन और सेफ्टी का नॉलेज"
             },
             {
               "id": "professionalism",
               "labelEn": "Professionalism",
-              "labelHi": "Professionalism"
+              "labelHi": "काम के प्रति जिम्मेदारी"
             }
           ]
         },
@@ -3283,87 +3283,87 @@
             {
               "id": "root_touchups",
               "labelEn": "Root touch-ups",
-              "labelHi": "Root touch-ups"
+              "labelHi": "रूट टच-अप"
             },
             {
               "id": "global_colour",
               "labelEn": "Global colour",
-              "labelHi": "Global colour"
+              "labelHi": "ग्लोबल कलर"
             },
             {
               "id": "grey_coverage",
               "labelEn": "Grey coverage",
-              "labelHi": "Grey coverage"
+              "labelHi": "ग्रे कवरेज"
             },
             {
               "id": "highlights_lowlights",
               "labelEn": "Highlights & lowlights",
-              "labelHi": "Highlights & lowlights"
+              "labelHi": "हाइलाइट्स और लो-लाइट्स"
             },
             {
               "id": "balayage",
               "labelEn": "Balayage",
-              "labelHi": "Balayage"
+              "labelHi": "बैलेयाज"
             },
             {
               "id": "ombr",
               "labelEn": "Ombré",
-              "labelHi": "Ombré"
+              "labelHi": "ओम्ब्रे"
             },
             {
               "id": "colour_melting",
               "labelEn": "Colour melting",
-              "labelHi": "Colour melting"
+              "labelHi": "कलर melting करना"
             },
             {
               "id": "foiling",
               "labelEn": "Foiling",
-              "labelHi": "Foiling"
+              "labelHi": "Foiling करना"
             },
             {
               "id": "slicing",
               "labelEn": "Slicing",
-              "labelHi": "Slicing"
+              "labelHi": "Slicing करना"
             },
             {
               "id": "weaving",
               "labelEn": "Weaving",
-              "labelHi": "Weaving"
+              "labelHi": "Weaving करना"
             },
             {
               "id": "freehand",
               "labelEn": "Freehand",
-              "labelHi": "Freehand"
+              "labelHi": "फ्रीहैंड"
             },
             {
               "id": "chemical_knowledge",
               "labelEn": "Chemical knowledge",
-              "labelHi": "Chemical knowledge"
+              "labelHi": "केमिकल नॉलेज"
             },
             {
               "id": "consultation",
               "labelEn": "Consultation",
-              "labelHi": "Consultation"
+              "labelHi": "कंसल्टेशन"
             },
             {
               "id": "colour_correction",
               "labelEn": "Colour correction",
-              "labelHi": "Colour correction"
+              "labelHi": "कलर करेक्शन"
             },
             {
               "id": "safety_hygiene",
               "labelEn": "Safety & hygiene",
-              "labelHi": "Safety & hygiene"
+              "labelHi": "सेफ्टी और हाइजीन"
             },
             {
               "id": "products_tools",
               "labelEn": "Products & tools",
-              "labelHi": "Products & tools"
+              "labelHi": "प्रोडक्ट्स और टूल्स"
             },
             {
               "id": "blowdrying",
               "labelEn": "Blow-drying",
-              "labelHi": "Blow-drying"
+              "labelHi": "ब्लो-ड्राईंग"
             }
           ]
         },
@@ -3375,82 +3375,82 @@
             {
               "id": "manicure",
               "labelEn": "Manicure",
-              "labelHi": "Manicure"
+              "labelHi": "मैनीक्योर"
             },
             {
               "id": "pedicure",
               "labelEn": "Pedicure",
-              "labelHi": "Pedicure"
+              "labelHi": "पेडीक्योर"
             },
             {
               "id": "shaping",
               "labelEn": "Shaping",
-              "labelHi": "Shaping"
+              "labelHi": "शेपिंग"
             },
             {
               "id": "cuticle_work",
               "labelEn": "Cuticle work",
-              "labelHi": "Cuticle work"
+              "labelHi": "क्यूटिकल work करना"
             },
             {
               "id": "buffing",
               "labelEn": "Buffing",
-              "labelHi": "Buffing"
+              "labelHi": "बफिंग"
             },
             {
               "id": "prep",
               "labelEn": "Prep",
-              "labelHi": "Prep"
+              "labelHi": "प्रेप"
             },
             {
               "id": "gel_polish",
               "labelEn": "Gel polish",
-              "labelHi": "Gel polish"
+              "labelHi": "जेल पॉलिश"
             },
             {
               "id": "french",
               "labelEn": "French",
-              "labelHi": "French"
+              "labelHi": "फ्रेंच"
             },
             {
               "id": "chrome",
               "labelEn": "Chrome",
-              "labelHi": "Chrome"
+              "labelHi": "Chrome करना"
             },
             {
               "id": "ombr",
               "labelEn": "Ombré",
-              "labelHi": "Ombré"
+              "labelHi": "ओम्ब्रे"
             },
             {
               "id": "nail_art_basics",
               "labelEn": "Nail art basics",
-              "labelHi": "Nail art basics"
+              "labelHi": "नेल आर्ट बेसिक्स"
             },
             {
               "id": "extensions",
               "labelEn": "Extensions",
-              "labelHi": "Extensions"
+              "labelHi": "एक्सटेंशंस"
             },
             {
               "id": "infills",
               "labelEn": "Infills",
-              "labelHi": "Infills"
+              "labelHi": "Infills करना"
             },
             {
               "id": "refills",
               "labelEn": "Refills",
-              "labelHi": "Refills"
+              "labelHi": "रिफिल"
             },
             {
               "id": "hygiene",
               "labelEn": "Hygiene",
-              "labelHi": "Hygiene"
+              "labelHi": "हाइजीन"
             },
             {
               "id": "glitter_stones_patterns",
               "labelEn": "Glitter/stones/patterns",
-              "labelHi": "Glitter/stones/patterns"
+              "labelHi": "Glitter/stones/पैटर्न करना"
             }
           ]
         },
@@ -3462,57 +3462,57 @@
             {
               "id": "extensions_classic_hybrid_volume",
               "labelEn": "Extensions classic/hybrid/volume",
-              "labelHi": "Extensions classic/hybrid/volume"
+              "labelHi": "एक्सटेंशंस classic/hybrid/volume करना"
             },
             {
               "id": "mapping",
               "labelEn": "Mapping",
-              "labelHi": "Mapping"
+              "labelHi": "मैपिंग"
             },
             {
               "id": "isolation",
               "labelEn": "Isolation",
-              "labelHi": "Isolation"
+              "labelHi": "Isolation करना"
             },
             {
               "id": "placement",
               "labelEn": "Placement",
-              "labelHi": "Placement"
+              "labelHi": "प्लेसमेंट"
             },
             {
               "id": "curls_lengths_diameter",
               "labelEn": "Curls/lengths/diameter",
-              "labelHi": "Curls/lengths/diameter"
+              "labelHi": "Curls/lengths/diameter करना"
             },
             {
               "id": "lash_lifts",
               "labelEn": "Lash lifts",
-              "labelHi": "Lash lifts"
+              "labelHi": "Lash lifts करना"
             },
             {
               "id": "tinting",
               "labelEn": "Tinting",
-              "labelHi": "Tinting"
+              "labelHi": "Tinting करना"
             },
             {
               "id": "refills",
               "labelEn": "Refills",
-              "labelHi": "Refills"
+              "labelHi": "रिफिल"
             },
             {
               "id": "safety",
               "labelEn": "Safety",
-              "labelHi": "Safety"
+              "labelHi": "सेफ्टी"
             },
             {
               "id": "client_handling",
               "labelEn": "Client handling",
-              "labelHi": "Client handling"
+              "labelHi": "क्लाइंट handling करना"
             },
             {
               "id": "appointments",
               "labelEn": "Appointments",
-              "labelHi": "Appointments"
+              "labelHi": "अपॉइंटमेंट"
             }
           ]
         },
@@ -3524,62 +3524,62 @@
             {
               "id": "laser_machines_knowledge",
               "labelEn": "Laser machines knowledge",
-              "labelHi": "Laser machines knowledge"
+              "labelHi": "लेज़र machines नॉलेज का नॉलेज"
             },
             {
               "id": "hair_reduction_safely",
               "labelEn": "Hair reduction safely",
-              "labelHi": "Hair reduction safely"
+              "labelHi": "हेयर रिडक्शन safely करना"
             },
             {
               "id": "fitzpatrick_scale",
               "labelEn": "Fitzpatrick scale",
-              "labelHi": "Fitzpatrick scale"
+              "labelHi": "Fitzpatrick scale करना"
             },
             {
               "id": "parameters",
               "labelEn": "Parameters",
-              "labelHi": "Parameters"
+              "labelHi": "Parameters करना"
             },
             {
               "id": "pre_post_care",
               "labelEn": "Pre/post care",
-              "labelHi": "Pre/post care"
+              "labelHi": "Pre/post केयर करना"
             },
             {
               "id": "equipment_maintenance",
               "labelEn": "Equipment maintenance",
-              "labelHi": "Equipment maintenance"
+              "labelHi": "इक्विपमेंट मेंटेनेंस"
             },
             {
               "id": "contraindications",
               "labelEn": "Contraindications",
-              "labelHi": "Contraindications"
+              "labelHi": "कॉन्ट्राइंडिकेशन"
             },
             {
               "id": "patch_testing",
               "labelEn": "Patch testing",
-              "labelHi": "Patch testing"
+              "labelHi": "पैच testing करना"
             },
             {
               "id": "burns_pigmentation_knowledge",
               "labelEn": "Burns/pigmentation knowledge",
-              "labelHi": "Burns/pigmentation knowledge"
+              "labelHi": "जलन/पिग्मेंटेशन नॉलेज"
             },
             {
               "id": "consultation",
               "labelEn": "Consultation",
-              "labelHi": "Consultation"
+              "labelHi": "कंसल्टेशन"
             },
             {
               "id": "records",
               "labelEn": "Records",
-              "labelHi": "Records"
+              "labelHi": "रिकॉर्ड्स"
             },
             {
               "id": "sops",
               "labelEn": "SOPs",
-              "labelHi": "SOPs"
+              "labelHi": "SOPs करना"
             }
           ]
         },
@@ -3591,62 +3591,62 @@
             {
               "id": "skin_analysis_consultation",
               "labelEn": "Skin analysis & consultation",
-              "labelHi": "Skin analysis & consultation"
+              "labelHi": "स्किन analysis और कंसल्टेशन का नॉलेज"
             },
             {
               "id": "aha_bha_tca_enzyme_peels",
               "labelEn": "AHA/BHA/TCA/enzyme peels",
-              "labelHi": "AHA/BHA/TCA/enzyme peels"
+              "labelHi": "AHA/BHA/TCA/enzyme पील करना"
             },
             {
               "id": "peel_strengths",
               "labelEn": "Peel strengths",
-              "labelHi": "Peel strengths"
+              "labelHi": "Peel strengths करना"
             },
             {
               "id": "correct_peel_selection",
               "labelEn": "Correct peel selection",
-              "labelHi": "Correct peel selection"
+              "labelHi": "Correct peel selection करना"
             },
             {
               "id": "skin_prep",
               "labelEn": "Skin prep",
-              "labelHi": "Skin prep"
+              "labelHi": "स्किन प्रेप"
             },
             {
               "id": "monitoring_reactions",
               "labelEn": "Monitoring reactions",
-              "labelHi": "Monitoring reactions"
+              "labelHi": "मॉनिटरिंग reactions का नॉलेज"
             },
             {
               "id": "safety_hygiene",
               "labelEn": "Safety & hygiene",
-              "labelHi": "Safety & hygiene"
+              "labelHi": "सेफ्टी और हाइजीन"
             },
             {
               "id": "patch_testing",
               "labelEn": "Patch testing",
-              "labelHi": "Patch testing"
+              "labelHi": "पैच testing करना"
             },
             {
               "id": "aftercare",
               "labelEn": "Aftercare",
-              "labelHi": "Aftercare"
+              "labelHi": "Aftercare करना"
             },
             {
               "id": "product_suggestions",
               "labelEn": "Product suggestions",
-              "labelHi": "Product suggestions"
+              "labelHi": "प्रोडक्ट suggestions करना"
             },
             {
               "id": "managing_reactions",
               "labelEn": "Managing reactions",
-              "labelHi": "Managing reactions"
+              "labelHi": "मैनेज reactions करना"
             },
             {
               "id": "records",
               "labelEn": "Records",
-              "labelHi": "Records"
+              "labelHi": "रिकॉर्ड्स"
             }
           ]
         }
@@ -3665,82 +3665,82 @@
             {
               "id": "basic_advance_facials",
               "labelEn": "Basic & advance facials",
-              "labelHi": "Basic & advance facials"
+              "labelHi": "बेसिक और एडवांस फेशियल"
             },
             {
               "id": "skin_analysis",
               "labelEn": "Skin analysis",
-              "labelHi": "Skin analysis"
+              "labelHi": "स्किन analysis करना"
             },
             {
               "id": "cleanups",
               "labelEn": "Clean-ups",
-              "labelHi": "Clean-ups"
+              "labelHi": "Clean-ups करना"
             },
             {
               "id": "body_polishing",
               "labelEn": "Body polishing",
-              "labelHi": "Body polishing"
+              "labelHi": "बॉडी polishing करना"
             },
             {
               "id": "relaxing_massage",
               "labelEn": "Relaxing massage",
-              "labelHi": "Relaxing massage"
+              "labelHi": "Relaxing मसाज करना"
             },
             {
               "id": "waxing",
               "labelEn": "Waxing",
-              "labelHi": "Waxing"
+              "labelHi": "वैक्सिंग"
             },
             {
               "id": "threading",
               "labelEn": "Threading",
-              "labelHi": "Threading"
+              "labelHi": "थ्रेडिंग"
             },
             {
               "id": "manicure_pedicure",
               "labelEn": "Manicure & pedicure",
-              "labelHi": "Manicure & pedicure"
+              "labelHi": "मैनीक्योर और पेडीक्योर"
             },
             {
               "id": "spa",
               "labelEn": "Spa",
-              "labelHi": "Spa"
+              "labelHi": "स्पा"
             },
             {
               "id": "basic_advance_3d_hd_makeup",
               "labelEn": "Basic & advance & 3D & HD makeup",
-              "labelHi": "Basic & advance & 3D & HD makeup"
+              "labelHi": "बेसिक और एडवांस और 3D और HD मेकअप"
             },
             {
               "id": "airbrush",
               "labelEn": "Airbrush",
-              "labelHi": "Airbrush"
+              "labelHi": "एयरब्रश"
             },
             {
               "id": "hairdos",
               "labelEn": "Hairdos",
-              "labelHi": "Hairdos"
+              "labelHi": "Hairdos करना"
             },
             {
               "id": "extensions",
               "labelEn": "Extensions",
-              "labelHi": "Extensions"
+              "labelHi": "एक्सटेंशंस"
             },
             {
               "id": "consultation",
               "labelEn": "Consultation",
-              "labelHi": "Consultation"
+              "labelHi": "कंसल्टेशन"
             },
             {
               "id": "hygiene_safety",
               "labelEn": "Hygiene & safety",
-              "labelHi": "Hygiene & safety"
+              "labelHi": "हाइजीन और सेफ्टी का नॉलेज"
             },
             {
               "id": "professionalism",
               "labelEn": "Professionalism",
-              "labelHi": "Professionalism"
+              "labelHi": "काम के प्रति जिम्मेदारी"
             }
           ]
         },
@@ -3752,87 +3752,87 @@
             {
               "id": "consultation",
               "labelEn": "Consultation",
-              "labelHi": "Consultation"
+              "labelHi": "कंसल्टेशन"
             },
             {
               "id": "deep_cleansing_facials",
               "labelEn": "Deep cleansing facials",
-              "labelHi": "Deep cleansing facials"
+              "labelHi": "डीप cleansing फेशियल करना"
             },
             {
               "id": "chemical_peels",
               "labelEn": "Chemical peels",
-              "labelHi": "Chemical peels"
+              "labelHi": "केमिकल पील"
             },
             {
               "id": "hydrafacial",
               "labelEn": "Hydrafacial",
-              "labelHi": "Hydrafacial"
+              "labelHi": "हाइड्राफेशियल"
             },
             {
               "id": "advance_facial",
               "labelEn": "Advance facial",
-              "labelHi": "Advance facial"
+              "labelHi": "एडवांस फेशियल"
             },
             {
               "id": "acne_facials",
               "labelEn": "Acne facials",
-              "labelHi": "Acne facials"
+              "labelHi": "एक्ने फेशियल"
             },
             {
               "id": "antiaging",
               "labelEn": "Anti-aging",
-              "labelHi": "Anti-aging"
+              "labelHi": "Anti-aging करना"
             },
             {
               "id": "microdermabrasion",
               "labelEn": "Microdermabrasion",
-              "labelHi": "Microdermabrasion"
+              "labelHi": "माइक्रोडर्माब्रेशन"
             },
             {
               "id": "microneedling",
               "labelEn": "Microneedling",
-              "labelHi": "Microneedling"
+              "labelHi": "माइक्रोनीडलिंग"
             },
             {
               "id": "highfrequency_ultrasonic_led",
               "labelEn": "High-frequency/ultrasonic/LED",
-              "labelHi": "High-frequency/ultrasonic/LED"
+              "labelHi": "High-frequency/ultrasonic/LED करना"
             },
             {
               "id": "laser_hair_reduction_assist",
               "labelEn": "Laser hair reduction assist",
-              "labelHi": "Laser hair reduction assist"
+              "labelHi": "लेज़र हेयर रिडक्शन assist करना"
             },
             {
               "id": "hygiene",
               "labelEn": "Hygiene",
-              "labelHi": "Hygiene"
+              "labelHi": "हाइजीन"
             },
             {
               "id": "products",
               "labelEn": "Products",
-              "labelHi": "Products"
+              "labelHi": "प्रोडक्ट्स"
             },
             {
               "id": "clinical_assist",
               "labelEn": "Clinical assist",
-              "labelHi": "Clinical assist"
+              "labelHi": "Clinical assist करना"
             },
             {
               "id": "followups",
               "labelEn": "Follow-ups",
-              "labelHi": "Follow-ups"
+              "labelHi": "Follow-ups करना"
             },
             {
               "id": "records",
               "labelEn": "Records",
-              "labelHi": "Records"
+              "labelHi": "रिकॉर्ड्स"
             },
             {
               "id": "stock",
               "labelEn": "Stock",
-              "labelHi": "Stock"
+              "labelHi": "स्टॉक"
             }
           ]
         },
@@ -3844,57 +3844,57 @@
             {
               "id": "hydration_spa",
               "labelEn": "Hydration spa",
-              "labelHi": "Hydration spa"
+              "labelHi": "Hydration स्पा करना"
             },
             {
               "id": "antidandruff",
               "labelEn": "Anti-dandruff",
-              "labelHi": "Anti-dandruff"
+              "labelHi": "Anti-dandruff करना"
             },
             {
               "id": "keratin_spa",
               "labelEn": "Keratin spa",
-              "labelHi": "Keratin spa"
+              "labelHi": "केराटिन स्पा"
             },
             {
               "id": "repair_spa",
               "labelEn": "Repair spa",
-              "labelHi": "Repair spa"
+              "labelHi": "रिपेयर स्पा"
             },
             {
               "id": "smoothening_spa",
               "labelEn": "Smoothening spa",
-              "labelHi": "Smoothening spa"
+              "labelHi": "Smoothening स्पा करना"
             },
             {
               "id": "scalp_detox",
               "labelEn": "Scalp detox",
-              "labelHi": "Scalp detox"
+              "labelHi": "स्कैल्प detox करना"
             },
             {
               "id": "scalp_analysis",
               "labelEn": "Scalp analysis",
-              "labelHi": "Scalp analysis"
+              "labelHi": "स्कैल्प analysis करना"
             },
             {
               "id": "pressure_points",
               "labelEn": "Pressure points",
-              "labelHi": "Pressure points"
+              "labelHi": "प्रेशर पॉइंट्स"
             },
             {
               "id": "spa_machines",
               "labelEn": "Spa machines",
-              "labelHi": "Spa machines"
+              "labelHi": "स्पा machines करना"
             },
             {
               "id": "custom_solutions",
               "labelEn": "Custom solutions",
-              "labelHi": "Custom solutions"
+              "labelHi": "कस्टम solutions करना"
             },
             {
               "id": "product_knowledge",
               "labelEn": "Product knowledge",
-              "labelHi": "Product knowledge"
+              "labelHi": "प्रोडक्ट नॉलेज"
             }
           ]
         },
@@ -3906,52 +3906,52 @@
             {
               "id": "swedish",
               "labelEn": "Swedish",
-              "labelHi": "Swedish"
+              "labelHi": "Swedish करना"
             },
             {
               "id": "deep_tissue",
               "labelEn": "Deep tissue",
-              "labelHi": "Deep tissue"
+              "labelHi": "डीप tissue करना"
             },
             {
               "id": "aromatherapy",
               "labelEn": "Aromatherapy",
-              "labelHi": "Aromatherapy"
+              "labelHi": "अरोमाथेरेपी"
             },
             {
               "id": "balinese",
               "labelEn": "Balinese",
-              "labelHi": "Balinese"
+              "labelHi": "Balinese करना"
             },
             {
               "id": "scrubs_wraps_steam_sauna",
               "labelEn": "Scrubs, wraps, steam & sauna",
-              "labelHi": "Scrubs, wraps, steam & sauna"
+              "labelHi": "Scrubs, wraps, steam और sauna करना"
             },
             {
               "id": "pressure_strokes",
               "labelEn": "Pressure & strokes",
-              "labelHi": "Pressure & strokes"
+              "labelHi": "प्रेशर और strokes करना"
             },
             {
               "id": "oils_blends",
               "labelEn": "Oils & blends",
-              "labelHi": "Oils & blends"
+              "labelHi": "Oils और ब्लेंड करना"
             },
             {
               "id": "hygiene",
               "labelEn": "Hygiene",
-              "labelHi": "Hygiene"
+              "labelHi": "हाइजीन"
             },
             {
               "id": "privacy",
               "labelEn": "Privacy",
-              "labelHi": "Privacy"
+              "labelHi": "Privacy करना"
             },
             {
               "id": "professional_empathy",
               "labelEn": "Professional empathy",
-              "labelHi": "Professional empathy"
+              "labelHi": "प्रोफेशनल empathy करना"
             }
           ]
         },
@@ -3963,42 +3963,42 @@
             {
               "id": "reflex_zones",
               "labelEn": "Reflex zones",
-              "labelHi": "Reflex zones"
+              "labelHi": "Reflex zones करना"
             },
             {
               "id": "pressurepoint_techniques",
               "labelEn": "Pressure-point techniques",
-              "labelHi": "Pressure-point techniques"
+              "labelHi": "प्रेशर-पॉइंट techniques करना"
             },
             {
               "id": "foot_hand_massage",
               "labelEn": "Foot/hand massage",
-              "labelHi": "Foot/hand massage"
+              "labelHi": "पैर/हाथ मसाज"
             },
             {
               "id": "tension_relief",
               "labelEn": "Tension relief",
-              "labelHi": "Tension relief"
+              "labelHi": "Tension relief करना"
             },
             {
               "id": "pressure_rhythm",
               "labelEn": "Pressure rhythm",
-              "labelHi": "Pressure rhythm"
+              "labelHi": "प्रेशर rhythm करना"
             },
             {
               "id": "relaxing_environment",
               "labelEn": "Relaxing environment",
-              "labelHi": "Relaxing environment"
+              "labelHi": "Relaxing माहौल करना"
             },
             {
               "id": "hygiene",
               "labelEn": "Hygiene",
-              "labelHi": "Hygiene"
+              "labelHi": "हाइजीन"
             },
             {
               "id": "basic_aromatherapy_oils",
               "labelEn": "Basic aromatherapy oils",
-              "labelHi": "Basic aromatherapy oils"
+              "labelHi": "बेसिक अरोमाथेरेपी oils करना"
             }
           ]
         }
@@ -4017,92 +4017,92 @@
             {
               "id": "skin_theory_practical",
               "labelEn": "Skin theory & practical",
-              "labelHi": "Skin theory & practical"
+              "labelHi": "स्किन थ्योरी और प्रैक्टिकल"
             },
             {
               "id": "beauty_theory_practical",
               "labelEn": "Beauty theory & practical",
-              "labelHi": "Beauty theory & practical"
+              "labelHi": "Beauty थ्योरी और प्रैक्टिकल करना"
             },
             {
               "id": "makeup",
               "labelEn": "Makeup",
-              "labelHi": "Makeup"
+              "labelHi": "मेकअप"
             },
             {
               "id": "facials",
               "labelEn": "Facials",
-              "labelHi": "Facials"
+              "labelHi": "फेशियल"
             },
             {
               "id": "cleanups",
               "labelEn": "Clean-ups",
-              "labelHi": "Clean-ups"
+              "labelHi": "Clean-ups करना"
             },
             {
               "id": "bleaching",
               "labelEn": "Bleaching",
-              "labelHi": "Bleaching"
+              "labelHi": "Bleaching करना"
             },
             {
               "id": "threading",
               "labelEn": "Threading",
-              "labelHi": "Threading"
+              "labelHi": "थ्रेडिंग"
             },
             {
               "id": "waxing",
               "labelEn": "Waxing",
-              "labelHi": "Waxing"
+              "labelHi": "वैक्सिंग"
             },
             {
               "id": "mani_pedi",
               "labelEn": "Mani/pedi",
-              "labelHi": "Mani/pedi"
+              "labelHi": "Mani/pedi करना"
             },
             {
               "id": "skin_types",
               "labelEn": "Skin types",
-              "labelHi": "Skin types"
+              "labelHi": "स्किन टाइप्स"
             },
             {
               "id": "products",
               "labelEn": "Products",
-              "labelHi": "Products"
+              "labelHi": "प्रोडक्ट्स"
             },
             {
               "id": "beauty_science",
               "labelEn": "Beauty science",
-              "labelHi": "Beauty science"
+              "labelHi": "Beauty science करना"
             },
             {
               "id": "tests_practical_exams",
               "labelEn": "Tests & practical exams",
-              "labelHi": "Tests & practical exams"
+              "labelHi": "Tests और प्रैक्टिकल एग्ज़ाम करना"
             },
             {
               "id": "student_performance",
               "labelEn": "Student performance",
-              "labelHi": "Student performance"
+              "labelHi": "स्टूडेंट परफॉर्मेंस"
             },
             {
               "id": "hygiene_standards",
               "labelEn": "Hygiene standards",
-              "labelHi": "Hygiene standards"
+              "labelHi": "हाइजीन standards करना"
             },
             {
               "id": "communication",
               "labelEn": "Communication",
-              "labelHi": "Communication"
+              "labelHi": "कम्युनिकेशन"
             },
             {
               "id": "course_materials",
               "labelEn": "Course materials",
-              "labelHi": "Course materials"
+              "labelHi": "Course materials करना"
             },
             {
               "id": "professional_behaviour",
               "labelEn": "Professional behaviour",
-              "labelHi": "Professional behaviour"
+              "labelHi": "प्रोफेशनल व्यवहार"
             }
           ]
         },
@@ -4114,77 +4114,77 @@
             {
               "id": "training_skills",
               "labelEn": "Training skills",
-              "labelHi": "Training skills"
+              "labelHi": "ट्रेनिंग स्किल्स"
             },
             {
               "id": "basic_advance_makeup",
               "labelEn": "Basic & advance makeup",
-              "labelHi": "Basic & advance makeup"
+              "labelHi": "बेसिक और एडवांस मेकअप"
             },
             {
               "id": "demonstrations",
               "labelEn": "Demonstrations",
-              "labelHi": "Demonstrations"
+              "labelHi": "Demonstrations करना"
             },
             {
               "id": "lesson_plans",
               "labelEn": "Lesson plans",
-              "labelHi": "Lesson plans"
+              "labelHi": "Lesson प्लान करना"
             },
             {
               "id": "day_evening_party_hd_airbrush_bridal_editorial",
               "labelEn": "Day/evening/party/HD/airbrush/bridal/editorial",
-              "labelHi": "Day/evening/party/HD/airbrush/bridal/editorial"
+              "labelHi": "Day/evening/पार्टी/HD/एयरब्रश/ब्राइडल/editorial करना"
             },
             {
               "id": "colour_theory",
               "labelEn": "Colour theory",
-              "labelHi": "Colour theory"
+              "labelHi": "कलर थ्योरी"
             },
             {
               "id": "face_shapes",
               "labelEn": "Face shapes",
-              "labelHi": "Face shapes"
+              "labelHi": "Face शेप्स करना"
             },
             {
               "id": "tools_blending",
               "labelEn": "Tools & blending",
-              "labelHi": "Tools & blending"
+              "labelHi": "टूल्स और ब्लेंडिंग"
             },
             {
               "id": "student_guidance",
               "labelEn": "Student guidance",
-              "labelHi": "Student guidance"
+              "labelHi": "स्टूडेंट guidance करना"
             },
             {
               "id": "practical_exams",
               "labelEn": "Practical exams",
-              "labelHi": "Practical exams"
+              "labelHi": "प्रैक्टिकल एग्ज़ाम"
             },
             {
               "id": "brand_knowledge",
               "labelEn": "Brand knowledge",
-              "labelHi": "Brand knowledge"
+              "labelHi": "ब्रांड नॉलेज"
             },
             {
               "id": "hygiene",
               "labelEn": "Hygiene",
-              "labelHi": "Hygiene"
+              "labelHi": "हाइजीन"
             },
             {
               "id": "presentation",
               "labelEn": "Presentation",
-              "labelHi": "Presentation"
+              "labelHi": "Presentation करना"
             },
             {
               "id": "global_trends",
               "labelEn": "Global trends",
-              "labelHi": "Global trends"
+              "labelHi": "Global ट्रेंड्स करना"
             },
             {
               "id": "professionalism",
               "labelEn": "Professionalism",
-              "labelHi": "Professionalism"
+              "labelHi": "काम के प्रति जिम्मेदारी"
             }
           ]
         },
@@ -4196,72 +4196,72 @@
             {
               "id": "nail_anatomy",
               "labelEn": "Nail anatomy",
-              "labelHi": "Nail anatomy"
+              "labelHi": "नेल anatomy करना"
             },
             {
               "id": "mani_pedi_techniques",
               "labelEn": "Mani/pedi techniques",
-              "labelHi": "Mani/pedi techniques"
+              "labelHi": "Mani/pedi techniques करना"
             },
             {
               "id": "extensions",
               "labelEn": "Extensions",
-              "labelHi": "Extensions"
+              "labelHi": "एक्सटेंशंस"
             },
             {
               "id": "gel_acrylic",
               "labelEn": "Gel/acrylic",
-              "labelHi": "Gel/acrylic"
+              "labelHi": "जेल/एक्रिलिक"
             },
             {
               "id": "nail_art",
               "labelEn": "Nail art",
-              "labelHi": "Nail art"
+              "labelHi": "नेल art करना"
             },
             {
               "id": "trends",
               "labelEn": "Trends",
-              "labelHi": "Trends"
+              "labelHi": "ट्रेंड्स"
             },
             {
               "id": "products",
               "labelEn": "Products",
-              "labelHi": "Products"
+              "labelHi": "प्रोडक्ट्स"
             },
             {
               "id": "teaching_skills",
               "labelEn": "Teaching skills",
-              "labelHi": "Teaching skills"
+              "labelHi": "टीचिंग स्किल्स"
             },
             {
               "id": "lesson_plans",
               "labelEn": "Lesson plans",
-              "labelHi": "Lesson plans"
+              "labelHi": "Lesson प्लान करना"
             },
             {
               "id": "communication",
               "labelEn": "Communication",
-              "labelHi": "Communication"
+              "labelHi": "कम्युनिकेशन"
             },
             {
               "id": "workshops",
               "labelEn": "Workshops",
-              "labelHi": "Workshops"
+              "labelHi": "वर्कशॉप"
             },
             {
               "id": "documentation",
               "labelEn": "Documentation",
-              "labelHi": "Documentation"
+              "labelHi": "डॉक्यूमेंटेशन"
             },
             {
               "id": "records",
               "labelEn": "Records",
-              "labelHi": "Records"
+              "labelHi": "रिकॉर्ड्स"
             },
             {
               "id": "collaboration",
               "labelEn": "Collaboration",
-              "labelHi": "Collaboration"
+              "labelHi": "कोलैबोरेशन"
             }
           ]
         },
@@ -4273,77 +4273,77 @@
             {
               "id": "cutting_layering_texturizing",
               "labelEn": "Cutting, layering, texturizing",
-              "labelHi": "Cutting, layering, texturizing"
+              "labelHi": "कटिंग, layering, texturizing करना"
             },
             {
               "id": "colour_highlights_balayage_ombr",
               "labelEn": "Colour, highlights, balayage, ombré",
-              "labelHi": "Colour, highlights, balayage, ombré"
+              "labelHi": "कलर, हाइलाइट्स, बैलेयाज, ओम्ब्रे"
             },
             {
               "id": "fashion_shades",
               "labelEn": "Fashion shades",
-              "labelHi": "Fashion shades"
+              "labelHi": "फैशन shades करना"
             },
             {
               "id": "smoothing_straightening",
               "labelEn": "Smoothing & straightening",
-              "labelHi": "Smoothing & straightening"
+              "labelHi": "स्मूदिंग और स्ट्रेटनिंग"
             },
             {
               "id": "keratin_perming",
               "labelEn": "Keratin & perming",
-              "labelHi": "Keratin & perming"
+              "labelHi": "केराटिन और perming करना"
             },
             {
               "id": "hair_science",
               "labelEn": "Hair science",
-              "labelHi": "Hair science"
+              "labelHi": "हेयर science करना"
             },
             {
               "id": "scalp_knowledge",
               "labelEn": "Scalp knowledge",
-              "labelHi": "Scalp knowledge"
+              "labelHi": "स्कैल्प नॉलेज"
             },
             {
               "id": "blowdry_curls_updos",
               "labelEn": "Blow-dry, curls, updos",
-              "labelHi": "Blow-dry, curls, updos"
+              "labelHi": "ब्लो-dry, curls, अपडो करना"
             },
             {
               "id": "mens_grooming",
               "labelEn": "Men's grooming",
-              "labelHi": "Men's grooming"
+              "labelHi": "Men's ग्रूमिंग करना"
             },
             {
               "id": "teaching",
               "labelEn": "Teaching",
-              "labelHi": "Teaching"
+              "labelHi": "टीचिंग"
             },
             {
               "id": "communication",
               "labelEn": "Communication",
-              "labelHi": "Communication"
+              "labelHi": "कम्युनिकेशन"
             },
             {
               "id": "industry_knowledge",
               "labelEn": "Industry knowledge",
-              "labelHi": "Industry knowledge"
+              "labelHi": "इंडस्ट्री नॉलेज"
             },
             {
               "id": "trends",
               "labelEn": "Trends",
-              "labelHi": "Trends"
+              "labelHi": "ट्रेंड्स"
             },
             {
               "id": "hygiene",
               "labelEn": "Hygiene",
-              "labelHi": "Hygiene"
+              "labelHi": "हाइजीन"
             },
             {
               "id": "records",
               "labelEn": "Records",
-              "labelHi": "Records"
+              "labelHi": "रिकॉर्ड्स"
             }
           ]
         },
@@ -4355,62 +4355,62 @@
             {
               "id": "skin_anatomy",
               "labelEn": "Skin anatomy",
-              "labelHi": "Skin anatomy"
+              "labelHi": "स्किन anatomy करना"
             },
             {
               "id": "facials_advance",
               "labelEn": "Facials advance",
-              "labelHi": "Facials advance"
+              "labelHi": "फेशियल एडवांस"
             },
             {
               "id": "peels_microderm_dermaplaning_hydrafacial_led",
               "labelEn": "Peels, microderm, dermaplaning, hydrafacial, LED",
-              "labelHi": "Peels, microderm, dermaplaning, hydrafacial, LED"
+              "labelHi": "पील, माइक्रोडर्म, डर्माप्लानिंग, हाइड्राफेशियल, LED करना"
             },
             {
               "id": "teaching",
               "labelEn": "Teaching",
-              "labelHi": "Teaching"
+              "labelHi": "टीचिंग"
             },
             {
               "id": "brands",
               "labelEn": "Brands",
-              "labelHi": "Brands"
+              "labelHi": "ब्रांड्स"
             },
             {
               "id": "trends",
               "labelEn": "Trends",
-              "labelHi": "Trends"
+              "labelHi": "ट्रेंड्स"
             },
             {
               "id": "hygiene",
               "labelEn": "Hygiene",
-              "labelHi": "Hygiene"
+              "labelHi": "हाइजीन"
             },
             {
               "id": "client_handling",
               "labelEn": "Client handling",
-              "labelHi": "Client handling"
+              "labelHi": "क्लाइंट handling करना"
             },
             {
               "id": "communication",
               "labelEn": "Communication",
-              "labelHi": "Communication"
+              "labelHi": "कम्युनिकेशन"
             },
             {
               "id": "records",
               "labelEn": "Records",
-              "labelHi": "Records"
+              "labelHi": "रिकॉर्ड्स"
             },
             {
               "id": "workshops",
               "labelEn": "Workshops",
-              "labelHi": "Workshops"
+              "labelHi": "वर्कशॉप"
             },
             {
               "id": "demos",
               "labelEn": "Demos",
-              "labelHi": "Demos"
+              "labelHi": "डेमो"
             }
           ]
         },
@@ -4422,62 +4422,62 @@
             {
               "id": "anatomy_growth_cycles",
               "labelEn": "Anatomy & growth cycles",
-              "labelHi": "Anatomy & growth cycles"
+              "labelHi": "Anatomy और growth cycles करना"
             },
             {
               "id": "classic_hybrid_volume_mega",
               "labelEn": "Classic/hybrid/volume/mega",
-              "labelHi": "Classic/hybrid/volume/mega"
+              "labelHi": "Classic/hybrid/volume/mega करना"
             },
             {
               "id": "lash_lifts_tinting",
               "labelEn": "Lash lifts & tinting",
-              "labelHi": "Lash lifts & tinting"
+              "labelHi": "Lash lifts और tinting करना"
             },
             {
               "id": "brow_shaping_threading",
               "labelEn": "Brow shaping & threading",
-              "labelHi": "Brow shaping & threading"
+              "labelHi": "Brow शेपिंग और थ्रेडिंग करना"
             },
             {
               "id": "brow_lamination",
               "labelEn": "Brow lamination",
-              "labelHi": "Brow lamination"
+              "labelHi": "Brow lamination करना"
             },
             {
               "id": "henna_brows",
               "labelEn": "Henna brows",
-              "labelHi": "Henna brows"
+              "labelHi": "Henna brows करना"
             },
             {
               "id": "teaching",
               "labelEn": "Teaching",
-              "labelHi": "Teaching"
+              "labelHi": "टीचिंग"
             },
             {
               "id": "hygiene",
               "labelEn": "Hygiene",
-              "labelHi": "Hygiene"
+              "labelHi": "हाइजीन"
             },
             {
               "id": "products",
               "labelEn": "Products",
-              "labelHi": "Products"
+              "labelHi": "प्रोडक्ट्स"
             },
             {
               "id": "communication",
               "labelEn": "Communication",
-              "labelHi": "Communication"
+              "labelHi": "कम्युनिकेशन"
             },
             {
               "id": "records",
               "labelEn": "Records",
-              "labelHi": "Records"
+              "labelHi": "रिकॉर्ड्स"
             },
             {
               "id": "workshops",
               "labelEn": "Workshops",
-              "labelHi": "Workshops"
+              "labelHi": "वर्कशॉप"
             }
           ]
         }
@@ -4496,67 +4496,67 @@
             {
               "id": "basic_party_bridal_hd_waterproof_longlasting_airbrush_3d_celebri",
               "labelEn": "Basic/party/bridal/HD/waterproof/long-lasting/airbrush/3D/celebrity looks",
-              "labelHi": "Basic/party/bridal/HD/waterproof/long-lasting/airbrush/3D/celebrity looks"
+              "labelHi": "बेसिक/पार्टी/ब्राइडल/HD/वॉटरप्रूफ/लॉन्ग-लास्टिंग/एयरब्रश/3D/सेलेब्रिटी लुक"
             },
             {
               "id": "skin_prep_priming",
               "labelEn": "Skin prep & priming",
-              "labelHi": "Skin prep & priming"
+              "labelHi": "स्किन प्रेप और प्राइमिंग"
             },
             {
               "id": "colour_correction",
               "labelEn": "Colour correction",
-              "labelHi": "Colour correction"
+              "labelHi": "कलर करेक्शन"
             },
             {
               "id": "eye_shadow_eyeliner",
               "labelEn": "Eye shadow & eyeliner",
-              "labelHi": "Eye shadow & eyeliner"
+              "labelHi": "Eye shadow और आईलाइनर करना"
             },
             {
               "id": "strip_lashes",
               "labelEn": "Strip lashes",
-              "labelHi": "Strip lashes"
+              "labelHi": "Strip लैश करना"
             },
             {
               "id": "threading",
               "labelEn": "Threading",
-              "labelHi": "Threading"
+              "labelHi": "थ्रेडिंग"
             },
             {
               "id": "contour_blush_highlight",
               "labelEn": "Contour/blush/highlight",
-              "labelHi": "Contour/blush/highlight"
+              "labelHi": "कॉन्टूर/ब्लश/हाइलाइट"
             },
             {
               "id": "baking_setting",
               "labelEn": "Baking & setting",
-              "labelHi": "Baking & setting"
+              "labelHi": "Baking और सेटअप करना"
             },
             {
               "id": "extensions",
               "labelEn": "Extensions",
-              "labelHi": "Extensions"
+              "labelHi": "एक्सटेंशंस"
             },
             {
               "id": "products",
               "labelEn": "Products",
-              "labelHi": "Products"
+              "labelHi": "प्रोडक्ट्स"
             },
             {
               "id": "hygiene_tools",
               "labelEn": "Hygiene & tools",
-              "labelHi": "Hygiene & tools"
+              "labelHi": "हाइजीन और टूल्स"
             },
             {
               "id": "trends",
               "labelEn": "Trends",
-              "labelHi": "Trends"
+              "labelHi": "ट्रेंड्स"
             },
             {
               "id": "communication",
               "labelEn": "Communication",
-              "labelHi": "Communication"
+              "labelHi": "कम्युनिकेशन"
             }
           ]
         },
@@ -4568,47 +4568,47 @@
             {
               "id": "nail_service_proficiency",
               "labelEn": "Nail service proficiency",
-              "labelHi": "Nail service proficiency"
+              "labelHi": "नेल सर्विस proficiency का नॉलेज"
             },
             {
               "id": "mani_pedi_prep",
               "labelEn": "Mani/pedi/prep",
-              "labelHi": "Mani/pedi/prep"
+              "labelHi": "Mani/pedi/प्रेप करना"
             },
             {
               "id": "gel_polish",
               "labelEn": "Gel polish",
-              "labelHi": "Gel polish"
+              "labelHi": "जेल पॉलिश"
             },
             {
               "id": "extensions_refills",
               "labelEn": "Extensions & refills",
-              "labelHi": "Extensions & refills"
+              "labelHi": "एक्सटेंशंस और रिफिल"
             },
             {
               "id": "shapes_filing",
               "labelEn": "Shapes & filing",
-              "labelHi": "Shapes & filing"
+              "labelHi": "शेप्स और फाइलिंग"
             },
             {
               "id": "live_demos",
               "labelEn": "Live demos",
-              "labelHi": "Live demos"
+              "labelHi": "Live डेमो करना"
             },
             {
               "id": "handson_supervision",
               "labelEn": "Hands-on supervision",
-              "labelHi": "Hands-on supervision"
+              "labelHi": "Hands-on supervision करना"
             },
             {
               "id": "communication",
               "labelEn": "Communication",
-              "labelHi": "Communication"
+              "labelHi": "कम्युनिकेशन"
             },
             {
               "id": "records",
               "labelEn": "Records",
-              "labelHi": "Records"
+              "labelHi": "रिकॉर्ड्स"
             }
           ]
         },
@@ -4620,116 +4620,37 @@
             {
               "id": "swedish_deep_tissue_balinese_aromatherapy_hot_stone",
               "labelEn": "Swedish, deep tissue, Balinese, aromatherapy, hot stone",
-              "labelHi": "Swedish, deep tissue, Balinese, aromatherapy, hot stone"
+              "labelHi": "Swedish, डीप tissue, Balinese, अरोमाथेरेपी, हॉट stone करना"
             },
             {
               "id": "polishing_wraps",
               "labelEn": "Polishing & wraps",
-              "labelHi": "Polishing & wraps"
+              "labelHi": "Polishing और wraps करना"
             },
             {
               "id": "pressure_strokes",
               "labelEn": "Pressure & strokes",
-              "labelHi": "Pressure & strokes"
+              "labelHi": "प्रेशर और strokes करना"
             },
             {
               "id": "relaxation",
               "labelEn": "Relaxation",
-              "labelHi": "Relaxation"
+              "labelHi": "Relaxation करना"
             },
             {
               "id": "equipment",
               "labelEn": "Equipment",
-              "labelHi": "Equipment"
+              "labelHi": "इक्विपमेंट"
             },
             {
               "id": "hygiene",
               "labelEn": "Hygiene",
-              "labelHi": "Hygiene"
+              "labelHi": "हाइजीन"
             },
             {
               "id": "teaching_client_handling",
               "labelEn": "Teaching client handling",
-              "labelHi": "Teaching client handling"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "legacy_quick_roles",
-      "labelEn": "Common roles (quick)",
-      "labelHi": "आम रोल (जल्दी)",
-      "categories": [
-        {
-          "id": "hair_stylist",
-          "labelEn": "Hair stylist (legacy)",
-          "labelHi": "हेयर स्टाइलिस्ट",
-          "subcategories": [
-            {
-              "id": "general_hair_services",
-              "labelEn": "General hair services",
-              "labelHi": "हेयर सर्विस"
-            }
-          ]
-        },
-        {
-          "id": "massage_therapist",
-          "labelEn": "Massage therapist (legacy)",
-          "labelHi": "मसाज थेरेपिस्ट",
-          "subcategories": [
-            {
-              "id": "body_massage",
-              "labelEn": "Body massage",
-              "labelHi": "बॉडी मसाज"
-            }
-          ]
-        },
-        {
-          "id": "receptionist",
-          "labelEn": "Receptionist (legacy)",
-          "labelHi": "रिसेप्शनिस्ट",
-          "subcategories": [
-            {
-              "id": "front_desk_duties",
-              "labelEn": "Front desk duties",
-              "labelHi": "फ्रंट डेस्क"
-            }
-          ]
-        },
-        {
-          "id": "helper",
-          "labelEn": "Helper (legacy)",
-          "labelHi": "हेल्पर",
-          "subcategories": [
-            {
-              "id": "salon_support",
-              "labelEn": "Salon support",
-              "labelHi": "सहायता"
-            }
-          ]
-        },
-        {
-          "id": "manager",
-          "labelEn": "Manager (legacy)",
-          "labelHi": "मैनेजर",
-          "subcategories": [
-            {
-              "id": "team_management",
-              "labelEn": "Team management",
-              "labelHi": "टीम प्रबंधन"
-            }
-          ]
-        },
-        {
-          "id": "other",
-          "labelEn": "Other (custom title)",
-          "labelHi": "अन्य",
-          "subcategories": [
-            {
-              "id": "custom_duties_as_discussed",
-              "labelEn": "Custom duties as discussed",
-              "labelHi": "कस्टम"
+              "labelHi": "टीचिंग क्लाइंट handling करना"
             }
           ]
         }
